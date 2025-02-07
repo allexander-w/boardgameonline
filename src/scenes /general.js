@@ -10,7 +10,10 @@ export default function GeneralScene() {
     new Heaps(this.game_layer, this.board.stage);
 
     /* Загрузка игрового поля */
-    gameField.then(field => this.game_layer.add(field));
+    gameField.then(field => setTimeout(() => {
+        this.game_layer.add(field);
+        field.moveToBottom();
+    }, 1000));
 
     /* Отрисовка сцены */
     this.board.add_layer('board', this.game_layer);

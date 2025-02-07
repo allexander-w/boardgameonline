@@ -95,6 +95,11 @@ function Heap(game, options = {}) {
         })
     }
 
+    this.shuffle = () => {
+        this.elements.sort(() => Math.random() - 0.5);
+        this.elements.forEach(el => el.element.moveToTop());
+    }
+
 
     this.buttonEntire.on('click', this.entire);
 }

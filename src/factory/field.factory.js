@@ -8,7 +8,7 @@ export const gameField = new Promise((resolve) => {
         image: fieldImageObject,
         width: 2246,
         height: 1588,
-        opacity: .5
+        opacity: .8
     });
 
     fieldImageObject.onload = () => {

@@ -1,12 +1,12 @@
 import Konva from "konva";
+import HEAP_DEFAULTS from "../defaults/heap.defaults.js";
 
 export const heapField = (options) => {
-    const field = new Konva.Rect({
-        x: 1000,
-        y: 200,
-
-        width: 280,
-        height: 200,
+    return new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: HEAP_DEFAULTS.WIDTH,
+        height: HEAP_DEFAULTS.HEIGHT,
         fill: "rgba(255,255,255, 0.05)",
         stroke: "rgb(255,255,255)",
         dash: [10, 6],
@@ -16,15 +16,13 @@ export const heapField = (options) => {
 
         ...options
     });
-
-    return field;
 }
 
 
 export const heapText = (count, options) => {
     return new Konva.Text({
-        x: options.x || 1000,
-        y: options.y - 20 || 180,
+        x: options.x || 0,
+        y: (options.y - 20) || 0,
         text: count,
         fontSize: 20,
         fontFamily: "Tahoma",
