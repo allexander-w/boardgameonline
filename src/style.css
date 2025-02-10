@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #2f2f2f;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -42,4 +42,99 @@ h1 {
 #app {
   margin: 0;
   padding: 0;
+}
+
+.dice-wrapper {
+  z-index: 9999;
+  position: fixed;
+  background: #fff;
+  opacity: .8;
+  top: 40px;
+  right: -220px;
+
+  width: 200px;
+  height: 130px;
+  padding: 20px;
+
+  transition: .6s ease;
+}
+
+.dice-wrapper:hover {
+  right: 0;
+}
+
+.dice-wrapper .shield {
+  position: absolute;
+  border-radius: 12px 0 0 12px;
+  left:-20px;
+  top: 0;
+  height: 100%;
+  background: #66b60c;
+  width: 20px;
+}
+
+.dice-wrapper .shield span {
+  transform: rotate(90deg);
+  display: block;
+  margin-top: 20px;
+}
+
+.dice-wrapper .shield strong {
+  display: block;
+  margin-top: 40px;
+  margin-left: 4px;
+}
+
+.dice-wrapper .content {
+  width: 100%;
+  height: 80%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.dice-wrapper .content .six {
+  width: 75px;
+  height: 75px;
+  margin-bottom: 12px;
+  border: 3px solid black;
+  border-radius: 4px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dice-wrapper .content .six .dice p {
+  color: black;
+  font-size: 24px;
+}
+
+.dice-wrapper .content img {
+  max-width: 90px;
+}
+
+.eight {
+  position: relative;
+}
+
+.eight p {
+  position: absolute;
+  left: 37px;
+  top: 8px;
+
+  color: black;
+  font-size: 24px;
+}
+
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background-color: red;
+  z-index: 200000;
 }

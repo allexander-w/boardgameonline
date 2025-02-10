@@ -1,4 +1,4 @@
-function Camera (stage) {
+function Camera (stage, layer) {
     this.stage = stage;
 
 
@@ -12,6 +12,23 @@ function Camera (stage) {
         }
     }
 
+
+    /* Центрирование сцены */
+    const layoutClientRect = layer.getClientRect();
+    const coordinates = {
+        width: layoutClientRect.x + layoutClientRect.width,
+        height: layoutClientRect.y + layoutClientRect.height
+    }
+
+    const isWidthMore = ( window.innerWidth / coordinates.width >= window.innerHeight / coordinates.height );
+    const scale = isWidthMore ? window.innerHeight / coordinates.height : window.innerWidth / coordinates.width;
+    this.stage.scale({ x: scale, y: scale });
+
+    this.camera.move((window.innerWidth - (coordinates.width * scale)) / 2, 0);
+
+
+
+    /* Перемещение с помощью кнопок wasd */
     const keyboardKeys = {
         W: false,
         S: false,
@@ -54,7 +71,6 @@ function Camera (stage) {
         }
     });
 
-
     document.addEventListener('keyup', (event) => {
         for ( const keyboardKey of Object.keys(keyboardKeys) ) {
             if ( event.code === 'Key' + keyboardKey && keyboardKeys[keyboardKey] ) {
@@ -69,6 +85,7 @@ function Camera (stage) {
     });
 
 
+    /* Изменение масштаба сцены */
     this.stage.on('wheel', (e) => {
         e.evt.preventDefault();
 
@@ -98,7 +115,7 @@ function Camera (stage) {
     });
 
 
-
+    /* Перемещение сцены мышью */
     this.stage.on('mousedown', () => {
         this.stage.draggable(true);
     });

@@ -1,5 +1,4 @@
 import Konva from "konva";
-import Camera from "./camera";
 
 function Board() {
     this.stage = new Konva.Stage({
@@ -8,14 +7,8 @@ function Board() {
         height: window.innerHeight
     });
 
-
-    /* Иинициализация камеры */
-    new Camera(this.stage);
-
-
     /* Стейт */
     this.layers = new Map();
-
 
     /* Методы */
     this.add_layer = (key, layer) => {
@@ -26,7 +19,6 @@ function Board() {
     this.get_layer = (key) => {
         return this.layers.get(key);
     }
-
 }
 
 export default Board;

@@ -3,7 +3,7 @@ import CARD_DEFAULTS from "../defaults/cards.defaults";
 import { objectFit } from "../utils/objectFit";
 
 export const duosideElement = (options) => {
-        return new Konva.Rect({
+        const el = new Konva.Rect({
             x: 0,
             y: 0,
             offsetX: ( options.width || CARD_DEFAULTS.WIDTH ) / 2,
@@ -11,18 +11,24 @@ export const duosideElement = (options) => {
             width: CARD_DEFAULTS.WIDTH,
             height: CARD_DEFAULTS.HEIGHT,
             cornerRadius: 30,
-
-            // shadowColor: "rgba(255, 255, 255, 0.6)",
-            // shadowBlur: 20,
-            // shadowOffsetX: 0,
-            // shadowOffsetY: 0,
-            // shadowOpacity: 1,
-
             draggable: true,
-
             prevPosition: { x: options.x || 0, y: options.y || 0 },
+            flipped: false,
+
             ...options
         });
+
+        el.prevPosition = (coordinates) => {
+            if ( !coordinates ) return el.attrs.prevPosition;
+            el.attrs.prevPosition = coordinates;
+        }
+
+        el.flipped = (flipped) => {
+            if ( !flipped ) return el.attrs.flipped;
+            el.attrs.flipped = flipped;
+        }
+
+        return el;
 }
 
 export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise((resolve) => {

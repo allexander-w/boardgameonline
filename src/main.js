@@ -1,4 +1,7 @@
 import './style.css';
-import GeneralScene from "./scenes /general.js";
+// import FlashPointScene from "./scenes/flashpoint";
 
-new GeneralScene();
+import VineScene from "./scenes/vine";
+
+//new FlashPointScene();
+new VineScene();
