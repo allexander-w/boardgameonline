@@ -1,18 +1,22 @@
 import { heapText, heapField } from "../../factory/heap.factory.js";
 import { isPointInsideRect } from "../../utils/utils.js";
-import { loadSVG } from "../../utils/loader.js";
 
 import Konva from "konva";
 import {buttonElement} from "../../factory/buttons.factory";
 
-function Heap(game, options = {}) {
+import ws from "../../core/websocket";
+
+function Heap(game, options = {}, id) {
     this.elements = new Map();
     this.in_heap_count = 0;
+    this.id = id;
 
     const field = heapField(options);
     const nameShape = heapText(this.in_heap_count, options);
     const buttonEntire = buttonElement(options, '/union.svg');
-    const buttonShuffle = buttonElement({ ...options, y: (options.y || 0) + 44 }, '/shuffle.svg')
+    const buttonShuffle = buttonElement({ ...options, y: (options.y || 0) + 44 }, '/shuffle.svg');
+
+    let isShuffling = false;
 
     game.add(field);
     game.add(nameShape);
@@ -84,35 +88,53 @@ function Heap(game, options = {}) {
     }
 
 
-    /* Перемешать карты */
-    this.shuffle = () => {
-        this.elements.forEach((el, index) => {
 
+    /* Перемешать карты */
+    this.shuffle = (e, fromWS) => {
+        if ( isShuffling ) return false;
+        isShuffling = true;
+
+        ws.receiver.send('shuffle', { heap_id: this.id });
+
+        [...this.elements].slice(0, 5).forEach(([key, value], i) => {
             const tween = new Konva.Tween({
-                node: el.element,
+                node: value.element,
                 duration: 0.1,
-                x: el.element.x() + 20,
+                x: value.element.x() + 20,
 
                 onFinish: () => {
                     new Konva.Tween({
-                        node: el.element,
+                        node: value.element,
                         duration: 0.1,
-                        x: el.element.x() - 20,
+                        x: value.element.x() - 20,
                     }).play();
                 },
             });
 
             setTimeout(() => {
-                el.element.moveToTop();
+                value.element.moveToTop();
                 tween.play();
 
-            }, index * 100);
-        })
+            }, i * 100);
+        });
+
+        if ( fromWS ) {
+            isShuffling = false;
+            return false;
+        }
 
         setTimeout(() => {
-            this.elements.sort(() => Math.random() - 0.5);
-            this.elements.forEach(el => el.element.moveToTop());
-        }, this.elements.length * 100)
+            this.elements = new Map([...this.elements.entries()].sort(() => Math.random() - 0.5));
+            const sync_config = [];
+
+            for ( const [key, val] of this.elements ) {
+                val.element.moveToTop();
+                sync_config.push({ id: key, zindex: val.element.zIndex() });
+            }
+
+            ws.receiver.send('shuffle_end', { heap_id: this.id, sync_config });
+            isShuffling = false;
+        },  1000)
     }
 
 

@@ -6,7 +6,10 @@ const actions = {
     mousemove: "mousemove",
 
     dragmove: "dragmove",
+    dragend: "dragend",
 
-    flip: "flip"
+    flip: "flip",
+
+    sync: "sync"
 }
 module.exports = actions;

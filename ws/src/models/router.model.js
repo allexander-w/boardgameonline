@@ -1,13 +1,21 @@
-class Router {
-    constructor(data) {
-        this.data = data;
-    }
+function Router(data) {
+    return {
+        use(action, func) {
+            if ( data.action === action ) {
+                func( data );
+            }
+        },
 
-    use(action, func) {
-        if ( this.data.action === action ) {
-            func( this.data );
+        redirect(action, users) {
+            if ( data.action === action ) {
+                users.forEach(u => {
+                    if (u.id === data.payload.user) return false;
+                    u.send(action, data.payload);
+                });
+            }
         }
     }
+
 }
 
 module.exports = Router;

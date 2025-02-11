@@ -16,7 +16,7 @@ ws.on("request", req => {
         const propertyName = msg.type + "Data";
         const data = unserialize(msg[propertyName]);
 
-        const router = new Router(data);
+        const router = Router(data);
 
         router.use( actions.connected, async (data) => {
                 const user = new User(Date.now(), connection);
@@ -30,40 +30,13 @@ ws.on("request", req => {
                 users.forEach(u => u.send(actions.join, { user: user.id, users, syncUser: syncUser }));
         })
 
-        router.use(actions.mousemove, ( data ) => {
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send(actions.mousemove, { user: data.payload.user, x: data.payload.x, y: data.payload.y })
-            });
-        })
-
-        router.use(actions.flip, ( data ) => {
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send(actions.flip, { user: data.payload.user, id: data.payload.id });
-            });
-        })
-
-        router.use(actions.dragmove, ( data ) => {
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send(actions.dragmove, data.payload);
-            });
-        })
-
-        router.use('sync', ( data ) => {
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('sync', data.payload);
-            });
-        })
-
-        router.use('dragend', ( data ) => {
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('dragend', data.payload);
-            });
-        })
+        router.redirect(actions.mousemove, users);
+        router.redirect(actions.flip, users);
+        router.redirect(actions.dragmove, users);
+        router.redirect(actions.dragend, users);
+        router.redirect(actions.sync, users);
+        router.redirect('shuffle', users);
+        router.redirect('shuffle_end', users);
     });
 
     /* [Жизненный цикл]: Дисконнект игрока */

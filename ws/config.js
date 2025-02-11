@@ -1,5 +1,5 @@
 module.exports = {
     baseIP: "localhost",
-    // baseIP: "192.168.9.17",
+    // baseIP: "172.30.216.34",
     basePORT: 8002,
 }

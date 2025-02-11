@@ -10,7 +10,7 @@ function Heaps(game, stage) {
     this.heaps = new Map();
 
     for ( const config of entitiesConfig ) {
-        const heap = new Heap(game, config.heap_config);
+        const heap = new Heap(game, config.heap_config, config.id);
         for ( const [index, value] of new Array(config.count).entries() ) {
             const card = new DuosideElement(config.same ? config.src : config.src + (index + 1) + '.png', { elementId: config.id, numId: config.id + '_' + index, ...config.element }, config.flipped, config.duo, config.id + '_' + index);
             heap.add_element(card, config.id + '_' + index);
@@ -20,13 +20,23 @@ function Heaps(game, stage) {
     }
 
 
+    /* Отправка файла синхронизации */
     ws.emitter.on("SYNC", ({ user }) => {
         if ( ws.currentConnection === user ) {
-            const config = game.children.map(child => ({ id: child._id, x: child.attrs.x, y: child.attrs.y, zindex: child.zIndex(), elementId: child.attrs.elementId, flipped: child.attrs.flipped, numId: child.attrs.numId }));
+            const config = game.children.map(child => ({
+                id: child._id,
+                x: child.attrs.x,
+                y: child.attrs.y,
+                zindex: child.zIndex(),
+                elementId: child.attrs.elementId,
+                fillPatternOffset: child.fillPatternOffset()
+            }));
             ws.receiver.send('sync', { config });
         }
     })
 
+
+    /* Синхронизация */
     ws.emitter.on('sync', (data) => {
         for ( const config_item of data.config || [] ) {
             const child = game.children.find(el => el._id === config_item.id);
@@ -34,22 +44,14 @@ function Heaps(game, stage) {
                 child.x(config_item.x);
                 child.y(config_item.y);
                 child.zIndex(config_item.zindex);
-
-                if ( config_item.elementId ) {
-                    const heap_id = config_item.elementId.split("_")[0];
-                    const heap = this.heaps.get(heap_id);
-
-                    const element = heap.get_element(config_item.numId);
-
-                    if ( element ) {
-                        config_item.flipped ?  element.flipOnBottom() : element.flipToTop();
-                    }
-                }
+                child.fillPatternOffset(config_item.fillPatternOffset);
             }
         }
     })
 
-    ws.emitter.on("flip", (data) => {
+
+    /* Переворот карточки */
+    ws.emitter.on(actions.flip, (data) => {
         const heap_id = data.id.split("_")[0];
         const heap = this.heaps.get(heap_id);
 
@@ -57,11 +59,21 @@ function Heaps(game, stage) {
         element.flipElement(false);
     });
 
-    ws.emitter.on("dragmove", (data) => {
-        const element = game.children.find(el => el._id === data.id);
-        element.x(data.x);
-        element.y(data.y);
+    /* Шафл */
+    ws.emitter.on('shuffle', (data) => {
+        const heap = this.heaps.get(data.heap_id);
+        heap.shuffle(null, true);
     });
+
+    ws.emitter.on('shuffle_end', (data) => {
+        const heap = this.heaps.get(data.heap_id);
+
+        for ( const config_item of data.sync_config || [] ) {
+            const el = heap.get_element(config_item.id);
+            el.element.zIndex(config_item.zindex);
+        }
+    });
+
 
     stage.on('dragstart', (e) => {
         if ( e.target.attrs.elementId ) {
@@ -80,6 +92,8 @@ function Heaps(game, stage) {
         }
     })
 
+
+    /* [DRAGMOVE]: Отправка данных */
     stage.on('dragmove', (e) => {
         if ( e.target.attrs.elementId ) {
             ws.receiver.send(actions.dragmove, { x: e.target.attrs.x, y: e.target.attrs.y, id: e.target._id });
@@ -87,12 +101,15 @@ function Heaps(game, stage) {
         }
     })
 
-    ws.emitter.on('dragend', (data) => {
+    /* [DRAGMOVE]: Принятие данных */
+    ws.emitter.on(actions.dragmove, (data) => {
         const element = game.children.find(el => el._id === data.id);
-        console.log(element);
-        element.moveToTop();
-    })
+        element.x(data.x);
+        element.y(data.y);
+    });
 
+
+    /* [DRAGEND]: Отправка данных */
     stage.on('dragend', (e) => {
         if ( e.target.attrs.elementId ) {
             e.target.to({
@@ -112,6 +129,13 @@ function Heaps(game, stage) {
             ws.receiver.send('dragend', { id: e.target._id });
         }
     })
+
+    /* [DRAGEND]: Получение данных */
+    ws.emitter.on(actions.dragend, (data) => {
+        const element = game.children.find(el => el._id === data.id);
+        element.moveToTop();
+    })
+
 }
 
 export default Heaps;
