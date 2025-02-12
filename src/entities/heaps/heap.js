@@ -8,18 +8,18 @@ import ws from "../../core/websocket";
 
 function Heap(game, options = {}, id) {
     this.elements = new Map();
-    this.in_heap_count = 0;
+    // this.in_heap_count = 0;
     this.id = id;
 
     const field = heapField(options);
-    const nameShape = heapText(this.in_heap_count, options);
+    // const nameShape = heapText(this.in_heap_count, options);
     const buttonEntire = buttonElement(options, '/union.svg');
     const buttonShuffle = buttonElement({ ...options, y: (options.y || 0) + 44 }, '/shuffle.svg');
 
     let isShuffling = false;
 
     game.add(field);
-    game.add(nameShape);
+    // game.add(nameShape);
     game.add(buttonEntire);
     game.add(buttonShuffle);
 
@@ -27,9 +27,9 @@ function Heap(game, options = {}, id) {
     /* Добавить элемент */
     this.add_element = (element, id) => {
         this.elements.set(id, element);
-        this.in_heap_count = this.elements.length;
+        // this.in_heap_count = this.elements.length;
 
-        nameShape.text(this.in_heap_count);
+        // nameShape.text(this.in_heap_count);
         game.add(element.element);
     }
 
@@ -37,35 +37,35 @@ function Heap(game, options = {}, id) {
         return this.elements.get(id);
     }
 
-    /* Добавить в стопку */
-    this.to_heap = () => {
-        this.in_heap_count ++;
-        nameShape.text(this.in_heap_count);
-    }
-
-    /* Убрать из стопки */
-    this.from_heap = () => {
-        this.in_heap_count --;
-        nameShape.text(this.in_heap_count);
-    }
+    // /* Добавить в стопку */
+    // this.to_heap = () => {
+    //     this.in_heap_count ++;
+    //     nameShape.text(this.in_heap_count);
+    // }
+    //
+    // /* Убрать из стопки */
+    // this.from_heap = () => {
+    //     this.in_heap_count --;
+    //     nameShape.text(this.in_heap_count);
+    // }
 
 
     /* Проверить, находится ли карта в стопке */
-    this.check_chip_position = (e) => {
-        const point = { x: e.target?.attrs?.x, y: e.target?.attrs?.y };
-        const prevPoint = e.target.prevPosition();
-        const rectangle = { x: field.x(), y: field.y(), width: field.width(), height: field.height() };
-
-        if ( isPointInsideRect(point, rectangle) && !isPointInsideRect( prevPoint, rectangle) ) {
-            this.to_heap()
-        }
-
-        if ( isPointInsideRect( prevPoint, rectangle) && !isPointInsideRect(point, rectangle) ) {
-            this.from_heap();
-        }
-
-        e.target.prevPosition(point);
-    }
+    // this.check_chip_position = (e) => {
+    //     const point = { x: e.target?.attrs?.x, y: e.target?.attrs?.y };
+    //     const prevPoint = e.target.prevPosition();
+    //     const rectangle = { x: field.x(), y: field.y(), width: field.width(), height: field.height() };
+    //
+    //     if ( isPointInsideRect(point, rectangle) && !isPointInsideRect( prevPoint, rectangle) ) {
+    //         this.to_heap()
+    //     }
+    //
+    //     if ( isPointInsideRect( prevPoint, rectangle) && !isPointInsideRect(point, rectangle) ) {
+    //         this.from_heap();
+    //     }
+    //
+    //     e.target.prevPosition(point);
+    // }
 
 
     /* Объединить карты */
@@ -82,9 +82,6 @@ function Heap(game, options = {}, id) {
                 el.flip();
             }
         })
-
-        this.in_heap_count = this.elements.length;
-        nameShape.text(this.in_heap_count);
     }
 
 
@@ -124,7 +121,7 @@ function Heap(game, options = {}, id) {
         }
 
         setTimeout(() => {
-            this.elements = new Map([...this.elements.entries()].sort(() => Math.random() - 0.5));
+            this.random();
             const sync_config = [];
 
             for ( const [key, val] of this.elements ) {
@@ -134,7 +131,24 @@ function Heap(game, options = {}, id) {
 
             ws.receiver.send('shuffle_end', { heap_id: this.id, sync_config });
             isShuffling = false;
-        },  1000)
+        },  500)
+    }
+
+
+    this.random = () => {
+        this.elements = new Map([...this.elements.entries()].sort(() => Math.random() - 0.5));
+    }
+
+    this.randomRotate = () => {
+        function randomInteger(min, max) {
+            let rand = min - 0.5 + Math.random() * (max - min + 1);
+            return Math.round(rand);
+        }
+
+        const rotateDegs = [90, 180, 270, 360];
+        for ( const [key, val] of this.elements.entries() ) {
+            val.element.rotation(rotateDegs[randomInteger(0,3)]);
+        }
     }
 
 

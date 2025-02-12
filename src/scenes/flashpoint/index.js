@@ -1,6 +1,7 @@
 import GeneralScene from "../general";
 import {gameField} from "../../factory/field.factory";
 import Camera from "../../core/camera";
+import Heaps from "../../core/heaps";
 
 function FlashPointScene() {
     GeneralScene.apply(this);
@@ -13,6 +14,10 @@ function FlashPointScene() {
         /* Иинициализация камеры */
         new Camera(this.board.stage, this.game_layer);
     }, 1000));
+
+    /* Иинициализация всех куч элементов */
+    new Heaps(this.board.stage, this.game_layer);
+    this.initialize();
 }
 
 export default FlashPointScene;

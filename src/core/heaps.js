@@ -123,8 +123,8 @@ function Heaps(game, stage) {
                 easing: Konva.Easings.EaseIn
             });
 
-            const heap = this.heaps.get(e.target.attrs.elementId);
-            heap.check_chip_position(e);
+            // const heap = this.heaps.get(e.target.attrs.elementId);
+            // heap.check_chip_position(e);
 
             ws.receiver.send('dragend', { id: e.target._id });
         }

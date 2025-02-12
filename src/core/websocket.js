@@ -1,10 +1,10 @@
 import mitt from "mitt";
 import {serialize, unserialize} from "../../shared/utils/serialize.util.mjs";
 import actions from "../../shared/actions/action.types.mjs";
-
+import config from "../config";
 
 function WebsocketConnector() {
-    this.socket = new WebSocket("ws://localhost:8002");
+    this.socket = new WebSocket(config.ws);
     this.connections = new Map();
     this.currentConnection = null;
 
@@ -61,10 +61,6 @@ function WebsocketConnector() {
             cursor.x(data.payload.x);
             cursor.y(data.payload.y);
         }
-
-        // if ( data.action === actions.flip ) {
-        //     console.log("flip");
-        // }
 
         this.emitter.emit(data.action, data.payload);
     }

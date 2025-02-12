@@ -9,6 +9,15 @@ function Camera (stage, layer) {
                 x: this.stage.x() + dx,
                 y: this.stage.y() + dy,
             });
+        },
+
+        rotate: (deg) => {
+            this.stage.rotation(this.stage.rotation() + deg);
+        },
+
+        offset: ({x, y}) => {
+            this.stage.offsetX(x);
+            this.stage.offsetY(y);
         }
     }
 
@@ -33,13 +42,16 @@ function Camera (stage, layer) {
         W: false,
         S: false,
         D: false,
-        A: false
+        A: false,
+        Q: false,
+        E: false
     }
 
     let intervalMoving = null;
 
     const movingIntervalFunction = () => {
         const d = 10;
+        const x = 2;
 
         const dx = keyboardKeys.A && keyboardKeys.D
             ? 0
@@ -58,7 +70,21 @@ function Camera (stage, layer) {
                     : 0
 
         this.camera.move(dx, dy);
+
+
+        const deg = keyboardKeys.Q && keyboardKeys.E
+            ? 0
+            : keyboardKeys.Q
+                ? -x
+                : keyboardKeys.E
+                    ? x
+                    : 0
+
+        this.camera.rotate(deg);
     }
+
+    let rotationIndex = 0;
+    const angles = [90, 180, 270, 0];
 
     document.addEventListener('keydown', (event) => {
         for ( const keyboardKey of Object.keys(keyboardKeys) ) {
@@ -68,6 +94,13 @@ function Camera (stage, layer) {
                     intervalMoving = setInterval(movingIntervalFunction, 10);
                 }
             }
+        }
+
+        if ( event.code === "KeyR" ) {
+            if ( rotationIndex === 4) rotationIndex = 0;
+            this.stage.rotation(angles[rotationIndex]);
+            console.log(angles[rotationIndex], rotationIndex);
+            rotationIndex++;
         }
     });
 
