@@ -6,8 +6,9 @@ import Konva from "konva";
 import ws from "./websocket";
 import actions from "../../shared/actions/action.types.mjs";
 
-function Heaps(game, stage) {
+function Heaps(game, board) {
     this.heaps = new Map();
+    const stage = board.stage;
 
 
     for ( const config of entitiesConfig ) {
@@ -24,35 +25,55 @@ function Heaps(game, stage) {
     /* Отправка файла синхронизации */
     ws.emitter.on("SYNC", ({ user }) => {
         if ( ws.currentConnection === user ) {
-            const config = game.children.map(child => ({
-                id: child._id,
-                x: child.attrs.x,
-                y: child.attrs.y,
-                zindex: child.zIndex(),
-                elementId: child.attrs.elementId,
-                fillPatternOffset: child.fillPatternOffset(),
-                rotation: child.rotation()
-            }));
-            ws.receiver.send('sync', { config });
+            setTimeout(() => {
+
+                // const l = board.get_layer('field');
+                // console.log(l);
+                const configs = {};
+
+                for ( const [key, l] of board.layers.entries() ) {
+                    if ( key === 'cursors' ) continue;
+
+                    const config = l.children.map(child => ({
+                        id: child._id,
+                        x: child.attrs.x,
+                        y: child.attrs.y,
+                        zindex: child.zIndex(),
+                        elementId: child.attrs.elementId,
+                        fillPatternOffset: child.fillPatternOffset(),
+                        rotation: child.rotation()
+                    }));
+
+                    configs[key] = config;
+                }
+
+                ws.receiver.send('sync', { configs });
+
+
+            }, 1000)
         }
     })
 
 
     /* Синхронизация */
     ws.emitter.on('sync', (data) => {
-        for ( const config_item of data.config || [] ) {
-            const child = game.children.find(el => el._id === config_item.id);
 
-            if ( child ) {
-                child.x(config_item.x);
-                child.y(config_item.y);
-                child.zIndex(config_item.zindex);
-                child.fillPatternOffset(config_item.fillPatternOffset);
-                child.rotation(config_item.rotation);
+        for ( const [key, config] of Object.entries(data.configs) ) {
+            for ( const config_item of config || [] ) {
+                const l = board.get_layer(key);
+                const child = l.children.find(el => el._id === config_item.id);
 
-                if ( child.attrs.elementId === 'card' ) child.moveToBottom();
+                if ( child ) {
+                    child.x(config_item.x);
+                    child.y(config_item.y);
+                    child.zIndex(config_item.zindex);
+                    child.fillPatternOffset(config_item.fillPatternOffset);
+                    child.rotation(config_item.rotation);
+                }
             }
         }
+
+
     })
 
 

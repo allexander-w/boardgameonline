@@ -40,6 +40,7 @@ ws.on("request", req => {
         router.redirect('select', users);
         router.redirect('translate', users);
         router.redirect('groupmove', users);
+        router.redirect('movetop', users);
     });
 
     /* [Жизненный цикл]: Дисконнект игрока */

@@ -4,20 +4,24 @@ import JackalCard from "../cards/jackal/card";
 import ws from "../../core/websocket";
 import Konva from "konva";
 
-function JackalHeaps(game, stage) {
+function JackalHeaps(game, board, field) {
     Heaps.apply(this, arguments);
+
+    const stage = board.stage;
 
     const heap = new Heap(game, { x: -1000, y: -1000, width: 1, height: 1 }, "card");
     for ( const [index, value] of new Array(117).entries() ) {
         const card = new JackalCard('/jackal/card/' + (index + 1) + '.png', { x: 0, y: 0, elementId: "card", numId: "card" + '_' + index, width: 248, height: 248, draggable: false }, true, true, "card" + '_' + index);
-        heap.add_element(card, "card" + '_' + index);
+        heap.elements.set("card" + '_' + index, card);
+        field.add(card.element);
+
+        // heap.add_element(card, "card" + '_' + index);
     }
 
     const shipsHeap = this.heaps.get('boat');
 
     for ( let i = 0; i < 2; i++) {
         const ship = shipsHeap.get_element('boat_' + i);
-        console.log( i * 11 );
         ship.element.x(248*5);
         ship.element.y(i * 11 * 248 + (i === 0 ? -248 : 0));
     }
@@ -215,6 +219,7 @@ function JackalHeaps(game, stage) {
     function groupElements(target) {
         const elementsAbove = findElementsAbove(target);
         if (elementsAbove.length === 0) {
+            ws.receiver.send('movetop', { id: target._id });
             target.moveToTop();
             return;
         }
@@ -237,6 +242,11 @@ function JackalHeaps(game, stage) {
         })
     }
 
+
+    ws.emitter.on("groupmove", (data) => {
+        const el = game.children.find(el => el._id === data.id);
+        if ( el ) el.moveToTop();
+    })
 
     ws.emitter.on("groupmove", (data) => {
         data.elements.forEach(element => {
