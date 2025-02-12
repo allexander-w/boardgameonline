@@ -1,3 +1,5 @@
+import ws from "../core/websocket";
+
 function Camera (stage, layer) {
     this.stage = stage;
 
@@ -87,6 +89,8 @@ function Camera (stage, layer) {
     const angles = [90, 180, 270, 0];
 
     document.addEventListener('keydown', (event) => {
+        ws.emitter.emit("keydown", event);
+
         for ( const keyboardKey of Object.keys(keyboardKeys) ) {
             if ( (event.code === ('Key' + keyboardKey)) && !keyboardKeys[keyboardKey] ) {
                 keyboardKeys[keyboardKey] = true;

@@ -9,6 +9,7 @@ import actions from "../../shared/actions/action.types.mjs";
 function Heaps(game, stage) {
     this.heaps = new Map();
 
+
     for ( const config of entitiesConfig ) {
         const heap = new Heap(game, config.heap_config, config.id);
         for ( const [index, value] of new Array(config.count).entries() ) {
@@ -29,7 +30,8 @@ function Heaps(game, stage) {
                 y: child.attrs.y,
                 zindex: child.zIndex(),
                 elementId: child.attrs.elementId,
-                fillPatternOffset: child.fillPatternOffset()
+                fillPatternOffset: child.fillPatternOffset(),
+                rotation: child.rotation()
             }));
             ws.receiver.send('sync', { config });
         }
@@ -40,11 +42,15 @@ function Heaps(game, stage) {
     ws.emitter.on('sync', (data) => {
         for ( const config_item of data.config || [] ) {
             const child = game.children.find(el => el._id === config_item.id);
+
             if ( child ) {
                 child.x(config_item.x);
                 child.y(config_item.y);
                 child.zIndex(config_item.zindex);
                 child.fillPatternOffset(config_item.fillPatternOffset);
+                child.rotation(config_item.rotation);
+
+                if ( child.attrs.elementId === 'card' ) child.moveToBottom();
             }
         }
     })
@@ -77,6 +83,8 @@ function Heaps(game, stage) {
 
     stage.on('dragstart', (e) => {
         if ( e.target.attrs.elementId ) {
+            ws.emitter.emit("DRAGSTART", e);
+
             e.target.to({
                 scaleX: 1.2,
                 scaleY: 1.2,
@@ -88,7 +96,7 @@ function Heaps(game, stage) {
                 easing: Konva.Easings.EaseOut
             });
 
-            e.target.moveToTop();
+            // e.target.moveToTop();
         }
     })
 
@@ -96,6 +104,8 @@ function Heaps(game, stage) {
     /* [DRAGMOVE]: Отправка данных */
     stage.on('dragmove', (e) => {
         if ( e.target.attrs.elementId ) {
+            ws.emitter.emit("DRAGMOVE", e);
+
             ws.receiver.send(actions.dragmove, { x: e.target.attrs.x, y: e.target.attrs.y, id: e.target._id });
             ws.receiver.send(actions.mousemove, { x: e.target.attrs.x, y: e.target.attrs.y });
         }
@@ -126,6 +136,7 @@ function Heaps(game, stage) {
             // const heap = this.heaps.get(e.target.attrs.elementId);
             // heap.check_chip_position(e);
 
+            ws.emitter.emit("DRAGEND", e);
             ws.receiver.send('dragend', { id: e.target._id });
         }
     })
@@ -133,7 +144,7 @@ function Heaps(game, stage) {
     /* [DRAGEND]: Получение данных */
     ws.emitter.on(actions.dragend, (data) => {
         const element = game.children.find(el => el._id === data.id);
-        element.moveToTop();
+        // element.moveToTop();
     })
 
 }

@@ -37,6 +37,9 @@ ws.on("request", req => {
         router.redirect(actions.sync, users);
         router.redirect('shuffle', users);
         router.redirect('shuffle_end', users);
+        router.redirect('select', users);
+        router.redirect('translate', users);
+        router.redirect('groupmove', users);
     });
 
     /* [Жизненный цикл]: Дисконнект игрока */

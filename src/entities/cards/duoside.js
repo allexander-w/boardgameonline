@@ -73,9 +73,6 @@ function DuosideElement(src, options = {}, flipped, isSprite = true, id) {
         tween.play();
     }
 
-
-
-
     /* Событие двойного клика для переворота элемента */
     this.element.on("dblclick", this.flipElement);
 
