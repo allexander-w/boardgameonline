@@ -14,6 +14,8 @@ function WebsocketConnector() {
 
     this.receiver = {
         send: (action, options) => {
+            if ( !this.ready() ) return false;
+
             const payload = { action, payload: { user: this.currentConnection, ...options } };
             this.socket.send( serialize(payload) );
         }
@@ -22,6 +24,10 @@ function WebsocketConnector() {
     this.socket.onopen = () => {
         console.log("successfully connected!");
         this.receiver.send(actions.connected);
+    }
+
+    this.socket.onclose = () => {
+        this.emitter.emit("CLOSE_CONNECTION");
     }
 
     this.socket.onmessage = (event) => {
@@ -58,6 +64,8 @@ function WebsocketConnector() {
 
         if ( data.action === actions.mousemove ) {
             const cursor = this.connections.get(data.payload.user);
+            if ( !data.payload ) return false;
+
             cursor.x(data.payload.x);
             cursor.y(data.payload.y);
         }

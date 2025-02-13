@@ -3,6 +3,7 @@ const {serialize} = require("../utils/serialize.util");
 class User {
     constructor(id, connection) {
         this.id = id;
+        this.hidden = new Set();
 
         Object.defineProperty(this, 'connection', {
             value: connection,
@@ -16,10 +17,22 @@ class User {
         return this.connection.connected;
     }
 
+    get hiddens() {
+        return Array.from(this.hidden);
+    }
+
     send(action, payload) {
         this.connection.send(serialize({
             action, payload
         }))
+    }
+
+    hide(id) {
+        this.hidden.add(id);
+    }
+
+    show(id) {
+        this.hidden.delete(id);
     }
 }
 

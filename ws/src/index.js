@@ -43,6 +43,33 @@ ws.on("request", req => {
         router.redirect('movetop', users);
         router.redirect('roll', users);
         router.redirect('rolled', users);
+
+        router.use('hide', (data) => {
+            const user = users.find(element => element.id === data.payload.user);
+            if ( !user ) return;
+
+            user.hide(data.payload.id);
+
+            users.forEach(u => {
+                if (u.id === data.payload.user) return false;
+                u.send('hide', { user: data.payload.user, hiddens: user.hiddens, id: data.payload.id });
+            });
+        })
+
+        router.use('show', (data) => {
+            const user = users.find(element => element.id === data.payload.user);
+            if ( !user ) return;
+
+            user.show(data.payload.id);
+
+            users.forEach(u => {
+                if (u.id === data.payload.user) return false;
+                u.send('hide', { user: data.payload.user, hiddens: user.hiddens, id: data.payload.id });
+            });
+        })
+
+        // router.redirect('hide', users);
+        // router.redirect('show', users);
     });
 
     /* [Жизненный цикл]: Дисконнект игрока */

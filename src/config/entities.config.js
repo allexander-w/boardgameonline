@@ -1,2 +1,2 @@
-import config from "./flashpoint/index";
+import config from "./vine/index";
 export default config;

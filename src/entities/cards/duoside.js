@@ -26,6 +26,15 @@ function DuosideElement(src, options = {}, flipped, isSprite = true, id) {
     })
 
 
+    this.markHidden = () => {
+        this.element.opacity(0.5);
+    }
+
+    this.removeHidden = () => {
+        this.element.opacity(1);
+    }
+
+
     this.flipToTop = () => {
         this.element.fillPatternOffset({ x: this.element.width() / this.element.fillPatternScale().x, y: 0 });
         this.element.flipped(true);

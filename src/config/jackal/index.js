@@ -38,7 +38,7 @@ export default [
         id: "pirates",
         heap_config: { x: -1000, y: 400 * 3, width: 280, height: 280 },
         element: { x: -1000 + 280/2, y: (400 * 3) + 280/2, width: 140, height: 140 },
-        count: 6,
+        count: 7,
         same: false,
         duo: false,
 

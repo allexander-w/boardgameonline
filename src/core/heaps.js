@@ -27,8 +27,6 @@ function Heaps(game, board) {
         if ( ws.currentConnection === user ) {
             setTimeout(() => {
 
-                // const l = board.get_layer('field');
-                // console.log(l);
                 const configs = {};
 
                 for ( const [key, l] of board.layers.entries() ) {
@@ -41,7 +39,9 @@ function Heaps(game, board) {
                         zindex: child.zIndex(),
                         elementId: child.attrs.elementId,
                         fillPatternOffset: child.fillPatternOffset(),
-                        rotation: child.rotation()
+                        rotation: child.rotation(),
+                        hidden: child.isVisible(),
+                        opacity: child.opacity()
                     }));
 
                     configs[key] = config;
@@ -116,8 +116,6 @@ function Heaps(game, board) {
                 duration: 0.2, // Длительность анимации
                 easing: Konva.Easings.EaseOut
             });
-
-            // e.target.moveToTop();
         }
     })
 
@@ -162,11 +160,6 @@ function Heaps(game, board) {
         }
     })
 
-    /* [DRAGEND]: Получение данных */
-    ws.emitter.on(actions.dragend, (data) => {
-        const element = game.children.find(el => el._id === data.id);
-        // element.moveToTop();
-    })
 
 }
 

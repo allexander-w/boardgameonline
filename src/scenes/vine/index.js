@@ -1,7 +1,7 @@
 import GeneralScene from "../general";
 import {gameField} from "../../factory/vine/field.factory";
 import Camera from "../../core/camera";
-import Heaps from "../../core/heaps";
+import VineHeaps from "../../entities/heaps/vine";
 
 function VineScene() {
     GeneralScene.apply(this);
@@ -17,7 +17,7 @@ function VineScene() {
 
 
     /* Иинициализация всех куч элементов */
-    new Heaps(this.board.stage, this.game_layer);
+    new VineHeaps(this.game_layer, this.board);
     this.initialize();
 }
 

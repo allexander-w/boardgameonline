@@ -1,6 +1,8 @@
 import ws from "./core/websocket";
 
 function Dice() {
+    const wrapper = document.querySelector(".dice-wrapper");
+    wrapper.style.display = 'block';
 
     const dice_eight = document.querySelector(".diceeight");
     const dice_six = document.querySelector(".dicesix");

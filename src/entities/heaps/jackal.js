@@ -87,8 +87,6 @@ function JackalHeaps(game, board, field) {
     const selectElements = (e, fromWS) => {
         if ( !fromWS ) ws.receiver.send("select", { elementId: e.target.attrs.elementId, numId: e.target.attrs.numId });
 
-        console.log( e.target );
-
         if ( e.target.attrs.elementId !== 'card' ) {
             clearSelections();
             return false;

@@ -1,12 +1,11 @@
 import Konva from "konva";
 import Board from "../core/stage.js";
-import Heaps from "../core/heaps";
+import Dice from "../dice";
 
 import ws from "../core/websocket";
 import actions from "../../shared/actions/action.types.mjs";
-import Heap from "../entities/heaps/heap";
-import Dice from "../dice";
 
+import config from "../config";
 
 function randomInteger(min, max) {
     let rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -36,7 +35,7 @@ export default function GeneralScene() {
             fontFamily: 'Arial Black',
             fill: 'white',
             align: 'center',
-            width: 200,
+            width: 300,
             height: 24,
             stroke: "black",
             strokeWidth: 1,
@@ -78,7 +77,8 @@ export default function GeneralScene() {
         this.board.add_layer('board', this.game_layer);
         this.board.add_layer('cursors', this.cursors_layer);
         this.game_layer.draw();
-        new Dice();
+
+        if(config.dice) new Dice();
     }
 
 }
