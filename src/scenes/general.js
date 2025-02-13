@@ -5,6 +5,7 @@ import Heaps from "../core/heaps";
 import ws from "../core/websocket";
 import actions from "../../shared/actions/action.types.mjs";
 import Heap from "../entities/heaps/heap";
+import Dice from "../dice";
 
 
 function randomInteger(min, max) {
@@ -12,7 +13,6 @@ function randomInteger(min, max) {
     return Math.round(rand);
 }
 const colors = ["orange", "red", "coral", "gold", "white"];
-
 
 export default function GeneralScene() {
     this.board = new Board();
@@ -78,6 +78,7 @@ export default function GeneralScene() {
         this.board.add_layer('board', this.game_layer);
         this.board.add_layer('cursors', this.cursors_layer);
         this.game_layer.draw();
+        new Dice();
     }
 
 }

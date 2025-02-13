@@ -1,2 +1,2 @@
-import config from "./jackal/index";
+import config from "./flashpoint/index";
 export default config;

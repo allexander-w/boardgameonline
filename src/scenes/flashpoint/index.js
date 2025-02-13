@@ -16,7 +16,7 @@ function FlashPointScene() {
     }, 1000));
 
     /* Иинициализация всех куч элементов */
-    new Heaps(this.board.stage, this.game_layer);
+    new Heaps(this.game_layer, this.board);
     this.initialize();
 }
 
