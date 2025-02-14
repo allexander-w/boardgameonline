@@ -2,6 +2,7 @@ import Heaps from "../../core/heaps";
 import ws from "../../core/websocket";
 import actions from "../../../shared/actions/action.types.mjs";
 import HtmlGenerator from "../../core/markup/HtmlGenerator";
+import { hiddenItem } from "../../factory/markup/hiddens.template";
 
 function VineHeaps(game, board, field) {
     Heaps.apply(this, arguments);
@@ -57,31 +58,34 @@ function VineHeaps(game, board, field) {
         }
     })
 
-    ws.emitter.on("hide", (data) => {
-        console.log(data);
 
+    const updateHiddensData = (data) => {
         const wrapper = generator.getNode(".hiddens");
-        const userTile = generator.create("div", { classes: ["user"], attributes: { "data-id": data.user } });
-        generator.updateText(userTile, data.hiddens.length);
-        generator.uniqueAdd(wrapper, userTile, "data-id");
+        generator.uniqueAdd(wrapper, hiddenItem(data.user.name, data.hiddens.length, data.user.id), { attr: "id", value: data.user.id });
 
-        const cardForHide = game.children.find(el => el._id === data.id);
+        return game.children.find(el => el._id === data.id);
+    }
+
+    ws.emitter.on("hide", (data) => {
+        const cardForHide = updateHiddensData(data);
         cardForHide.hide();
     })
 
     ws.emitter.on("show", (data) => {
-        const cardForHide = game.children.find(el => el._id === data.id);
-        cardForHide.show();
+        const cardForShow = updateHiddensData(data);
+        cardForShow.show();
     })
 
 
     /* При дисконнекте */
-    ws.emitter.on("CLOSE_CONNECTION", (data) => {
-        // for( const [key, el] of this.hideCards.entries() ) {
-        //     ws.receiver.send("show", { id: el.element._id });
-        //     el.removeHidden();
-        //     this.hideCards.delete(el.opts.id);
-        // }
+    ws.emitter.on("REMOVE_CURSOR", (data) => {
+        for ( const id of data.hidden ) {
+            const cardForShow = game.children.find(el => el._id === id);
+            cardForShow.show();
+        }
+
+        const wrapper = generator.getNode(".hiddens");
+        generator.remove(wrapper, { attr: "id", value: data.id });
     })
 }
 

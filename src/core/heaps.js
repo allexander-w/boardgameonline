@@ -23,8 +23,18 @@ function Heaps(game, board) {
 
 
     /* Отправка файла синхронизации */
-    ws.emitter.on("SYNC", ({ user }) => {
+    ws.emitter.on("SYNC", ({ user, users }) => {
         if ( ws.currentConnection === user ) {
+            const hiddenIds = new Set();
+
+            for ( const u of users ) {
+                for ( const hide of u.hidden ) {
+                    hiddenIds.add(hide);
+                }
+            }
+
+            console.log("after sync: ", hiddenIds);
+
             setTimeout(() => {
 
                 const configs = {};
@@ -40,8 +50,7 @@ function Heaps(game, board) {
                         elementId: child.attrs.elementId,
                         fillPatternOffset: child.fillPatternOffset(),
                         rotation: child.rotation(),
-                        hidden: child.isVisible(),
-                        opacity: child.opacity()
+                        hidden: hiddenIds.has(child._id)
                     }));
 
                     configs[key] = config;
@@ -58,6 +67,8 @@ function Heaps(game, board) {
     /* Синхронизация */
     ws.emitter.on('sync', (data) => {
 
+        if ( ws.currentSynced ) return false;
+
         for ( const [key, config] of Object.entries(data.configs) ) {
             for ( const config_item of config || [] ) {
                 const l = board.get_layer(key);
@@ -69,11 +80,15 @@ function Heaps(game, board) {
                     child.zIndex(config_item.zindex);
                     child.fillPatternOffset(config_item.fillPatternOffset);
                     child.rotation(config_item.rotation);
+
+                    if ( config_item.hidden ) {
+                        child.hide();
+                    }
                 }
             }
         }
 
-
+        ws.currentSynced = true;
     })
 
 

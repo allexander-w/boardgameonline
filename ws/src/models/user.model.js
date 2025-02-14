@@ -4,6 +4,7 @@ class User {
     constructor(id, connection) {
         this.id = id;
         this.hidden = new Set();
+        this.name = "";
 
         Object.defineProperty(this, 'connection', {
             value: connection,
@@ -21,6 +22,10 @@ class User {
         return Array.from(this.hidden);
     }
 
+    setName(name) {
+        this.name = name;
+    }
+
     send(action, payload) {
         this.connection.send(serialize({
             action, payload
@@ -33,6 +38,14 @@ class User {
 
     show(id) {
         this.hidden.delete(id);
+    }
+
+
+    toJSON() {
+        return {
+            ...this,
+            hidden: this.hiddens
+        };
     }
 }
 

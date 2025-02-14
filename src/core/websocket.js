@@ -7,6 +7,7 @@ function WebsocketConnector() {
     this.socket = new WebSocket(config.ws);
     this.connections = new Map();
     this.currentConnection = null;
+    this.currentSynced = false;
 
     this.emitter = mitt();
 
@@ -21,9 +22,15 @@ function WebsocketConnector() {
         }
     }
 
+
+    this.emitter.on("USER_INFO", (user) => {
+        console.log("connected", user);
+        this.receiver.send(actions.connected, user);
+    })
+
     this.socket.onopen = () => {
         console.log("successfully connected!");
-        this.receiver.send(actions.connected);
+        this.emitter.emit("REQUEST_USER_INFO");
     }
 
     this.socket.onclose = () => {
@@ -33,7 +40,7 @@ function WebsocketConnector() {
     this.socket.onmessage = (event) => {
         const data = unserialize(event.data);
         if ( data.action === actions.connected ) {
-            this.currentConnection = data.payload.user;
+            this.currentConnection = data.payload.user?.id;
             console.log('your connected id: ', this.currentConnection);
             return false;
         }
@@ -47,18 +54,20 @@ function WebsocketConnector() {
             }
 
             for (const [id, cursor] of this.connections) {
-                this.emitter.emit("CREATE_CURSOR", id);
+                if ( cursor?.attrs ) continue;
+                this.emitter.emit("CREATE_CURSOR", { id, user: data.payload.users.find(u => u.id === id) } );
             }
 
-            this.emitter.emit("SYNC", { user: data.payload.syncUser });
+            this.emitter.emit("SYNC", { user: data.payload.syncUser, users: data.payload.users, joined: data.payload.user });
 
             return false;
         }
 
         if ( data.action === actions.disconnect ) {
-            console.log("disconnected: ", data.payload);
-            this.emitter.emit("REMOVE_CURSOR", data.payload.id);
-            this.connections.delete(data.payload.id);
+            console.log("disconnected: ", data.payload.id);
+            this.emitter.emit("REMOVE_CURSOR", data.payload);
+
+            this.connections.delete(data.id);
             return false;
         }
 

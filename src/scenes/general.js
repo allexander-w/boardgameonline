@@ -13,14 +13,19 @@ function randomInteger(min, max) {
 }
 const colors = ["orange", "red", "coral", "gold", "white"];
 
-export default function GeneralScene() {
+export default function GeneralScene(user) {
     this.board = new Board();
     this.game_layer = new Konva.Layer();
     this.cursors_layer = new Konva.Layer();
 
 
+    ws.emitter.on("REQUEST_USER_INFO", () => {
+        ws.emitter.emit("USER_INFO", user);
+    })
+
+
     /* Создание нового курсора */
-    ws.emitter.on("CREATE_CURSOR", (user) => {
+    ws.emitter.on("CREATE_CURSOR", ({ id, user }) => {
         const cursor = new Konva.Line({
             points: [0, 0, 60, 35, 20, 65], // Вершины треугольника
             fill: colors[randomInteger(0, 4)],
@@ -29,8 +34,10 @@ export default function GeneralScene() {
             closed: true, // Замкнутый контур
         });
 
+        console.log("cursor: ", user);
+
         const nickname = new Konva.Text({
-            text: user,
+            text: user.name,
             fontSize: 28,
             fontFamily: 'Arial Black',
             fill: 'white',
@@ -51,7 +58,7 @@ export default function GeneralScene() {
         group.add(cursor);
         group.add(nickname);
 
-        ws.connections.set(user, group);
+        ws.connections.set(id, group);
 
         this.cursors_layer.add(group);
         group.moveToTop();
@@ -59,8 +66,8 @@ export default function GeneralScene() {
 
 
     /* Удаление существующего курсора */
-    ws.emitter.on("REMOVE_CURSOR", (id) => {
-        const cursor = ws.connections.get(id);
+    ws.emitter.on("REMOVE_CURSOR", (user) => {
+        const cursor = ws.connections.get(user.id);
         cursor.destroy();
     })
 

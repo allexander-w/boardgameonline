@@ -20,14 +20,20 @@ ws.on("request", req => {
 
         router.use( actions.connected, async (data) => {
                 const user = new User(Date.now(), connection);
+                user.setName(data.payload?.name || "");
                 users.push(user);
 
                 if ( !syncUser ) {
                     syncUser = user.id;
                 }
 
-                user.send(actions.connected, { user: user.id, message: "connected" });
-                users.forEach(u => u.send(actions.join, { user: user.id, users, syncUser: syncUser }));
+                user.send(actions.connected, { user: user, message: "connected" });
+
+                users.forEach(u => {
+                    if (u.id === data.payload.user) return false;
+                    u.send(actions.join, { user, users, syncUser: syncUser });
+                });
+
         })
 
         router.redirect(actions.mousemove, users);
@@ -52,7 +58,7 @@ ws.on("request", req => {
 
             users.forEach(u => {
                 if (u.id === data.payload.user) return false;
-                u.send('hide', { user: data.payload.user, hiddens: user.hiddens, id: data.payload.id });
+                u.send('hide', { user, hiddens: user.hiddens, id: data.payload.id });
             });
         })
 
@@ -64,7 +70,7 @@ ws.on("request", req => {
 
             users.forEach(u => {
                 if (u.id === data.payload.user) return false;
-                u.send('hide', { user: data.payload.user, hiddens: user.hiddens, id: data.payload.id });
+                u.send('show', { user, hiddens: user.hiddens, id: data.payload.id });
             });
         })
 

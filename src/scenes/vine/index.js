@@ -3,8 +3,8 @@ import {gameField} from "../../factory/vine/field.factory";
 import Camera from "../../core/camera";
 import VineHeaps from "../../entities/heaps/vine";
 
-function VineScene() {
-    GeneralScene.apply(this);
+function VineScene(user) {
+    GeneralScene.apply(this, arguments);
 
     /* Загрузка игрового поля */
     gameField.then(field => setTimeout(() => {

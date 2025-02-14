@@ -12,33 +12,51 @@ function HtmlGenerator() {
         return el;
     }
 
-
-    this.updateText = (node, text) => {
-        node.innerText = text;
-    }
-
     this.setAttrs = (node, attrs) => {
         Object.entries(attrs).forEach(([key, value]) => {
             node.setAttribute(key, value);
         });
     }
 
-    this.uniqueAdd = (nodeTo, nodeChild, attribute) => {
+    this.appendToBegin = (node, markup) => {
+        node.insertAdjacentHTML('afterbegin', markup);
+    }
+
+    this.uniqueAdd = (nodeTo, markup, attribute) => {
         const children = Array.from(nodeTo.children);
 
         let unique = false;
         for ( const el of children ) {
             if ( unique ) break;
-            if ( el.dataset[attribute] === nodeChild.dataset[attribute] ) {
-                el.innerHTML = nodeChild.innerHTML;
+
+            if ( el.dataset[attribute.attr] === attribute.value?.toString() ) {
+                nodeTo.removeChild(el);
+                this.appendToBegin(nodeTo, markup);
                 unique = true;
             }
         }
 
-
         if ( !unique ) {
-            nodeTo.appendChild(nodeChild);
+            this.appendToBegin(nodeTo, markup);
         }
+    }
+
+    this.remove = (fromNode, attribute) => {
+        const children = Array.from(fromNode.children);
+
+        let unique = false;
+        for ( const el of children ) {
+            if ( unique ) break;
+
+            if ( el.dataset[attribute.attr] === attribute.value?.toString() ) {
+                fromNode.removeChild(el);
+                unique = true;
+            }
+        }
+    }
+
+    this.removeByElement = (fromNode, node) => {
+        fromNode.removeChild(node);
     }
 }
 
