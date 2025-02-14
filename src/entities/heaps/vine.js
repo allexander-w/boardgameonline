@@ -1,10 +1,13 @@
 import Heaps from "../../core/heaps";
 import ws from "../../core/websocket";
 import actions from "../../../shared/actions/action.types.mjs";
+import HtmlGenerator from "../../core/markup/HtmlGenerator";
 
 function VineHeaps(game, board, field) {
     Heaps.apply(this, arguments);
     const stage = board.stage;
+
+    const generator = new HtmlGenerator();
 
     this.hideCards = new Map();
 
@@ -56,6 +59,11 @@ function VineHeaps(game, board, field) {
 
     ws.emitter.on("hide", (data) => {
         console.log(data);
+
+        const wrapper = generator.getNode(".hiddens");
+        const userTile = generator.create("div", { classes: ["user"], attributes: { "data-id": data.user } });
+        generator.updateText(userTile, data.hiddens.length);
+        generator.uniqueAdd(wrapper, userTile, "data-id");
 
         const cardForHide = game.children.find(el => el._id === data.id);
         cardForHide.hide();
