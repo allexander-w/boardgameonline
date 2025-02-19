@@ -33,7 +33,8 @@ function WebsocketConnector() {
         this.emitter.emit("REQUEST_USER_INFO");
     }
 
-    this.socket.onclose = () => {
+    this.socket.onclose = (e) => {
+        console.log(e)
         this.emitter.emit("CLOSE_CONNECTION");
     }
 

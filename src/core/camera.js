@@ -1,8 +1,8 @@
 import ws from "../core/websocket";
 
-function Camera (stage, layer) {
-    this.stage = stage;
-
+function Camera (board) {
+    this.stage = board.stage;
+    const layer = board.get_layer("board");
 
     /* Общая камера сцены */
     this.camera = {
@@ -27,13 +27,15 @@ function Camera (stage, layer) {
     /* Центрирование сцены */
     const layoutClientRect = layer.getClientRect();
     const coordinates = {
-        width: layoutClientRect.x + layoutClientRect.width,
-        height: layoutClientRect.y + layoutClientRect.height
+        width: (layoutClientRect.x + layoutClientRect.width) || 1,
+        height: (layoutClientRect.y + layoutClientRect.height) || 1
     }
 
     const isWidthMore = ( window.innerWidth / coordinates.width >= window.innerHeight / coordinates.height );
     const scale = isWidthMore ? window.innerHeight / coordinates.height : window.innerWidth / coordinates.width;
+
     this.stage.scale({ x: scale, y: scale });
+
 
     this.camera.move((window.innerWidth - (coordinates.width * scale)) / 2, 0);
 
@@ -52,7 +54,7 @@ function Camera (stage, layer) {
     let intervalMoving = null;
 
     const movingIntervalFunction = () => {
-        const d = 10;
+        const d = 15;
         const x = 2;
 
         const dx = keyboardKeys.A && keyboardKeys.D
@@ -103,7 +105,6 @@ function Camera (stage, layer) {
         if ( event.code === "KeyR" ) {
             if ( rotationIndex === 4) rotationIndex = 0;
             this.stage.rotation(angles[rotationIndex]);
-            console.log(angles[rotationIndex], rotationIndex);
             rotationIndex++;
         }
     });
@@ -126,7 +127,7 @@ function Camera (stage, layer) {
     this.stage.on('wheel', (e) => {
         e.evt.preventDefault();
 
-        const scaleBy = 1.05;
+        const scaleBy = 1.1;
         const oldScale = this.stage.scaleX();
 
         // Определяем новый масштаб

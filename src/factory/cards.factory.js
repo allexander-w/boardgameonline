@@ -1,6 +1,7 @@
 import Konva from "konva";
 import CARD_DEFAULTS from "../defaults/cards.defaults";
-import { objectFit } from "../utils/objectFit";
+import {objectFit, objectFitCenter} from "../utils/objectFit";
+import ws from "../core/websocket";
 
 export const duosideElement = (options) => {
         const el = new Konva.Rect({
@@ -10,6 +11,7 @@ export const duosideElement = (options) => {
             offsetY: ( options.height || CARD_DEFAULTS.HEIGHT ) / 2,
             width: CARD_DEFAULTS.WIDTH,
             height: CARD_DEFAULTS.HEIGHT,
+            fillPatternRepeat: "no-repeat",
             cornerRadius: 30,
             draggable: true,
             prevPosition: { x: options.x || 0, y: options.y || 0 },
@@ -24,7 +26,7 @@ export const duosideElement = (options) => {
         }
 
         el.flipped = (flipped) => {
-            if ( !flipped ) return el.attrs.flipped;
+            if ( flipped === undefined ) return el.attrs.flipped;
             el.attrs.flipped = flipped;
         }
 
@@ -32,14 +34,22 @@ export const duosideElement = (options) => {
 }
 
 export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise((resolve) => {
+    ws.emitter.emit("loading", src);
     const image = new Image();
+
+
     image.onload = () => {
         const { scale, offset } = objectFit(duoside, image, isSprite);
         duoside.fillPatternScale({ x: scale, y: scale });
         duoside.fillPatternOffset(offset);
 
         duoside.fillPatternImage(image);
-        resolve(duoside);
+        ws.emitter.emit("loaded", src);
+        resolve(image);
+    }
+
+    image.onerror = () => {
+        ws.emitter.emit("loaded", null);
     }
 
     image.src = src;

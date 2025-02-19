@@ -1,6 +1,6 @@
-export const beginScreen = () => {
+export const beginScreen = (bg) => {
     return `
-        <div class="begin-screen">
+        <div class="begin-screen" style="background-image: url('${ bg }');">
           <div class="modal">
             <div class="field-wrapper active">
               <input autocomplete="off" name="hidden" class="field" maxlength="256" placeholder="Имя" type="text" id="fname" required="">

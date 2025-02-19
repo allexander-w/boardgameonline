@@ -42,6 +42,11 @@ function HtmlGenerator() {
     }
 
     this.remove = (fromNode, attribute) => {
+        if ( !attribute ) {
+            fromNode.innerHTML = "";
+            return false;
+        }
+
         const children = Array.from(fromNode.children);
 
         let unique = false;

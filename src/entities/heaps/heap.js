@@ -6,20 +6,19 @@ import {buttonElement} from "../../factory/buttons.factory";
 
 import ws from "../../core/websocket";
 
-function Heap(game, options = {}, id) {
+function Heap(board, options = {}, id) {
     this.elements = new Map();
-    // this.in_heap_count = 0;
     this.id = id;
 
+    const game = board.get_layer('board');
+
     const field = heapField(options);
-    // const nameShape = heapText(this.in_heap_count, options);
     const buttonEntire = buttonElement(options, '/union.svg');
     const buttonShuffle = buttonElement({ ...options, y: (options.y || 0) + 44 }, '/shuffle.svg');
 
     let isShuffling = false;
 
     game.add(field);
-    // game.add(nameShape);
     game.add(buttonEntire);
     game.add(buttonShuffle);
 
@@ -27,9 +26,6 @@ function Heap(game, options = {}, id) {
     /* Добавить элемент */
     this.add_element = (element, id) => {
         this.elements.set(id, element);
-        // this.in_heap_count = this.elements.length;
-
-        // nameShape.text(this.in_heap_count);
         game.add(element.element);
     }
 
@@ -37,39 +33,10 @@ function Heap(game, options = {}, id) {
         return this.elements.get(id);
     }
 
-    // /* Добавить в стопку */
-    // this.to_heap = () => {
-    //     this.in_heap_count ++;
-    //     nameShape.text(this.in_heap_count);
-    // }
-    //
-    // /* Убрать из стопки */
-    // this.from_heap = () => {
-    //     this.in_heap_count --;
-    //     nameShape.text(this.in_heap_count);
-    // }
-
-
-    /* Проверить, находится ли карта в стопке */
-    // this.check_chip_position = (e) => {
-    //     const point = { x: e.target?.attrs?.x, y: e.target?.attrs?.y };
-    //     const prevPoint = e.target.prevPosition();
-    //     const rectangle = { x: field.x(), y: field.y(), width: field.width(), height: field.height() };
-    //
-    //     if ( isPointInsideRect(point, rectangle) && !isPointInsideRect( prevPoint, rectangle) ) {
-    //         this.to_heap()
-    //     }
-    //
-    //     if ( isPointInsideRect( prevPoint, rectangle) && !isPointInsideRect(point, rectangle) ) {
-    //         this.from_heap();
-    //     }
-    //
-    //     e.target.prevPosition(point);
-    // }
-
-
     /* Объединить карты */
-    this.entire = () => {
+    this.entire = (e, fromWS) => {
+        if ( !fromWS ) ws.receiver.send('entire', { heap_id: this.id });
+
         this.elements.forEach(el => {
             const newX = options.x + (options.width / 2);
             const newY = options.y + (options.height / 2)
@@ -78,20 +45,18 @@ function Heap(game, options = {}, id) {
             el.element.y(newY);
 
             el.element.prevPosition({ x: newX, y: newY });
-            if ( el.opts.flipped ) {
-                el.flip();
+            if ( !el.element.flipped() ) {
+                el.flipToTop();
             }
         })
     }
-
-
 
     /* Перемешать карты */
     this.shuffle = (e, fromWS) => {
         if ( isShuffling ) return false;
         isShuffling = true;
 
-        ws.receiver.send('shuffle', { heap_id: this.id });
+        if ( !fromWS ) ws.receiver.send('shuffle', { heap_id: this.id });
 
         [...this.elements].slice(0, 5).forEach(([key, value], i) => {
             const tween = new Konva.Tween({

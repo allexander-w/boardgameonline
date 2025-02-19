@@ -27,6 +27,7 @@ ws.on("request", req => {
                     syncUser = user.id;
                 }
 
+                console.log(users);
                 user.send(actions.connected, { user: user, message: "connected" });
 
                 users.forEach(u => {
@@ -40,8 +41,10 @@ ws.on("request", req => {
         router.redirect(actions.flip, users);
         router.redirect(actions.dragmove, users);
         router.redirect(actions.dragend, users);
+        router.redirect("dragstart", users);
         router.redirect(actions.sync, users);
         router.redirect('shuffle', users);
+        router.redirect('entire', users);
         router.redirect('shuffle_end', users);
         router.redirect('select', users);
         router.redirect('translate', users);
@@ -49,6 +52,7 @@ ws.on("request", req => {
         router.redirect('movetop', users);
         router.redirect('roll', users);
         router.redirect('rolled', users);
+        router.redirect('rotate', users);
 
         router.use('hide', (data) => {
             const user = users.find(element => element.id === data.payload.user);
@@ -89,6 +93,8 @@ ws.on("request", req => {
             console.log("Disconnected user is not found");
             return false;
         }
+
+        console.log("Disconnnect");
 
         /* [Дисконнект]: Если пользователь определен */
         users = users.filter(user => user.id !== disconnectedUser.id);

@@ -10,8 +10,10 @@ function Board() {
     /* Стейт */
     this.layers = new Map();
 
+
     /* Методы */
-    this.add_layer = (key, layer) => {
+    this.add_layer = (key) => {
+        const layer = new Konva.Layer();
         this.layers.set(key, layer);
         this.stage.add(layer);
     }

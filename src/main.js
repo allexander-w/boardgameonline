@@ -1,5 +1,7 @@
 import './style.css';
 import BeginScreen from "./entities/screens/begin.screen";
+import PreloaderScreen from "./entities/screens/preloader.screen";
+
 // import FlashPointScene from "./scenes/flashpoint";
 // import JackalScene from "./scenes/jackal";
 // import VineScene from "./scenes/vine";
@@ -8,13 +10,14 @@ import BeginScreen from "./entities/screens/begin.screen";
 // new VineScene();
 // new JackalScene();
 
+
 const beginScreen = new BeginScreen();
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
-
-    const result = import ("./scenes/vine");
+    const preload = new PreloaderScreen();
+    const result = import ("./games/flashpoint");
     const scene = await result;
 
-    const VineScene = scene.default;
-    new VineScene({ name });
+    const UndefinedScene = scene.default;
+    new UndefinedScene({ name }, preload);
 })

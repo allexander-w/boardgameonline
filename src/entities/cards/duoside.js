@@ -8,7 +8,6 @@ function DuosideElement(src, options = {}, flipped, isSprite = true, id) {
 
     /* Опции элемента */
     this.opts = {
-        // flipped: false,
         inHeap: true,
         id: id
     }

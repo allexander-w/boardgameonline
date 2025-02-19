@@ -1,11 +1,12 @@
 import HtmlGenerator from "../../core/markup/HtmlGenerator";
 import {beginScreen} from "../../factory/markup/begin.template";
-import mitt from "mitt"
+import mitt from "mitt";
+import config from "../../config";
 
 function BeginScreen() {
     const generator = new HtmlGenerator();
     const body = generator.getNode("body");
-    generator.appendToBegin(body, beginScreen());
+    generator.appendToBegin(body, beginScreen('/' + config.scene + "/bg.png"));
     this.emitter = mitt();
 
     this.name = "";
