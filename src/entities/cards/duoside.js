@@ -1,29 +1,50 @@
-import Konva from "konva";
-import { duosideElement, loadImageDuosideElement } from "../../factory/cards.factory";
 import ws from "../../core/websocket";
 import actions from "../../../shared/actions/action.types.mjs";
 
+import {getFlipAnimation} from "../../factory/animations.factory";
+import { duosideElement, loadImageDuosideElement } from "../../factory/cards.factory";
 
-function DuosideElement(src, options = {}, flipped, isSprite = true, id) {
+function DuosideElement(src, options = {}) {
+    const { flipped, bgURI, rotation, ...opts } = options;
 
-    /* Опции элемента */
-    this.opts = {
-        inHeap: true,
-        id: id
-    }
+    this.id = opts.id;
+    this.front = null;
+
+    this.bg = new Image();
+
+
 
 
     /* Загрузка картинки элемента */
-    this.element = duosideElement(options);
+    this.element = duosideElement(opts);
 
-    loadImageDuosideElement(this.element, src, isSprite).then(element => {
+    loadImageDuosideElement(this.element, src).then(image => {
         this.element.moveToTop();
+        this.front = image;
+        if ( !bgURI ) this.bg = image;
 
-        if ( flipped ) {
-            this.flip();
+        flipped ? this.flipOnBottom() : this.flipToTop();
+
+        if ( bgURI ) {
+            loadImageDuosideElement(this.element, bgURI + "bg.png").then(image => {
+                this.bg = image;
+            })
         }
     })
 
+
+
+
+    /* Методы */
+    this.flipToTop = () => {
+        this.element.fillPatternImage(this.bg);
+        this.element.flipped(true);
+    }
+
+    this.flipOnBottom = () => {
+        this.element.fillPatternImage(this.front);
+        this.element.flipped(false);
+    }
 
     this.markHidden = () => {
         this.element.opacity(0.5);
@@ -33,57 +54,42 @@ function DuosideElement(src, options = {}, flipped, isSprite = true, id) {
         this.element.opacity(1);
     }
 
-
-    this.flipToTop = () => {
-        this.element.fillPatternOffset({ x: this.element.width() / this.element.fillPatternScale().x, y: 0 });
-        this.element.flipped(true);
-    }
-
-    this.flipOnBottom = () => {
-        this.element.fillPatternOffset({ x: 0, y: 0 });
-        this.element.flipped(false);
-    }
-
-    /* Методы */
     /* Перевернуть элемент */
     this.flip = () => {
-        if ( this.element.fillPatternOffset().x > -1 &&  this.element.fillPatternOffset().x < 1) {
-            this.flipToTop();
-        } else {
-            this.flipOnBottom();
+        this.element.flipped() ? this.flipOnBottom() : this.flipToTop();
+    }
+
+    this.fix = () => {
+        this.element.draggable() ? this.element.draggable(false) : this.element.draggable(true);
+    }
+
+    this.toBottom = () => {
+        this.element.moveToBottom();
+    }
+
+    this.rotate = (e, fromWS) => {
+        if ( !fromWS ) ws.receiver.send("rotate", { id: this.id, heap: opts.parentID });
+
+        if ( this.element.rotation() === 360 ) {
+            this.element.rotation(0);
+            return false;
         }
+        this.element.rotation(this.element.rotation() + 20);
     }
 
     /* Функция анимации переворота элемента */
     this.flipElement = (fromClick) => {
-        if ( ws.ready() && fromClick ) {
-            ws.receiver.send(actions.flip, { id: this.opts.id });
-        }
-
-        const tween = new Konva.Tween({
-            node: this.element,
-            duration: 0.2,
-            scaleX: 0,
-            scaleY: 1.2,
-            // Сжимаем по X (половина переворота)
-            onFinish: () => {
-                this.flip();
-
-                new Konva.Tween({
-                    node: this.element,
-                    duration: 0.2,
-                    scaleY: 1,
-                    scaleX: 1, // Разворачиваем обратно
-                }).play();
-            },
-        });
-
+        if ( fromClick ) ws.receiver.send(actions.flip, { id: this.id, heap: opts.parentID });
+        const tween = getFlipAnimation(this.element, this.flip);
         tween.play();
     }
 
     /* Событие двойного клика для переворота элемента */
-    this.element.on("dblclick", this.flipElement);
-
+    if ( rotation ) {
+        this.element.on("click", this.rotate);
+    } else {
+        this.element.on("dblclick", this.flipElement);
+    }
 }
 
 export default DuosideElement;

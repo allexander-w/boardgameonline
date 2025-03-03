@@ -34,8 +34,6 @@ export default {
     },
 
     initialization() {
-        this.board.stage.on("click", this.selectingCard.bind(this));
-
         ws.emitter.on("keydown", (e) => {
             if ( e.code === 'KeyH' ) this.keyHLogic();
             if ( e.code === 'KeyF' ) this.keyFLogic();
@@ -60,10 +58,6 @@ export default {
 
             const wrapper = generator.getNode(".hiddens");
             generator.remove(wrapper, { attr: "id", value: data.id });
-        })
-
-        ws.emitter.on("DRAGSTART", (e) => {
-            this.selectingCard(e);
         })
     }
 

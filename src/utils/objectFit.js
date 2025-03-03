@@ -1,7 +1,7 @@
 export const objectFit = (shape, image, isSprite) => {
     const shapeWidth = shape.width();
     const shapeHeight = shape.height();
-    const imgWidth = isSprite ? image.width / 2 : image.width;
+    const imgWidth = isSprite ? image.width / isSprite : image.width;
     const imgHeight = image.height;
 
     const scale = Math.min(shapeWidth / imgWidth, shapeHeight / imgHeight);

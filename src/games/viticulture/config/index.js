@@ -56,7 +56,7 @@ export default [
         namespace: "money",
 
         x: -200,
-        y: 0,
+        y: 1700,
 
         element: { width: 80, height: 80, cornerRadius: 40 },
 
@@ -69,7 +69,7 @@ export default [
         namespace: "money",
 
         x: -200,
-        y: 120,
+        y: 1840,
 
         element: { width: 100, height: 100, cornerRadius: 40 },
 
@@ -82,7 +82,7 @@ export default [
         namespace: "money",
 
         x: -200,
-        y: 260,
+        y: 2000,
 
         element: { width: 120, height: 120, cornerRadius: 40 },
 
@@ -122,7 +122,7 @@ export default [
         namespace: "chipVine",
 
         x: -200,
-        y: 440,
+        y: 2200,
 
         element: { width: 70, height: 70, cornerRadius: 40 },
 

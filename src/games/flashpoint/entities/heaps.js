@@ -1,12 +1,8 @@
 import Heaps from "../../../core/heaps";
-import SelectCardsModule from "../../../modules/select-card.module";
-import PersonalCardsModule from "../../../modules/personal-card.module";
 import ws from "../../../core/websocket";
 
 function FlashpointHeaps(board, config) {
     Heaps.apply(this, arguments);
-    Object.assign(this, SelectCardsModule, PersonalCardsModule);
-    this.initialization();
 
     const game = board.get_layer("board");
 

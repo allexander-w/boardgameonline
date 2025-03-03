@@ -76,15 +76,15 @@ function Camera (board) {
         this.camera.move(dx, dy);
 
 
-        const deg = keyboardKeys.Q && keyboardKeys.E
-            ? 0
-            : keyboardKeys.Q
-                ? -x
-                : keyboardKeys.E
-                    ? x
-                    : 0
-
-        this.camera.rotate(deg);
+        // const deg = keyboardKeys.Q && keyboardKeys.E
+        //     ? 0
+        //     : keyboardKeys.Q
+        //         ? -x
+        //         : keyboardKeys.E
+        //             ? x
+        //             : 0
+        //
+        // this.camera.rotate(deg);
     }
 
     let rotationIndex = 0;
@@ -102,11 +102,11 @@ function Camera (board) {
             }
         }
 
-        if ( event.code === "KeyR" ) {
-            if ( rotationIndex === 4) rotationIndex = 0;
-            this.stage.rotation(angles[rotationIndex]);
-            rotationIndex++;
-        }
+        // if ( event.code === "KeyR" ) {
+        //     if ( rotationIndex === 4) rotationIndex = 0;
+        //     this.stage.rotation(angles[rotationIndex]);
+        //     rotationIndex++;
+        // }
     });
 
     document.addEventListener('keyup', (event) => {

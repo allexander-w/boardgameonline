@@ -1,5 +1,4 @@
 import Konva from "konva";
-import CARD_DEFAULTS from "../defaults/cards.defaults";
 import {objectFit, objectFitCenter} from "../utils/objectFit";
 import ws from "../core/websocket";
 
@@ -7,10 +6,10 @@ export const duosideElement = (options) => {
         const el = new Konva.Rect({
             x: 0,
             y: 0,
-            offsetX: ( options.width || CARD_DEFAULTS.WIDTH ) / 2,
-            offsetY: ( options.height || CARD_DEFAULTS.HEIGHT ) / 2,
-            width: CARD_DEFAULTS.WIDTH,
-            height: CARD_DEFAULTS.HEIGHT,
+            offsetX: (options.width || 120) / 2,
+            offsetY: (options.height || 120) / 2,
+            width: 120,
+            height: 120,
             fillPatternRepeat: "no-repeat",
             cornerRadius: 30,
             draggable: true,
@@ -31,6 +30,23 @@ export const duosideElement = (options) => {
         }
 
         return el;
+}
+
+export const diceElement = (options = {}) => {
+    return new Konva.Rect({
+        x: -120,
+        y: -120,
+        offsetX: (options.width || 100) / 2,
+        offsetY: (options.height || 100) / 2,
+        width: 100,
+        height: 100,
+        fillPatternRepeat: "no-repeat",
+        cornerRadius: 10,
+        draggable: true,
+
+
+        ...options
+    });
 }
 
 export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise((resolve) => {

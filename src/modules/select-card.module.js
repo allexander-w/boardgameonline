@@ -1,3 +1,5 @@
+import ws from "../core/websocket";
+
 export default {
     selected: null,
 
@@ -13,5 +15,11 @@ export default {
         this.selected = element;
     },
 
-    initialization() {}
+    initialization() {
+        this.board.stage.on("click", this.selectingCard.bind(this));
+
+        ws.emitter.on("DRAGSTART", (e) => {
+            this.selectingCard(e);
+        })
+    }
 }

@@ -1,11 +1,17 @@
-import DuosideElement from "../../../entities/cards/scythe/duoside.constructor";
+import DuosideElement from "../../../entities/cards/duoside";
 import Heaps from "../../../core/heaps";
 import PersonalCardsModule from "../../../modules/personal-card.module";
 import SelectCardsModule from "../../../modules/select-card.module";
+import RotateCardsModule from "../../../modules/rotate-card.module";
+import ws from "../../../core/websocket";
 
 function ScytheHeaps(board, config) {
     Heaps.apply(this, arguments);
     Object.assign(this, SelectCardsModule, PersonalCardsModule);
+
+    this.initialization = () => [SelectCardsModule, PersonalCardsModule]
+        .forEach(module => module.initialization?.call(this));
+
     this.initialization();
 
 
@@ -92,6 +98,17 @@ function ScytheHeaps(board, config) {
         const card = new DuosideElement( '/scythe/warTablet/' + (i + 1) + '.png', options);
         fixedLayout.add(card.element);
     }
+
+    ws.emitter.on("DRAGSTART", (e) => {
+        if ( e.target.attrs.parentID || e.target.attrs.custom ) {
+            e.target.moveToTop();
+        }
+    })
+
+    ws.emitter.on("dragstart", ({ id }) => {
+        const el = game.children.find(el => el._id === id);
+        if ( el ) el.moveToTop();
+    })
 }
 
 export default ScytheHeaps;

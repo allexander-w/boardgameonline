@@ -2,12 +2,11 @@ import Heap from "../entities/heaps/heap";
 import SyncState from "./initialize/sync.constructor";
 import HeapEvents from "../entities/events/heap.events";
 import CardEvents from "../entities/events/card.events";
-import DuosideElement from "../entities/cards/scythe/duoside.constructor";
+import DuosideElement from "../entities/cards/duoside";
 
 import {getContentUri} from "../utils/contentUriCreator";
 
 import projectConfig from "../config";
-// import entitiesConfig from "../config/entities.config.js";
 
 function Heaps(board, entitiesConfig) {
     this.game = board.get_layer('board');

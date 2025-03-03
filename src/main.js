@@ -15,7 +15,7 @@ const beginScreen = new BeginScreen();
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
     const preload = new PreloaderScreen();
-    const result = import ("./games/flashpoint");
+    const result = import ("./games/scythe");
     const scene = await result;
 
     const UndefinedScene = scene.default;

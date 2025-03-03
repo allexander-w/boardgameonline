@@ -5,7 +5,7 @@ import heapsConfig from "./config/index";
 
 
 function FlashpointScene() {
-    GeneralScene.apply(this, arguments);
+    GeneralScene.apply(this, [...arguments, { dice: true }]);
 
     /* Загрузка игрового поля */
     this.loadGameField("/entities/field.png", { width: 2308, height: 1632 })
