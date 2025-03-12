@@ -5,7 +5,7 @@ import {getFlipAnimation} from "../../factory/animations.factory";
 import { duosideElement, loadImageDuosideElement } from "../../factory/cards.factory";
 
 function DuosideElement(src, options = {}) {
-    const { flipped, bgURI, rotation, ...opts } = options;
+    const { flipped, bgURI, isAbsoluteBgUri, rotation, ...opts } = options;
 
     this.id = opts.id;
     this.front = null;
@@ -26,7 +26,8 @@ function DuosideElement(src, options = {}) {
         flipped ? this.flipOnBottom() : this.flipToTop();
 
         if ( bgURI ) {
-            loadImageDuosideElement(this.element, bgURI + "bg.png").then(image => {
+
+            loadImageDuosideElement(this.element, isAbsoluteBgUri ? bgURI : bgURI + "bg.png").then(image => {
                 this.bg = image;
             })
         }

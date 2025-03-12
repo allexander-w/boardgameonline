@@ -15,7 +15,7 @@ const beginScreen = new BeginScreen();
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
     const preload = new PreloaderScreen();
-    const result = import ("./games/scythe");
+    const result = import ("./games/resarcana");
     const scene = await result;
 
     const UndefinedScene = scene.default;

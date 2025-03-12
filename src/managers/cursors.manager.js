@@ -74,13 +74,13 @@ function CursorsManager(board) {
             ws.receiver.send('dragstart', { id: e.target._id });
 
             e.target.to({
-                scaleX: 1.2,
-                scaleY: 1.2,
+                scaleX: 1.05,
+                scaleY: 1.05,
                 shadowColor: "rgba(0, 0, 0, 0.9)",
                 shadowBlur: 20,
                 shadowOpacity: 1,
 
-                duration: 0.2,
+                duration: 0.03,
                 easing: Konva.Easings.EaseOut
             });
         }
@@ -115,7 +115,7 @@ function CursorsManager(board) {
                 shadowBlur: 0,
                 shadowOpacity: 0,
 
-                duration: 0.2, // Длительность анимации
+                duration: 0.1, // Длительность анимации
                 easing: Konva.Easings.EaseIn
             });
 
