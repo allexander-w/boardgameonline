@@ -12,7 +12,6 @@ export default {
             if (other.zIndex() < target.zIndex()) return false;
 
             const otherBox = other.getClientRect();
-            console.log(targetBox.x);
 
             return !(
                 targetBox.x + targetBox.width < otherBox.x + (otherBox.width / 2) ||
