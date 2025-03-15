@@ -6,12 +6,15 @@ import RotateRightModule from "../../../modules/rotate-right.module";
 import GroupDragModule from "../../../modules/group-drag.module";
 import DuosideElement from "../../../entities/cards/duoside";
 import Heap from "../../../entities/heaps/heap";
+import gameInterface from "../../../modules/interface-module";
+import NotificationsModule from "../../../modules/notifications-module";
+import ResourcesBankModule from "../../../modules/resources-module";
 
 function ArcanaHeaps(board, config) {
     Heaps.apply(this, arguments);
-    Object.assign(this, SelectCardsModule, PersonalCardsModule, RotateRightModule, GroupDragModule);
+    Object.assign(this, SelectCardsModule, RotateRightModule, GroupDragModule);
 
-    this.initialization = () => [SelectCardsModule, PersonalCardsModule, RotateRightModule, GroupDragModule]
+    this.initialization = () => [SelectCardsModule, RotateRightModule, GroupDragModule]
         .forEach(module => module.initialization?.call(this));
 
     this.initialization();
@@ -39,14 +42,26 @@ function ArcanaHeaps(board, config) {
 
 
 
-    for ( const [index, value] of new Array(6).entries() ) {
-            let src = '/resarcana/essentions/' + (index + 1) + '.png';
 
-            for (let j = 0; j < 30; j++) {
-                const options =  { bgURI: null, x: 700 + (index * 140), y: 1200, draggable: true, width: 120, height: 120, cornerRadius: 0, custom: true };
-                const card = new DuosideElement(src, options);
-                game.add(card.element);
-            }
+
+    /* Добавление модуля нотификаций для интерфейса */
+    gameInterface.addModule("notifications", new NotificationsModule());
+
+    /* Добавление модуля банка ресурсов для интерфейса */
+    gameInterface.addModule("resources", new ResourcesBankModule(board));
+    const resourcesModule = gameInterface.getModule("resources");
+
+
+
+    for ( const [index, value] of new Array(5).entries() ) {
+            let src = '/resarcana/essentions/' + (index + 1) + '.png';
+            resourcesModule.addResource("essention_" + (index + 1), { src, width: 120, height: 120, count: 30 });
+
+            // for (let j = 0; j < 30; j++) {
+            //     const options =  { bgURI: null, x: 700 + (index * 140), y: 1200, draggable: true, width: 120, height: 120, cornerRadius: 0, custom: true };
+            //     const card = new DuosideElement(src, options);
+            //     game.add(card.element);
+            // }
     }
 
 

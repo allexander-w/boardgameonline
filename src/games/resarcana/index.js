@@ -3,7 +3,6 @@ import Camera from "../../core/camera";
 import ArcanaHeaps from "./entities/heaps";
 import heapsConfig from "./config/index";
 
-
 function ArcanaScene() {
     GeneralScene.apply(this, arguments);
 

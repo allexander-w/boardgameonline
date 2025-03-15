@@ -22,7 +22,7 @@ a {
 a:hover {
   color: #535bf2;
 }
-html {
+html, * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -140,162 +140,127 @@ h1 {
   z-index: 200000;
 }
 
+#interface {
 
+}
 
-/* HIDDENS */
-.hiddens {
+#top {
   position: fixed;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 40px;
+}
 
-  width: 50vw;
+#bottom {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 40px;
+  z-index: 222;
+}
+
+
+.resources {
+  display: flex;
   gap: 24px;
-
-  backdrop-filter: blur(20px);
-
-  border-radius: 20px 20px 0 0;
-  height: 140px;
-
-  background-color: rgba(0,0,0, 0.5);
-
-  bottom: -120px;
-  left: calc(50% - 25vw);
-
-  z-index: 20;
-
-  transition: .3s ease;
-}
-
-.hiddens:hover {
-  bottom: 0;
-}
-
-.hiddens:after {
-  content: "";
-  width: 15px;
-  height: 20px;
-  border-radius: 3px;
-  position: absolute;
-
-  background: #fff;
-  transform: rotate(20deg);
-  transform-origin: center;
-  z-index: 1;
-
-
-  /*bottom: -20px;*/
-  top: -20px;
-
-  box-shadow: -2px 1px 0px 0px #000;
-
+  align-items: flex-start;
 
 }
 
-.hiddens:before {
-  content: "";
-  width: 15px;
-  height: 20px;
-  border-radius: 3px;
-  position: absolute;
-
-  background: #fff;
-  transform: rotate(35deg);
-  transform-origin: center;
-
-  /*bottom: -20px;*/
-  top: -15px;
-
-  z-index: 2;
-
-  box-shadow: -2px 0px 0px 0px rgba(0, 0, 0, 0.8);
+.resource-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  cursor: pointer;
 }
 
-.hiddens .hidden__item {
-  /*background-color: #164905;*/
+.resource-item .image {
+  width: 70px;
+  height: 70px;
+  border-radius: 2px;
+  border: 1px solid #414141;
+  background-color: #1F2B37;
+  position: relative;
+
   display: flex;
   align-items: center;
-
-  min-width: 70px;
-  min-height: 70px;
-
-  max-width: 70px;
-  margin-bottom: 20px;
-
-  border-radius: 50%;
-  border: 4px solid #f5af19;
-
-  box-shadow: 4px -6px 40px 4px rgba(245, 175, 25, 0.3);
-
-  position: relative;
-  overflow: hidden;
+  justify-content: center;
 }
 
-.hiddens .hidden__item:before {
+.resource-item .image:before {
   content: "";
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
   position: absolute;
-
-  /*top: 50%;*/
-  /*left: 50%;*/
-
-  background: linear-gradient(to top, #f12711, #f5af19);
-  transform: rotate(45deg);
-  transform-origin: center;
-
-  box-shadow: 4px -6px 30px 8px rgba(245, 175, 25, 0.4);
-
-  left: 20px;
+  height: 16px;
+  bottom: 1px;
+  width: 100%;
+  background-color: #0E1A26;
+  z-index: 1;
 }
 
-.hiddens .hidden__item:after {
-  content: "";
-  width: 80px;
-  height: 74px;
-  position: absolute;
-
-  background: #fff;
-  transform: rotate(20deg);
-  opacity: .1;
-  transform-origin: center;
-  box-shadow: 4px -6px 30px 8px rgba(255, 255, 255, 0.3);
-
-  left: 0px;
-  top: -40px;
-}
-
-.hiddens-wrapper-item {
-  min-height: 70px;
+.resource-item .image img {
+  width: 70%;
+  height: 70%;
+  object-fit: contain;
   position: relative;
+  z-index: 2;
 }
 
-.hiddens-wrapper-item .shadow {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 15px;
-  width: 10px;
-  height: 1px;
-  box-shadow: 4px -6px 20px 8px rgba(0, 0, 0, 1);
+.plank {
+  width: 64px;
+  height: 16px;
+  border-radius: 2px;
+  border: 1px solid #414141;
+  background-color: #0E1A26;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
 }
 
-.hiddens-wrapper-item p {
-  position: absolute;
+.plank span {
+  font-size: 12px;
+}
+
+
+#notifications {
+  position: fixed;
+  right: 40px;
+  top: 40px;
+
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  z-index: 222;
+}
+
+.notification {
+  border: 1px solid #414141;
+  background-color: #1F2B37;
+  border-radius: 2px;
+  box-shadow: 0px 2px 0px 0px #0E1A26;
+
+  display: flex;
+  align-items: center;
+  padding: 4px 20px;
+  gap: 20px;
+}
+
+.notification p:first-child {
   font-size: 32px;
-  font-family: Impact;
-  font-weight: bold;
-  color: #f5af19;
-
-  bottom: -33px;
-
-  left: 50%;
-  transform: translateX(-50%);
-
-  text-shadow: 0px 2px 0px #f17211;
+  line-height: 0;
+  font-family: Inter, sans-serif;
 }
 
+.notification p:last-child {
+  color: #fff;
+  font-size: 12px;
+  line-height: normal;
+  font-family: Inter, sans-serif;
+}
 
 
 
@@ -357,7 +322,7 @@ h1 {
   align-items: stretch;
   gap: 36px;
   width: 380px;
-  height: 52px;
+  height: auto;
   padding: 24px;
   border-radius: 20px;
   overflow: hidden;

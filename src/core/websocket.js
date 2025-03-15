@@ -1,6 +1,7 @@
 import mitt from "mitt";
 import {serialize, unserialize} from "../../shared/utils/serialize.util.mjs";
 import actions from "../../shared/actions/action.types.mjs";
+import gameInterface from "../modules/interface-module/index";
 import config from "../config";
 
 function WebsocketConnector() {
@@ -10,8 +11,9 @@ function WebsocketConnector() {
     this.currentSynced = false;
 
     this.emitter = mitt();
-
     this.ready = () => this.socket.readyState === 1;
+
+    let notificationsModule = {};
 
     this.receiver = {
         send: (action, options) => {
@@ -22,18 +24,22 @@ function WebsocketConnector() {
         }
     }
 
-
     this.emitter.on("USER_INFO", (user) => {
         console.log("connected", user);
         this.receiver.send(actions.connected, user);
     })
 
     this.socket.onopen = () => {
-        console.log("successfully connected!");
+        if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+        notificationsModule.notify("Вы успешно подключились к игре!");
+
         this.emitter.emit("REQUEST_USER_INFO");
     }
 
     this.socket.onclose = (e) => {
+        if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+        notificationsModule.notify("Соединение потеряно...");
+
         console.log(e)
         this.emitter.emit("CLOSE_CONNECTION");
     }
@@ -43,11 +49,20 @@ function WebsocketConnector() {
         if ( data.action === actions.connected ) {
             this.currentConnection = data.payload.user?.id;
             console.log('your connected id: ', this.currentConnection);
+
+            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+            notificationsModule.notify("Вебсокеты завелись, твой айди: " + this.currentConnection);
+
             return false;
         }
 
         if ( data.action === actions.join ) {
-            console.log('action join');
+            console.log('action join', data.payload);
+
+            if ( this.currentConnection !== data.payload.user.id ) {
+                if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+                notificationsModule.notify("Опа, " + data.payload.user.name + " подключился!");
+            }
 
             for (const user of data.payload.users) {
                 if ( this.connections.has(user.id) || this.currentConnection === user.id ) continue;
@@ -65,10 +80,14 @@ function WebsocketConnector() {
         }
 
         if ( data.action === actions.disconnect ) {
-            console.log("disconnected: ", data.payload.id);
+            console.log("disconnected: ", data.payload.id, data.payload);
             this.emitter.emit("REMOVE_CURSOR", data.payload);
 
             this.connections.delete(data.id);
+
+            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+            notificationsModule.notify("Опа, " + data.payload.name + " отсоединился...");
+
             return false;
         }
 

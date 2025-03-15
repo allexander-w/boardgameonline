@@ -9,32 +9,13 @@
   </head>
   <body>
 
-    <div class="hiddens">
-    </div>
-
-    <div class="dice-wrapper" style="display: none">
-      <div class="shield"> <span>Кубики</span> <strong class="double"></strong></div>
-      
-      <div class="content">
-        <div class="six">
-          <div class="dice">
-            <p class="dicesix" data-write="true">6</p>
-          </div>
-        </div>
-
-        <div class="eight">
-          <img src="/dice/dice1.jpg" alt="">
-          <p class="diceeight" data-write="true">8</p>
-        </div>
-      </div>
-
-      <button class="roll">Бросить</button>
-      <button class="rollLeft">Левый</button>
-      <button class="rollRight">Правый</button>
+    <div id="interface">
+        <div id="top"></div>
+        <div id="bottom"></div>
+        <div id="notifications"></div>
     </div>
 
     <div id="app"></div>
-
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

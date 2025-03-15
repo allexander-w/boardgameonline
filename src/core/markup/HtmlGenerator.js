@@ -22,6 +22,36 @@ function HtmlGenerator() {
         node.insertAdjacentHTML('afterbegin', markup);
     }
 
+    this.removeLastChild = (node) => {
+        if ( node.lastElementChild ) {
+            node.lastElementChild.remove();
+        }
+    }
+
+    this.removeFirstChild = (node) => {
+        if ( node.firstElementChild ) {
+            node.firstElementChild.remove();
+        }
+    }
+
+    this.updateChild = (wrapper, id, markup) => {
+        const children = Array.from(wrapper.children);
+
+        for (let i = 0; i < children.length; i++) {
+            if (children[i].dataset.id === id) {
+                // Создаем временный контейнер, чтобы из строки сделать DOM-элемент
+                const temp = document.createElement("div");
+                temp.innerHTML = markup;
+                const newElement = temp.firstElementChild;
+
+                if (newElement) {
+                    wrapper.replaceChild(newElement, children[i]);
+                }
+                break; // Можно выходить из цикла, так как нашли нужный элемент
+            }
+        }
+    }
+
     this.uniqueAdd = (nodeTo, markup, attribute) => {
         const children = Array.from(nodeTo.children);
 

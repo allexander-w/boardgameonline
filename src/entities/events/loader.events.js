@@ -14,6 +14,7 @@ function PreloadEvents(preload) {
 
         if ( this.counter === this.countForLoading ) {
             preload.off();
+            ws.emitter.off("loaded");
         }
     })
 }
