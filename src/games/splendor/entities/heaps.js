@@ -19,7 +19,7 @@ function SplendorHeaps(board, config) {
     for ( const [index, value] of new Array(6).entries() ) {
         let src = '/splendor/jewelry/' + (index + 1) + '.png';
 
-        for (let j = 0; j < 4; j++) {
+        for (let j = 0; j < 5; j++) {
             const options =  { bgURI: null, x: 300 + (index * 340), y: 2200, draggable: true, width: 300, height: 300, cornerRadius: 0, custom: true };
             const card = new DuosideElement(src, options);
             game.add(card.element);
