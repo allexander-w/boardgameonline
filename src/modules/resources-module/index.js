@@ -1,6 +1,7 @@
 import HtmlGenerator from "../../core/markup/HtmlGenerator";
 import {ResourcesFlexWrapperTemplate, ResourceItemTemplate, ResourceItemTemplateUpdate} from "./templates/resources.template";
 import DuosideElement from "../../entities/cards/duoside";
+import ResourceElement from "../../entities/cards/resource";
 
 function ResourcesBankModule(board) {
     const generator = new HtmlGenerator();
@@ -64,8 +65,8 @@ function ResourcesBankModule(board) {
                 if ( !v.hand ) continue;
 
                 for (let j = 0; j < v.hand; j++) {
-                    const options = { ...v, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
-                    const card = new DuosideElement(options.src, options);
+                    const options = { ...v, resource_id: key, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
+                    const card = new ResourceElement(options.src, options, this);
                     layer.add(card.element);
                 }
 

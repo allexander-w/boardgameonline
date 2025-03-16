@@ -85,6 +85,12 @@ function DuosideElement(src, options = {}) {
         tween.play();
     }
 
+    this.destroyElement = () => {
+        this.element.off();
+        this.element.remove();
+        this.element.destroy();
+    }
+
     /* Событие двойного клика для переворота элемента */
     if ( rotation ) {
         this.element.on("click", this.rotate);
