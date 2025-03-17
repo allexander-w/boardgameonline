@@ -3,10 +3,13 @@ const { unserialize } = require("../../shared/utils/serialize.util.cjs");
 
 const Router = require("./models/router.model");
 const User = require("./models/user.model");
+const Bank = require("./models/bank.model");
 
 const actions = require("../../shared/actions/action.types.cjs");
+
 let users = [];
 let syncUser = null;
+let bank = null;
 
 ws.on("request", req => {
     const connection = req.accept("", req.origin);
@@ -53,6 +56,47 @@ ws.on("request", req => {
         router.redirect('roll', users);
         router.redirect('rolled', users);
         router.redirect('rotate', users);
+
+        router.redirect('element.destroy', users);
+
+
+        /* BANK API */
+        router.redirect('api.bank.table', users);
+
+        router.use("api.bank.creation", (data) => {
+            const user = users.find(element => element.id === data.payload.user);
+            if ( bank ) {
+                user.send('api.bank.creation', { user, message: "resources bank already exists", bank: bank.bank });
+                return false;
+            }
+
+            bank = new Bank(data.payload.resources);
+            user.send('api.bank.creation', { user, message: "resources bank successfull creation", bank: bank.bank });
+        })
+
+        router.use("api.bank.put", (data) => {
+            const user = users.find(element => element.id === data.payload.user);
+            if ( !user ) return;
+
+            bank.add(data.payload.id);
+            users.forEach(u => {
+                if (u.id === data.payload.user) return false;
+                u.send('api.bank.put', { user, bank: bank.bank });
+            });
+        })
+
+        router.use("api.bank.take", (data) => {
+            const user = users.find(element => element.id === data.payload.user);
+            if ( !user ) return;
+
+            bank.remove(data.payload.id);
+            users.forEach(u => {
+                if (u.id === data.payload.user) return false;
+                u.send('api.bank.take', { user, bank: bank.bank });
+            });
+        })
+        /* BANK API */
+
 
         router.use('hide', (data) => {
             const user = users.find(element => element.id === data.payload.user);

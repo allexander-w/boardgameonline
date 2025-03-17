@@ -16,7 +16,7 @@ function DuosideElement(src, options = {}) {
 
 
     /* Загрузка картинки элемента */
-    this.element = duosideElement(opts);
+    this.element = duosideElement({...opts, link: this});
 
     loadImageDuosideElement(this.element, src).then(image => {
         this.element.moveToTop();
@@ -86,6 +86,9 @@ function DuosideElement(src, options = {}) {
     }
 
     this.destroyElement = () => {
+        ws.receiver.send('element.destroy', { id: this.element._id });
+
+        this.element.attrs.link = null;
         this.element.off();
         this.element.remove();
         this.element.destroy();
@@ -97,6 +100,18 @@ function DuosideElement(src, options = {}) {
     } else {
         this.element.on("dblclick", this.flipElement);
     }
+
+    this.toHandLogic = (e) => {
+        if (e.evt.shiftKey && (e.evt.ctrlKey || e.evt.metaKey)) {
+            ws.emitter.emit("module.hand.takeAll", this);
+            return false;
+        }
+
+        if (e.evt.ctrlKey || e.evt.metaKey) {
+            ws.emitter.emit("module.hand.take", this);
+        }
+    }
+    this.element.on("click", this.toHandLogic);
 }
 
 export default DuosideElement;

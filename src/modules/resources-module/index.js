@@ -1,11 +1,12 @@
 import HtmlGenerator from "../../core/markup/HtmlGenerator";
 import {ResourcesFlexWrapperTemplate, ResourceItemTemplate, ResourceItemTemplateUpdate} from "./templates/resources.template";
-import DuosideElement from "../../entities/cards/duoside";
 import ResourceElement from "../../entities/cards/resource";
+import ws from "../../core/websocket";
 
 function ResourcesBankModule(board) {
     const generator = new HtmlGenerator();
     const layer = board.get_layer("board");
+    const game = board.get_layer("board");
 
     const minus = (count, hand) => {
         const output = {};
@@ -31,15 +32,35 @@ function ResourcesBankModule(board) {
         generator.appendToBegin(wrapper, ResourceItemTemplate(id, options));
     }
 
+    this.updateBankCount = (bank) => {
+        for ( const [key,v] of this.bank.entries() ) {
+            this.bank.set(key, { ...v, count: bank[key] });
+            ResourceItemTemplateUpdate(key, { ...v, count: bank[key] });
+        }
+    }
+
     this.selectResourceFromBank = (e) => {
         e.preventDefault();
 
         const isMetaKeyPressed = e.ctrlKey || e.metaKey;
 
+        /* Определение ресурса */
         const item = e.target.closest(".resource-item");
         if ( !item ) return false;
 
+        /* Получение свойств ресурса */
         const options = this.bank.get(item.dataset['id']);
+
+        /* Вебсокеты ивенты */
+        if ( isMetaKeyPressed && options.hand > 0 ) {
+            ws.receiver.send("api.bank.put", { id: item.dataset['id'] });
+        }
+
+        if ( !isMetaKeyPressed ) {
+            ws.receiver.send("api.bank.take", { id: item.dataset['id'] });
+        }
+
+        /* Калькуляция количества в руку */
         const calculation = isMetaKeyPressed ? plus(options.count, options.hand) : minus(options.count, options.hand);
 
         const updatedOptions = {
@@ -47,36 +68,56 @@ function ResourcesBankModule(board) {
             ...calculation
         }
 
+        /* Обновление */
         this.bank.set(item.dataset['id'], updatedOptions);
         ResourceItemTemplateUpdate(item.dataset['id'], updatedOptions);
     }
 
+    this.selectResourceToBank = (id) => {
+        const options = this.bank.get(id);
+        const updatedOptions = {
+            ...options,
+            hand: options.hand + 1,
+        }
 
+        this.bank.set(id, updatedOptions);
+        ResourceItemTemplateUpdate(id, updatedOptions);
+    }
 
-    this.putResourcesTable = (e) => {
-        if ( e.evt.ctrlKey || e.evt.metaKey ) {
-            const pos = layer.getRelativePointerPosition();
+    const _putResources = (pos, entries) => {
+        let index = 0;
+        let prevHand = 0;
 
-            let index = 0;
-            let prevHand = 0;
+        for ( const [key,v] of entries ) {
+            if ( !v.hand ) continue;
 
-            for ( const [key,v] of this.bank.entries() ) {
-
-                if ( !v.hand ) continue;
-
-                for (let j = 0; j < v.hand; j++) {
-                    const options = { ...v, resource_id: key, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
-                    const card = new ResourceElement(options.src, options, this);
-                    layer.add(card.element);
-                }
-
-                prevHand = v.hand - 1;
-
-                this.bank.set(key, { ...v, hand: 0 });
-                ResourceItemTemplateUpdate(key, { ...v, hand: 0 });
-
-                index ++;
+            for (let j = 0; j < v.hand; j++) {
+                const options = { ...v, resource_id: key, custom: true, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
+                const card = new ResourceElement(options.src, options, this);
+                layer.add(card.element);
             }
+
+            prevHand = v.hand - 1;
+
+            this.bank.set(key, { ...v, hand: 0 });
+            ResourceItemTemplateUpdate(key, { ...v, hand: 0 });
+
+            index ++;
+        }
+    }
+
+    this.putResourcesTable = (e, fromWs) => {
+        if ( fromWs ) {
+            _putResources(fromWs.pos, fromWs.entries);
+            return false;
+        }
+
+        if ( e.evt.altKey ) {
+            const pos = layer.getRelativePointerPosition();
+            const entries = [ ...this.bank.entries() ];
+
+            ws.receiver.send("api.bank.table", { pos, entries });
+            _putResources(pos, entries);
         }
     }
 
@@ -87,6 +128,30 @@ function ResourcesBankModule(board) {
 
         wrapper.addEventListener("click", this.selectResourceFromBank);
         board.stage.on("click", this.putResourcesTable.bind(this));
+
+        ws.emitter.on('api.bank.creation', (data) => {
+            this.updateBankCount(data.bank);
+        })
+
+        ws.emitter.on('api.bank.take', (data) => {
+            this.updateBankCount(data.bank);
+        })
+
+        ws.emitter.on('api.bank.put', (data) => {
+            this.updateBankCount(data.bank);
+        })
+
+        ws.emitter.on('api.bank.table', (data) => {
+            this.putResourcesTable(null, data);
+        })
+
+        ws.emitter.on('element.destroy', (data) => {
+            const el = game.children.find(el => el._id === data.id);
+
+            el.off();
+            el.remove();
+            el.destroy();
+        })
     }
 
 }

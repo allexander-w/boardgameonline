@@ -11,13 +11,18 @@ function WebsocketConnector() {
     this.currentSynced = false;
 
     this.emitter = mitt();
+
+    this.stack = [];
     this.ready = () => this.socket.readyState === 1;
 
     let notificationsModule = {};
 
     this.receiver = {
         send: (action, options) => {
-            if ( !this.ready() ) return false;
+            if ( !this.ready() ) {
+                this.stack.push({ action, options });
+                return false;
+            }
 
             const payload = { action, payload: { user: this.currentConnection, ...options } };
             this.socket.send( serialize(payload) );
@@ -52,6 +57,8 @@ function WebsocketConnector() {
 
             if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
             notificationsModule.notify("Вебсокеты завелись, твой айди: " + this.currentConnection);
+
+            this.stack.forEach(msg => this.receiver.send(msg.action, msg.options));
 
             return false;
         }
@@ -97,6 +104,11 @@ function WebsocketConnector() {
 
             cursor.x(data.payload.x);
             cursor.y(data.payload.y);
+        }
+
+        if ( data.action === 'api.bank.creation' ) {
+            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+            notificationsModule.notify(data.payload.message);
         }
 
         this.emitter.emit(data.action, data.payload);

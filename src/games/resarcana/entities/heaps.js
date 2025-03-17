@@ -42,28 +42,23 @@ function ArcanaHeaps(board, config) {
 
 
 
-
-
     /* Добавление модуля нотификаций для интерфейса */
     gameInterface.addModule("notifications", new NotificationsModule());
+
+
 
     /* Добавление модуля банка ресурсов для интерфейса */
     gameInterface.addModule("resources", new ResourcesBankModule(board));
     const resourcesModule = gameInterface.getModule("resources");
-
-
+    const resources = [];
 
     for ( const [index, value] of new Array(5).entries() ) {
             let src = '/resarcana/essentions/' + (index + 1) + '.png';
-            resourcesModule.addResource("essention_" + (index + 1), { src, width: 120, height: 120, count: 30 });
-
-            // for (let j = 0; j < 30; j++) {
-            //     const options =  { bgURI: null, x: 700 + (index * 140), y: 1200, draggable: true, width: 120, height: 120, cornerRadius: 0, custom: true };
-            //     const card = new DuosideElement(src, options);
-            //     game.add(card.element);
-            // }
+            resourcesModule.addResource("essention_" + (index + 1), { src, width: 120, height: 120, count: 0 });
+            resources.push({ id: "essention_" + (index + 1), count: 30 });
     }
 
+    ws.receiver.send('api.bank.creation', { resources });
 
 
     ws.emitter.on("DRAGSTART", (e) => {
