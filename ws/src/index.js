@@ -59,6 +59,15 @@ ws.on("request", req => {
 
         router.redirect('element.destroy', users);
 
+        /* HAND API */
+        router.redirect('api.hand.take', users);
+        router.redirect('api.hand.takeAll', users);
+        router.redirect('api.hand.takeHalf', users);
+
+        router.redirect('api.hand.put', users);
+        /* HAND API */
+
+
 
         /* BANK API */
         router.redirect('api.bank.table', users);

@@ -107,6 +107,11 @@ function DuosideElement(src, options = {}) {
             return false;
         }
 
+        if (e.evt.shiftKey) {
+            ws.emitter.emit("module.hand.takeHalf", this);
+            return false;
+        }
+
         if (e.evt.ctrlKey || e.evt.metaKey) {
             ws.emitter.emit("module.hand.take", this);
         }
