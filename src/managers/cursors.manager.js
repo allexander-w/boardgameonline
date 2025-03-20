@@ -92,14 +92,14 @@ function CursorsManager(board) {
         if ( e.target.attrs.parentID || e.target.attrs.custom ) {
             ws.emitter.emit("DRAGMOVE", e);
 
-            ws.receiver.send(actions.dragmove, { x: e.target.attrs.x, y: e.target.attrs.y, id: e.target._id });
+            ws.receiver.send(actions.dragmove, { x: e.target.attrs.x, y: e.target.attrs.y, id: e.target.id() });
             ws.receiver.send(actions.mousemove, { x: e.target.attrs.x, y: e.target.attrs.y });
         }
     })
 
     /* [DRAGMOVE]: Принятие данных */
     ws.emitter.on(actions.dragmove, (data) => {
-        const element = gameLayer.children.find(el => el._id === data.id);
+        const element = gameLayer.findOne("#" + data.id);
         element.x(data.x);
         element.y(data.y);
     });
@@ -120,7 +120,7 @@ function CursorsManager(board) {
             });
 
             ws.emitter.emit("DRAGEND", e);
-            ws.receiver.send('dragend', { id: e.target._id });
+            ws.receiver.send('dragend', { id: e.target.id() });
         }
     })
 }

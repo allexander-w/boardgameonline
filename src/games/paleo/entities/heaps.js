@@ -10,6 +10,7 @@ import gameInterface from "../../../modules/interface-module";
 import NotificationsModule from "../../../modules/notifications-module";
 import ResourcesBankModule from "../../../modules/resources-module";
 import DiceElement from "../../../entities/cards/dice";
+import FieldElement from "../../../entities/cards/field";
 import HandModule from "../../../modules/hand-module";
 
 function PaleoHeaps(board, config) {
@@ -76,11 +77,11 @@ function PaleoHeaps(board, config) {
         const src = '/paleo/fields/' + (index + 1) + '.png';
         const options =  { bgURI: null, draggable: false, x: -400 + (index * 1890), y: 3720, width: 1679, height: 1455, opacity: 1 };
 
-        const card = new DuosideElement(src, options);
+        const card = new FieldElement(src, options);
         fixedLayer.add(card.element);
     }
 
-    const table = new DuosideElement('/paleo/fields/5.png', {
+    const table = new FieldElement('/paleo/fields/5.png', {
         bgURI: null, draggable: false,
         x: -400, y: 1720,
         width: 1394, height: 1820,
@@ -89,7 +90,7 @@ function PaleoHeaps(board, config) {
 
     fixedLayer.add(table.element);
 
-    const death = new DuosideElement('/paleo/fields/4.png', {
+    const death = new FieldElement('/paleo/fields/4.png', {
         bgURI: null, draggable: false,
         x: 1394, y: 2020,
         width: 441 * 2, height: 600 * 2,
@@ -103,7 +104,7 @@ function PaleoHeaps(board, config) {
     /* Рендер изобретений */
     for ( const [index, value] of new Array(13).entries() ) {
         const src = '/paleo/creations/' + (index + 1) + '.png';
-        const options =  { bgURI: null, draggable: true, custom: true, x: -1000 + (index * 250), y: 2850, width: 200, height: 200, opacity: 1 };
+        const options =  { bgURI: null, id: "creations_" + index, draggable: true, custom: true, x: -1000 + (index * 250), y: 2850, width: 200, height: 200, opacity: 1 };
 
         for (let i = 0; i < 5; i++) {
             const card = new DuosideElement(src, options);
@@ -135,11 +136,20 @@ function PaleoHeaps(board, config) {
 
 
     /* Рендер костей */
-    const dice = new DiceElement('/paleo/dice/1.png', { custom: true });
+    const dice = new DiceElement('/paleo/dice/1.png', { id: "dice1", custom: true });
     game.add(dice.element);
 
+    /* Рендер костей */
+    const dice2 = new DiceElement('/paleo/dice/1.png', { id: "dice2", custom: true });
+    game.add(dice2.element);
 
 
+    ws.emitter.on("rolled", (data) => {
+        console.log(data);
+        const dice = board.stage.findOne("#" + data.id);
+        dice.fillPatternOffset({ x: (dice.width() * data.index) / dice.fillPatternScale().x, y: 0 });
+        // dice.attrs.link.roll(null, data);
+    })
 
     ws.emitter.on("DRAGSTART", (e) => {
         if ( e.target.attrs.parentID || e.target.attrs.custom ) {

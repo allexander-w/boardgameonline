@@ -5,7 +5,7 @@ import gameInterface from "../modules/interface-module/index";
 import config from "../config";
 
 function WebsocketConnector() {
-    this.socket = new WebSocket(config.ws);
+    this.socket = null;
     this.connections = new Map();
     this.currentConnection = null;
     this.currentSynced = false;
@@ -13,9 +13,11 @@ function WebsocketConnector() {
     this.emitter = mitt();
 
     this.stack = [];
-    this.ready = () => this.socket.readyState === 1;
+    this.ready = () => this.socket?.readyState === 1;
 
     let notificationsModule = {};
+
+
 
     this.receiver = {
         send: (action, options) => {
@@ -29,90 +31,95 @@ function WebsocketConnector() {
         }
     }
 
-    this.emitter.on("USER_INFO", (user) => {
-        console.log("connected", user);
-        this.receiver.send(actions.connected, user);
-    })
+    this.initializationWebsockets = () => {
+        this.socket = new WebSocket(config.ws);
 
-    this.socket.onopen = () => {
-        if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-        notificationsModule.notify("Вы успешно подключились к игре!");
+        this.emitter.on("USER_INFO", (user) => {
+            console.log("connected", user);
+            this.receiver.send(actions.connected, user);
+        })
 
-        this.emitter.emit("REQUEST_USER_INFO");
-    }
-
-    this.socket.onclose = (e) => {
-        if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-        notificationsModule.notify("Соединение потеряно...");
-
-        console.log(e)
-        this.emitter.emit("CLOSE_CONNECTION");
-    }
-
-    this.socket.onmessage = (event) => {
-        const data = unserialize(event.data);
-        if ( data.action === actions.connected ) {
-            this.currentConnection = data.payload.user?.id;
-            console.log('your connected id: ', this.currentConnection);
-
+        this.socket.onopen = () => {
             if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-            notificationsModule.notify("Вебсокеты завелись, твой айди: " + this.currentConnection);
+            notificationsModule.notify("Вы успешно подключились к игре!");
 
-            this.stack.forEach(msg => this.receiver.send(msg.action, msg.options));
-
-            return false;
+            this.emitter.emit("REQUEST_USER_INFO");
         }
 
-        if ( data.action === actions.join ) {
-            console.log('action join', data.payload);
+        this.socket.onclose = (e) => {
+            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+            notificationsModule.notify("Соединение потеряно...");
 
-            if ( this.currentConnection !== data.payload.user.id ) {
+            console.log(e)
+            this.emitter.emit("CLOSE_CONNECTION");
+        }
+
+        this.socket.onmessage = (event) => {
+            const data = unserialize(event.data);
+            if ( data.action === actions.connected ) {
+                this.currentConnection = data.payload.user?.id;
+                console.log('your connected id: ', this.currentConnection);
+
                 if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-                notificationsModule.notify("Опа, " + data.payload.user.name + " подключился!");
+                notificationsModule.notify("Вебсокеты завелись, твой айди: " + this.currentConnection);
+
+                this.stack.forEach(msg => this.receiver.send(msg.action, msg.options));
+
+                return false;
             }
 
-            for (const user of data.payload.users) {
-                if ( this.connections.has(user.id) || this.currentConnection === user.id ) continue;
-                this.connections.set(user.id, {});
+            if ( data.action === actions.join ) {
+                console.log('action join', data.payload);
+
+                if ( this.currentConnection !== data.payload.user.id ) {
+                    if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+                    notificationsModule.notify("Опа, " + data.payload.user.name + " подключился!");
+                }
+
+                for (const user of data.payload.users) {
+                    if ( this.connections.has(user.id) || this.currentConnection === user.id ) continue;
+                    this.connections.set(user.id, {});
+                }
+
+                for (const [id, cursor] of this.connections) {
+                    if ( cursor?.attrs ) continue;
+                    this.emitter.emit("CREATE_CURSOR", { id, user: data.payload.users.find(u => u.id === id) } );
+                }
+
+                this.emitter.emit("SYNC", { user: data.payload.syncUser, users: data.payload.users, joined: data.payload.user });
+
+                return false;
             }
 
-            for (const [id, cursor] of this.connections) {
-                if ( cursor?.attrs ) continue;
-                this.emitter.emit("CREATE_CURSOR", { id, user: data.payload.users.find(u => u.id === id) } );
+            if ( data.action === actions.disconnect ) {
+                console.log("disconnected: ", data.payload.id, data.payload);
+                this.emitter.emit("REMOVE_CURSOR", data.payload);
+
+                this.connections.delete(data.id);
+
+                if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+                notificationsModule.notify("Опа, " + data.payload.name + " отсоединился...");
+
+                return false;
             }
 
-            this.emitter.emit("SYNC", { user: data.payload.syncUser, users: data.payload.users, joined: data.payload.user });
+            if ( data.action === actions.mousemove ) {
+                const cursor = this.connections.get(data.payload.user);
+                if ( !data.payload ) return false;
 
-            return false;
+                cursor.x(data.payload.x);
+                cursor.y(data.payload.y);
+            }
+
+            if ( data.action === 'api.bank.creation' ) {
+                if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
+                notificationsModule.notify(data.payload.message);
+            }
+
+            this.emitter.emit(data.action, data.payload);
         }
-
-        if ( data.action === actions.disconnect ) {
-            console.log("disconnected: ", data.payload.id, data.payload);
-            this.emitter.emit("REMOVE_CURSOR", data.payload);
-
-            this.connections.delete(data.id);
-
-            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-            notificationsModule.notify("Опа, " + data.payload.name + " отсоединился...");
-
-            return false;
-        }
-
-        if ( data.action === actions.mousemove ) {
-            const cursor = this.connections.get(data.payload.user);
-            if ( !data.payload ) return false;
-
-            cursor.x(data.payload.x);
-            cursor.y(data.payload.y);
-        }
-
-        if ( data.action === 'api.bank.creation' ) {
-            if ( !notificationsModule.notifications ) notificationsModule = gameInterface.getModule("notifications");
-            notificationsModule.notify(data.payload.message);
-        }
-
-        this.emitter.emit(data.action, data.payload);
     }
+
 }
 
 

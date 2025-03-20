@@ -158,5 +158,9 @@ ws.on("request", req => {
         for ( const user of users ) {
             user.send(actions.disconnect, disconnectedUser);
         }
+
+        if ( !users.length ) {
+            bank = null;
+        }
     })
 });

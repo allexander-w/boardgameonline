@@ -3,10 +3,24 @@ import {ResourcesFlexWrapperTemplate, ResourceItemTemplate, ResourceItemTemplate
 import ResourceElement from "../../entities/cards/resource";
 import ws from "../../core/websocket";
 
+const generatedIds = new Set();
+
+function generateUniqueId(length = 8) {
+    let id;
+    do {
+        id = Math.random().toString(36).substr(2, length);
+    } while (generatedIds.has(id));
+
+    generatedIds.add(id);
+    return id;
+}
+
+// console.log(generateUniqueId());
+
+
 function ResourcesBankModule(board) {
     const generator = new HtmlGenerator();
     const layer = board.get_layer("board");
-    const game = board.get_layer("board");
 
     const minus = (count, hand) => {
         const output = {};
@@ -87,14 +101,18 @@ function ResourcesBankModule(board) {
     const _putResources = (pos, entries) => {
         let index = 0;
         let prevHand = 0;
+        const output = [];
 
         for ( const [key,v] of entries ) {
             if ( !v.hand ) continue;
 
             for (let j = 0; j < v.hand; j++) {
-                const options = { ...v, resource_id: key, custom: true, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
+                const generatedId = key + '_' + generateUniqueId();
+
+                const options = { ...v, resource_id: key, id: generatedId, custom: true, x: pos.x + (j * 10) + (index * v.width + prevHand * 10), y: pos.y };
                 const card = new ResourceElement(options.src, options, this);
                 layer.add(card.element);
+                output.push([key, options]);
             }
 
             prevHand = v.hand - 1;
@@ -104,11 +122,22 @@ function ResourcesBankModule(board) {
 
             index ++;
         }
+
+        return output;
     }
 
     this.putResourcesTable = (e, fromWs) => {
         if ( fromWs ) {
-            _putResources(fromWs.pos, fromWs.entries);
+            // _putResources(fromWs.pos, fromWs.entries);
+            // console.log(fromWs.entries);
+
+            console.log('check', fromWs);
+
+            for ( const [key,v] of fromWs.entries ) {
+                const card = new ResourceElement(v.src, v, this);
+                layer.add(card.element);
+            }
+
             return false;
         }
 
@@ -116,8 +145,10 @@ function ResourcesBankModule(board) {
             const pos = layer.getRelativePointerPosition();
             const entries = [ ...this.bank.entries() ];
 
-            ws.receiver.send("api.bank.table", { pos, entries });
-            _putResources(pos, entries);
+            const output = _putResources(pos, entries);
+
+            ws.receiver.send("api.bank.table", { pos, entries: output });
+
         }
     }
 
@@ -146,7 +177,7 @@ function ResourcesBankModule(board) {
         })
 
         ws.emitter.on('element.destroy', (data) => {
-            const el = game.children.find(el => el._id === data.id);
+            const el = board.stage.findOne("#" + data.id);
 
             el.off();
             el.remove();

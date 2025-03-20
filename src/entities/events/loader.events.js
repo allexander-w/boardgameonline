@@ -12,10 +12,15 @@ function PreloadEvents(preload) {
         this.counter ++;
         preload.update(src);
 
-        if ( this.counter === this.countForLoading ) {
-            preload.off();
-            ws.emitter.off("loaded");
+        if (this.counter === this.countForLoading) {
+            ws.initializationWebsockets();
         }
+    })
+
+    ws.emitter.on("synced", () => {
+        preload.off();
+        ws.emitter.off("loaded");
+        ws.emitter.off("synced");
     })
 }
 

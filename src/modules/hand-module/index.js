@@ -78,7 +78,6 @@ function HandModule(board) {
         const elementsAbove = this.findElementsAbove(el.element);
         if ( elementsAbove.length ) {
             const half = elementsAbove.slice(Math.ceil(elementsAbove.length / 2));
-            console.log(elementsAbove);
             this.hands = [...this.hands, ...half];
 
             half.forEach(el => el.hide());

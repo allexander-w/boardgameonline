@@ -4,7 +4,7 @@ import {randomInteger} from "../../utils/utils";
 import ws from "../../core/websocket";
 
 function DiceElement(src, options = {}) {
-    this.element = diceElement(options);
+    this.element = diceElement({ ...options, link: this });
     loadImageDuosideElement(this.element, src, 6);
 
     this.index = 0;
@@ -32,8 +32,10 @@ function DiceElement(src, options = {}) {
                 clearInterval(interval);
 
                 if ( !fromWS ) {
-                    ws.receiver.send("rolled", { id: this.element._id, index: this.index });
-                    console.log(this.index);
+                    setTimeout(() => {
+                        ws.receiver.send("rolled", { id: this.element.id(), index: this.index });
+                        console.log(this.index);
+                    }, 500)
                 }
 
                 this.element.fillPatternOffset({ x: (this.element.width() * this.index) / this.element.fillPatternScale().x, y: 0 });

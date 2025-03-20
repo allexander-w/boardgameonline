@@ -86,7 +86,7 @@ function DuosideElement(src, options = {}) {
     }
 
     this.destroyElement = () => {
-        ws.receiver.send('element.destroy', { id: this.element._id });
+        ws.receiver.send('element.destroy', { id: this.element.id() });
 
         this.element.attrs.link = null;
         this.element.off();

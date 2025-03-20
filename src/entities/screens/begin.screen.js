@@ -13,6 +13,7 @@ function BeginScreen() {
 
     const input = generator.getNode("#fname");
     const button = generator.getNode(".sign");
+    const form = generator.getNode("form.field-wrapper");
 
     this.sign = async (e) => {
         e.preventDefault();
@@ -23,6 +24,7 @@ function BeginScreen() {
 
     this.on = () => {
         button.addEventListener("click", this.sign);
+        form.addEventListener("submit", this.sign);
     }
 
     this.off = () => {
