@@ -2,6 +2,8 @@ import Konva from "konva";
 import {objectFit, objectFitCenter} from "../utils/objectFit";
 import ws from "../core/websocket";
 
+import { emitter } from "../core";
+
 export const duosideElement = (options) => {
         const el = new Konva.Rect({
             x: 0,
@@ -13,16 +15,10 @@ export const duosideElement = (options) => {
             fillPatternRepeat: "no-repeat",
             cornerRadius: 30,
             draggable: true,
-            prevPosition: { x: options.x || 0, y: options.y || 0 },
             flipped: false,
 
             ...options
         });
-
-        el.prevPosition = (coordinates) => {
-            if ( !coordinates ) return el.attrs.prevPosition;
-            el.attrs.prevPosition = coordinates;
-        }
 
         el.flipped = (flipped) => {
             if ( flipped === undefined ) return el.attrs.flipped;
@@ -50,9 +46,9 @@ export const diceElement = (options = {}) => {
 }
 
 export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise((resolve) => {
-    ws.emitter.emit("loading", src);
+    // ws.emitter.emit("loading", src);
+    emitter.emit("screen.preloader.loading", src);
     const image = new Image();
-
 
     image.onload = () => {
         const { scale, offset } = objectFit(duoside, image, isSprite);
@@ -60,12 +56,13 @@ export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise(
         duoside.fillPatternOffset(offset);
 
         duoside.fillPatternImage(image);
-        ws.emitter.emit("loaded", src);
+
+        emitter.emit("screen.preloader.loaded", src);
         resolve(image);
     }
 
     image.onerror = () => {
-        ws.emitter.emit("loaded", null);
+        emitter.emit("screen.preloader.loaded", null);
     }
 
     image.src = src;

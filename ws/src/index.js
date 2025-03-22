@@ -7,6 +7,9 @@ const Bank = require("./models/bank.model");
 
 const actions = require("../../shared/actions/action.types.cjs");
 
+const fs = require("fs");
+const path = require("path");
+
 let users = [];
 let syncUser = null;
 let bank = null;
@@ -21,7 +24,7 @@ ws.on("request", req => {
 
         const router = Router(data);
 
-        router.use( actions.connected, async (data) => {
+        router.use("api.register.connected", async (data) => {
                 const user = new User(Date.now(), connection);
                 user.setName(data.payload?.name || "");
                 users.push(user);
@@ -31,14 +34,20 @@ ws.on("request", req => {
                 }
 
                 console.log(users);
-                user.send(actions.connected, { user: user, message: "connected" });
+                user.send("api.register.connected", { user: user, message: "connected" });
 
                 users.forEach(u => {
                     if (u.id === data.payload.user) return false;
-                    u.send(actions.join, { user, users, syncUser: syncUser });
+                    u.send("api.register.join", { user, users, syncUser: syncUser });
                 });
-
         })
+
+        if ( data.action === "api.register.connected" ) {
+            return false;
+        }
+
+        router.redirect(data.action, users);
+        return false;
 
         router.redirect(actions.mousemove, users);
         router.redirect(actions.flip, users);
@@ -68,6 +77,24 @@ ws.on("request", req => {
         /* HAND API */
 
 
+
+        // router.use("api.images.scan", (data) => {
+        //     const user = users.find(element => element.id === data.payload.user);
+        //     const result = {};
+        //
+        //     const dir = path.join(__dirname, "public/paleo");
+        //
+        //     fs.readdirSync(dir).forEach(folder => {
+        //         const folderPath = path.join(dir, folder);
+        //         if (fs.lstatSync(folderPath).isDirectory()) {
+        //             result[folder] = fs.readdirSync(folderPath)
+        //                 .filter(file => /\.(png|jpe?g|gif)$/i.test(file))
+        //                 .map(file => `${folder}/${file}`);
+        //         }
+        //     });
+        //
+        //     user.send('api.images.scan', { user, result });
+        // })
 
         /* BANK API */
         router.redirect('api.bank.table', users);
