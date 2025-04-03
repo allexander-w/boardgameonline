@@ -4,7 +4,7 @@ class CursorHandler {
         this.usersManager = usersManager;
         this.cursorsManager = cursorsManager;
 
-        this.emitter.on("api.cursors.move", this.cursorsManager.remoteMove);
+        this.emitter.on("api.cursors.move", this.cursorsManager.remoteMove.bind(this.cursorsManager));
     }
 }
 

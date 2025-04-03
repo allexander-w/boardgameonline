@@ -1,3 +1,5 @@
+import Konva from "konva";
+
 class CardsManager {
     constructor(layersManager) {
         this.layersManager = layersManager;
@@ -20,6 +22,16 @@ class CardsManager {
 
         layer.add(card.element);
         this.cards.set(card.element.id(), card);
+    }
+
+    dragstart(e) {
+        const card = this.getCard(e.target.id());
+        if ( card ) card.dragstart();
+    }
+
+    dragend(e) {
+        const card = this.getCard(e.target.id());
+        if ( card ) card.dragend();
     }
 }
 

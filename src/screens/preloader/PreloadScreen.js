@@ -1,5 +1,4 @@
-import { preloadScreenTemplate } from "./templates/preloader.template";
-import {loadingFileTemplate} from "../../factory/markup/preloader.template";
+import { preloadScreenTemplate, loadingFileTemplate } from "./templates/preloader.template";
 
 class PreloadScreen {
     constructor(generator) {

@@ -154,117 +154,161 @@ h1 {
 #bottom {
   position: fixed;
   left: 50%;
-  transform: translateX(-50%);
-  bottom: 40px;
-  z-index: 222;
-}
-
-
-.resources {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-
-}
-
-.resource-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  cursor: pointer;
-}
-
-.resource-item .image {
-  width: 70px;
-  height: 70px;
-  border-radius: 2px;
-  border: 1px solid #414141;
-  background-color: #1F2B37;
-  position: relative;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.resource-item .image:before {
-  content: "";
-  position: absolute;
-  height: 16px;
-  bottom: 1px;
   width: 100%;
-  background-color: #0E1A26;
-  z-index: 1;
-}
-
-.resource-item .image img {
-  width: 70%;
-  height: 70%;
-  object-fit: contain;
-  position: relative;
-  z-index: 2;
-}
-
-.plank {
-  width: 64px;
-  height: 16px;
-  border-radius: 2px;
-  border: 1px solid #414141;
-  background-color: #0E1A26;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 4px;
-}
-
-.plank span {
-  font-size: 12px;
-}
-
-
-#notifications {
-  position: fixed;
-  right: 40px;
-  top: 40px;
-
-  width: 250px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
+  transform: translateX(-50%);
+  bottom: 0px;
   z-index: 222;
-}
-
-.notification {
-  border: 1px solid #414141;
-  background-color: #1F2B37;
-  border-radius: 2px;
-  box-shadow: 0px 2px 0px 0px #0E1A26;
 
   display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+#actions {
+  width: 20%;
+  background-color: #EFF0F2;
+  height: 200px;
+  position: relative;
+
+  bottom: -100px;
+  transition: .3s ease;
+  border-radius: 12px 12px 0 0;
+  padding: 40px 20px;
+
+  overflow: auto;
+
+  color: #333;
+}
+
+#actions:hover {
+  bottom: 0px;
+}
+
+#actions:before {
+  content: "Действия";
+  height: 24px;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  width: 100%;
+  color: #fff;
+  background-color: #C7AF6B;
+
+  text-align: center;
+  font-size: 12px;
+  border-radius: 12px 12px 0 0;
+}
+
+.actions-empty p {
+  font-size: 12px;
+  color: #333;
+}
+
+.actions-header {
+  display: flex;
   align-items: center;
-  padding: 4px 20px;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.actions-header p {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+.actions-header img {
+  width: 32px;
+  height: auto;
+}
+
+.actions-menu {
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
-.notification p:first-child {
-  font-size: 32px;
-  line-height: 0;
-  font-family: Inter, sans-serif;
+.action-menu-item {
+  width: calc(33% - 14px);
 }
 
-.notification p:last-child {
-  color: #fff;
+.action-menu-item .icon {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  background-color: #D9D9D9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: .3s ease;
+}
+
+.action-menu-item .icon:hover {
+  background-color: #C7AF6B;
+}
+
+.action-menu-item .icon img {
+  max-width: 40%;
+  height: 40%;
+  object-fit: contain;
+}
+
+#tabs {
+  width: 40%;
+  background-color: #EFF0F2;
+  height: 76px;
+}
+
+#history {
+  width: 20%;
+  background-color: #EFF0F2;
+  height: 200px;
+  position: relative;
+
+  bottom: -100px;
+  transition: .3s ease;
+  border-radius: 12px 12px 0 0;
+  overflow: auto;
+  padding: 40px 32px;
+}
+
+#history:hover {
+  bottom: 0px;
+}
+
+#history:before {
+  content: "История событий";
+  height: 24px;
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  left: 0;
+  background-color: #C7AF6B;
+
+  text-align: center;
   font-size: 12px;
-  line-height: normal;
-  font-family: Inter, sans-serif;
+  border-radius: 12px 12px 0 0;
 }
 
+.notification {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  gap: 16px;
+}
 
+.notification span {
+  font-size: 12px;
+  color: #333;
+  opacity: .3;
+}
 
-
+.notification p {
+  color: #333;
+  font-size: 12px;
+}
 
 .begin-screen {
   -webkit-background-size: cover;

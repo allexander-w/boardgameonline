@@ -18,7 +18,6 @@ class PreloadManager {
         this.preloadScreen.update(src);
 
         if (this.countLoaded === this.countForLoading) {
-            this.ws.connect();
             this.preloadScreen.off();
             this.emitter.off("loaded");
             this.emitter.off("synced");

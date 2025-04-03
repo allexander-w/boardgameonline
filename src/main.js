@@ -1,12 +1,11 @@
 import './style.css';
-import BeginScreen from "./entities/screens/begin.screen";
-// import PreloaderScreen from "./entities/screens/preloader.screen";
+import BeginScreen from "./screens/begin";
 import Preloader from "./screens/preloader";
 
 import config from "./config";
 import { usersManager } from "./core";
 
-const beginScreen = new BeginScreen();
+const beginScreen = BeginScreen.init();
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
     usersManager.register({ name });

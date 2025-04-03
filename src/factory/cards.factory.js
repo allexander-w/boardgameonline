@@ -1,7 +1,5 @@
 import Konva from "konva";
 import {objectFit, objectFitCenter} from "../utils/objectFit";
-import ws from "../core/websocket";
-
 import { emitter } from "../core";
 
 export const duosideElement = (options) => {
@@ -46,7 +44,6 @@ export const diceElement = (options = {}) => {
 }
 
 export const loadImageDuosideElement = (duoside, src, isSprite) => (new Promise((resolve) => {
-    // ws.emitter.emit("loading", src);
     emitter.emit("screen.preloader.loading", src);
     const image = new Image();
 

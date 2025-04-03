@@ -13,6 +13,7 @@ import CardsManager from "./managers/CardsManager";
 import SystemHandler from "./handlers/SystemHandler";
 import RegisterHandler from "./handlers/RegisterHandler";
 import CursorHandler from "./handlers/CursorHandler";
+import CardsHandler from "./handlers/CardsHandler";
 
 
 const emitter = mitt();
@@ -30,9 +31,10 @@ const cursorsManager = new CursorsManager(usersManager, layersManager, senderMan
 const handlerManager = new HandlerManager();
 const cardsManager = new CardsManager(layersManager);
 
-handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersManager, cursorsManager));
-handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager));
+handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
+handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new CursorHandler(emitter, usersManager, cursorsManager));
+handlerManager.registerHandle(new CardsHandler(emitter, cardsManager, layersManager));
 
 
 export {

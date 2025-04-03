@@ -29,7 +29,7 @@ class Camera {
     }
 
     initializeCamera() {
-        const layoutClientRect = this.boardLayer.getClientRect();
+        const layoutClientRect = this.stage.getClientRect();
         const coordinates = {
             width: (layoutClientRect.x + layoutClientRect.width) || 1,
             height: (layoutClientRect.y + layoutClientRect.height) || 1

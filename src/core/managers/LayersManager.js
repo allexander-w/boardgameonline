@@ -19,6 +19,9 @@ class LayersManager {
         const layer = new this.CanvasAdapter.Layer();
         this.layers.set(key, layer);
         this.generalStage.add(layer);
+
+        this.getLayer("board")?.moveToTop();
+        this.getLayer("cursors")?.moveToTop();
     }
 
     getLayer = (key) => {
