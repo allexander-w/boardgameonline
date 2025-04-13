@@ -113,6 +113,15 @@ function PaleoHeaps(board, config) {
     }
 
 
+    /* Рендер изобретений */
+    for ( const [index, value] of new Array(5).entries() ) {
+        const src = '/paleo/picture/' + (index + 1) + '.png';
+        const options =  { bgURI: null, id: "picture_" + index, draggable: true, custom: true, x: -1000, y: -1000, width: 452 / 2, height: 1006 / 2, opacity: 1 };
+
+        const card = new DuosideElement(src, options);
+        game.add(card.element);
+    }
+
 
     /* Добавление модуля нотификаций для интерфейса */
     gameInterface.addModule("notifications", new NotificationsModule());
