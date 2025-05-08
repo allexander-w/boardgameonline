@@ -29,7 +29,7 @@ layersManager.registerLayer('cursors');
 
 const cursorsManager = new CursorsManager(usersManager, layersManager, senderManager);
 const handlerManager = new HandlerManager();
-const cardsManager = new CardsManager(layersManager);
+const cardsManager = new CardsManager(layersManager, senderManager);
 
 handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));

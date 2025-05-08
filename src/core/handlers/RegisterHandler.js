@@ -7,6 +7,7 @@ class RegisterHandler {
         this.moduleManager = moduleManager;
 
         this.emmiter.on("api.register.connected", this.connected.bind(this));
+        this.emmiter.on("api.register.disconnect", this.disconnect.bind(this));
         this.emmiter.on("api.register.join", this.join.bind(this));
     }
 
@@ -17,6 +18,13 @@ class RegisterHandler {
 
         this.usersManager.user.id = data.user.id;
         this.sender.executeStack();
+    }
+
+    disconnect(data) {
+        const notificationsManager = this.moduleManager.getModule("notifications");
+        notificationsManager.notify("Пользователь " + name + " отсоединился...");
+
+        this.usersManager.deleteUser(data.id);
     }
 
     join(data) {

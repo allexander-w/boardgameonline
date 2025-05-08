@@ -5,10 +5,15 @@ import Preloader from "./screens/preloader";
 import config from "./config";
 import { usersManager } from "./core";
 
+function randomInteger(min, max) {
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+}
+
 const beginScreen = BeginScreen.init();
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
-    usersManager.register({ name });
+    usersManager.register({ name, avatar: randomInteger(1, 10) });
 
     Preloader.init();
 

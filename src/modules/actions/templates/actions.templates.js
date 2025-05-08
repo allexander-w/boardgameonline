@@ -8,7 +8,7 @@ export const SelectedCardTemplate = (el) => {
     return `
         <div class="actions">
             <div class="actions-header">
-                <img src="${ el.src?.bg }" alt="">
+                <img src="${ el.src?.bg || el.src?.[0] }" alt="">
                 <p>Выбрана 1 карта - ${ el.element.id() }</p>
             </div>
             
@@ -34,9 +34,7 @@ export const SelectedCardTemplate = (el) => {
 
 export const SelectedGroupCardTemplate = (count) => {
     if ( !count ) {
-        return `
-            <div class="actions"></div>
-        `
+        return EmptyActionsTemplate;
     }
 
     return `
@@ -51,7 +49,7 @@ export const SelectedGroupCardTemplate = (count) => {
                 
                     <div class="action-menu-item group-item" data-type="shuffle">
                         <div class="icon" title="Перемешать">
-                            <img src="/actions/flip.svg" alt="">
+                            <img src="/actions/shuffle.svg" alt="">
                         </div>
                     </div>
                                         

@@ -5,9 +5,9 @@ class UIManager {
         this.generator = generator;
     }
 
-    updateMessageUI(message) {
+    updateMessageUI(message, options) {
         const wrapper = this.generator.getNode("#history");
-        this.generator.appendToBegin(wrapper, NotificationItemTemplate(message));
+        this.generator.appendToBegin(wrapper, NotificationItemTemplate(message, options));
     }
 }
 

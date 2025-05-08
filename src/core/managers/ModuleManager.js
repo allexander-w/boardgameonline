@@ -3,11 +3,11 @@ class ModuleManager {
         this.modules = new Map();
     }
 
-    registerModule(key, module) {
+    registerModule(key, module, arg) {
         this.modules.set(key, module);
         if ( !module.init ) return false;
 
-        module.init();
+        module.init(arg);
         return true;
     }
 

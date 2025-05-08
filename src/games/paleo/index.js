@@ -3,6 +3,9 @@ import cameraModule from "../../modules/camera";
 import handsModule from "../../modules/hand";
 import notificationsModule from "../../modules/notifications";
 import actionsModule from "../../modules/actions";
+import tabsModule from "../../modules/tabs";
+import usersModule from "../../modules/users";
+import resourcesModule from "../../modules/resources";
 
 import MainScene from "../../scenes/MainScene";
 import FieldCard from "../../entities/FieldCard";
@@ -47,10 +50,10 @@ class PaleoScene extends MainScene {
         /* Рендер изобретений */
         for ( const [index, value] of new Array(13).entries() ) {
             const src = '/paleo/creations/' + (index + 1) + '.png';
-            const options =  { id: "creations_" + index, draggable: true, x: -1000 + (index * 250), y: 2850, width: 200, height: 200, opacity: 1 };
+            const options =  {  draggable: true, x: -1000 + (index * 250), y: 2850, width: 200, height: 200, opacity: 1 };
 
             for (let i = 0; i < 5; i++) {
-                const card = new DuosideCard({ front: src, bg: src }, options);
+                const card = new DuosideCard({ front: src, bg: src }, { id: "creations_" + index + "_" + i, ...options });
                 cardsManager.createCard(card);
             }
         }
@@ -105,6 +108,9 @@ class PaleoScene extends MainScene {
         this.moduleManager.registerModule("camera", cameraModule);
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
+        this.moduleManager.registerModule("tabs", tabsModule);
+        this.moduleManager.registerModule("users", usersModule);
+        this.moduleManager.registerModule("resources", resourcesModule);
 
         const notificationManager = this.moduleManager.getModule("notifications");
         notificationManager.notify("Paleo полностью загружено!");

@@ -11,6 +11,8 @@ class KeyboardController {
     }
 
     handleKeyDown(event) {
+        if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+
         if (this.keys.hasOwnProperty(event.code.replace("Key", ""))) {
             this.keys[event.code.replace("Key", "")] = true;
             if (!this.intervalMoving) {

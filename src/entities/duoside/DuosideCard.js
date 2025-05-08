@@ -29,8 +29,32 @@ class DuosideCard extends InterfaceCard {
         return [
             { method: "flip", name: "Перевернуть" },
             { method: "rotateLeft", name: "Повернуть влево" },
-            { method: "rotateRight", name: "Повернуть вправо" }
+            { method: "rotateRight", name: "Повернуть вправо" },
+            { method: "toBottom", name: "Вниз колоды" },
+            { method: "toTop", name: "Вверх колоды" },
         ]
+    }
+
+    get forSave() {
+        return {
+            x: this.element.x(),
+            y: this.element.y(),
+            zIndex: this.element.zIndex(),
+            rotation: this.element.rotation(),
+            id: this.element.id(),
+
+            flipped: this.element.flipped(),
+        }
+    }
+
+    forLoad(options) {
+        this.element.x(options.x);
+        this.element.y(options.y);
+        this.element.id(options.id);
+        this.element.zIndex(options.zIndex);
+        this.element.rotation(options.rotation);
+
+        options.flipped ? this.cardManager.flipFront() : this.cardManager.flipBack();
     }
 }
 

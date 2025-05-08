@@ -2,7 +2,8 @@ class UsersManager {
     constructor() {
         this.user = {
             id: null,
-            name: ""
+            name: "",
+            avatar: ""
         }
 
         this.users = new Map();
@@ -18,6 +19,10 @@ class UsersManager {
 
     setUser(id, user) {
         return this.users.set(id, user);
+    }
+
+    deleteUser(id) {
+        this.users.delete(id);
     }
 }
 

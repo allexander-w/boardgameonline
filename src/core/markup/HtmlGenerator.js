@@ -22,6 +22,10 @@ function HtmlGenerator() {
         node.insertAdjacentHTML('afterbegin', markup);
     }
 
+    this.appendToEnd = (node, markup) => {
+        node.insertAdjacentHTML('beforeend', markup);
+    }
+
     this.removeLastChild = (node) => {
         if ( node.lastElementChild ) {
             node.lastElementChild.remove();

@@ -5,6 +5,7 @@ class User {
         this.id = id;
         this.hidden = new Set();
         this.name = "";
+        this.avatar = ""
 
         Object.defineProperty(this, 'connection', {
             value: connection,
@@ -24,6 +25,10 @@ class User {
 
     setName(name) {
         this.name = name;
+    }
+
+    setAvatar(ava) {
+        this.avatar = ava;
     }
 
     send(action, payload) {

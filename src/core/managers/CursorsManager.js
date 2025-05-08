@@ -7,12 +7,12 @@ class CursorsManager {
         this.layersManager = layersManager;
         this.senderManager = senderManager;
 
-        this.boardLayer = this.layersManager.getLayer("board");
-        this.boardLayer.on("mousemove", this.move.bind(this));
+        this.boardStage = this.layersManager.stage;
+        this.boardStage.on("mousemove", this.move.bind(this));
     }
 
     create({ id, user }) {
-        const cursor = new Cursor(Konva, this.layersManager, { id, user });
+        const cursor = new Cursor(Konva, this.layersManager, { id, ...user });
         this.usersManager.setUser(id, cursor);
     }
 
@@ -22,7 +22,7 @@ class CursorsManager {
     }
 
     move() {
-        const pointerPos = this.boardLayer.getRelativePointerPosition();
+        const pointerPos = this.boardStage.getRelativePointerPosition();
         this.senderManager.send("api.cursors.move", { x: pointerPos.x, y: pointerPos.y });
     }
 

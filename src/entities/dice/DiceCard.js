@@ -29,6 +29,29 @@ class DiceCard extends InterfaceCard {
             { method: "roll", name: "Бросить" }
         ]
     }
+
+    get forSave() {
+        return {
+            x: this.element.x(),
+            y: this.element.y(),
+            zIndex: this.element.zIndex(),
+            id: this.element.id(),
+
+            result: this.cardManager.index,
+        }
+    }
+
+    forLoad(options) {
+        this.element.x(options.x);
+        this.element.y(options.y);
+        this.element.id(options.id);
+        this.element.zIndex(options.zIndex);
+        this.element.rotation(options.rotation);
+
+        this.cardManager.index = parseInt(options.result);
+        this.element.fillPatternOffset({ x: (this.element.width() * parseInt(options.result)) / this.element.fillPatternScale().x, y: 0 });
+    }
+
 }
 
 export default DiceCard;

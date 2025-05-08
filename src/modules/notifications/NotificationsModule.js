@@ -4,9 +4,9 @@ class NotificationsModule {
         this.notifications = [];
     }
 
-    notify(message) {
+    notify(message, options) {
         this.notifications.push(message);
-        this.uiManager.updateMessageUI(message);
+        this.uiManager.updateMessageUI(message, options);
     }
 }
 

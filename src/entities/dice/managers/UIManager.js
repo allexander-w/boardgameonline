@@ -7,8 +7,8 @@ class UIManager {
         return duosideElement(options);
     }
 
-    createSideImages(el, src) {
-        loadImageDuosideElement(el, src.front, 6);
+    createSideImages(el, src, sides = 6) {
+        loadImageDuosideElement(el, src.front, sides);
     }
 
     getRollAnimation(el, cb) {

@@ -1,9 +1,16 @@
 class HandHandler {
-    constructor( handManager, layerManager ) {
+    constructor( handManager, layerManager, emitter) {
         this.handManager = handManager;
         this.layerManager = layerManager;
+        this.emitter = emitter;
         this.board = this.layerManager.getLayer("board");
         this.stage = this.layerManager.stage;
+
+
+        this.emitter.on("modules.hand.takeHalf", this.handManager.remoteTakeHalf.bind(this.handManager));
+        this.emitter.on("modules.hand.take", this.handManager.remoteTake.bind(this.handManager));
+        this.emitter.on("modules.hand.put", this.handManager.remotePut.bind(this.handManager));
+        this.emitter.on("modules.hand.takeAll", this.handManager.remoteTakeAll.bind(this.handManager));
 
         this.board.on("click", this.validateEntityType.bind(this));
         this.stage.on("click", this.validatePutEvent.bind(this));

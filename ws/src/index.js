@@ -27,6 +27,7 @@ ws.on("request", req => {
         router.use("api.register.connected", async (data) => {
                 const user = new User(Date.now(), connection);
                 user.setName(data.payload?.name || "");
+                user.setAvatar(data.payload?.avatar || "");
                 users.push(user);
 
                 if ( !syncUser ) {
@@ -183,7 +184,7 @@ ws.on("request", req => {
         }
 
         for ( const user of users ) {
-            user.send(actions.disconnect, disconnectedUser);
+            user.send("api.register.disconnect", disconnectedUser);
         }
 
         if ( !users.length ) {
