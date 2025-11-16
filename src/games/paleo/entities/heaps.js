@@ -145,7 +145,6 @@ function PaleoHeaps(board, config) {
 
 
     ws.emitter.on("rolled", (data) => {
-        console.log(data);
         const dice = board.stage.findOne("#" + data.id);
         dice.fillPatternOffset({ x: (dice.width() * data.index) / dice.fillPatternScale().x, y: 0 });
         // dice.attrs.link.roll(null, data);

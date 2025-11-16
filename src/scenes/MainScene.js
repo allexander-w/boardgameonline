@@ -3,6 +3,9 @@ import cameraModule from "../modules/camera";
 import actionsModule from "../modules/actions";
 import handsModule from "../modules/hand";
 import tabsModule from "../modules/tabs";
+import resourcesModule from "../modules/resources";
+import saverModule from "../modules/saver";
+import {ws} from "../core";
 
 class MainScene {
     constructor(layerManager, layers, preloader, moduleManager) {
@@ -29,6 +32,16 @@ class MainScene {
                 this.layerManager.registerLayer(l);
             }
         }
+    }
+
+    initialized(msg) {
+        this.moduleManager.registerModule("camera", cameraModule);
+        this.moduleManager.registerModule("saver", saverModule);
+
+        const notificationManager = this.moduleManager.getModule("notifications");
+        notificationManager.notify(msg);
+
+        ws.connect();
     }
 }
 

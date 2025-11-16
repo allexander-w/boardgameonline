@@ -8,7 +8,7 @@ export const SelectedCardTemplate = (el) => {
     return `
         <div class="actions">
             <div class="actions-header">
-                <img src="${ el.src?.bg || el.src?.[0] }" alt="">
+                <img src="${ el?.src?.bg || el?.src?.[0] }" alt="">
                 <p>Выбрана 1 карта - ${ el.element.id() }</p>
             </div>
             

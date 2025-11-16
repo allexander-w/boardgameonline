@@ -131,8 +131,6 @@ function ResourcesBankModule(board) {
             // _putResources(fromWs.pos, fromWs.entries);
             // console.log(fromWs.entries);
 
-            console.log('check', fromWs);
-
             for ( const [key,v] of fromWs.entries ) {
                 const card = new ResourceElement(v.src, v, this);
                 layer.add(card.element);

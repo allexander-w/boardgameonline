@@ -3,13 +3,12 @@ import {cardsManager, layersManager, moduleManager, ws} from "../../core";
 import cameraModule from "../../modules/camera";
 import saverModule from "../../modules/saver";
 import resourcesModule from "../../modules/resources";
+import automaticsModule from "../../modules/automatic";
 
 import MainScene from "../../scenes/MainScene";
 import FieldCard from "../../entities/FieldCard";
 import DuosideCard from "../../entities/duoside/DuosideCard";
-import DiceCard from "../../entities/dice/DiceCard";
 import config from "./configs/resources.config"
-import StateCard from "./entities/state/StateCard";
 
 class TwomScene extends MainScene {
     constructor(preloadScreen) {
@@ -99,10 +98,16 @@ class TwomScene extends MainScene {
         this.moduleManager.registerModule("resources", resourcesModule, config);
         this.moduleManager.registerModule("saver", saverModule);
 
+        this.moduleManager.registerModule("automatics", automaticsModule);
+
+        const automaticsManager = this.moduleManager.getModule("automatics");
+
         const notificationManager = this.moduleManager.getModule("notifications");
         notificationManager.notify("Семь чудес полностью загружено!");
 
         ws.connect();
+
+        automaticsManager.takeAllFromPoint();
     }
 }
 

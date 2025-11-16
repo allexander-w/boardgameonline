@@ -6,8 +6,6 @@ class SaverManager {
     constructor(uiManager, layersManager) {
         this.uiManager = uiManager;
         this.layersManager = layersManager;
-
-
     }
 
     save() {

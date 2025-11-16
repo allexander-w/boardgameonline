@@ -34,6 +34,8 @@ class HandManager {
     }
 
     take(el) {
+        console.log( el.getClientRect() );
+
         this.hands.push(el);
         el.hide();
 

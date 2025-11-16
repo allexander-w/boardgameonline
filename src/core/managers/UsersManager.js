@@ -3,7 +3,7 @@ class UsersManager {
         this.user = {
             id: null,
             name: "",
-            avatar: ""
+            avatar: "",
         }
 
         this.users = new Map();
