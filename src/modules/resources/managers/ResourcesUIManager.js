@@ -6,7 +6,7 @@ class ResourcesUIManager {
     }
 
     getWrapper() {
-        return this.generator.getNode(".resources-list");
+        return this.generator.getNode(".resource-grid");
     }
 
     getResourcesUI(resources) {

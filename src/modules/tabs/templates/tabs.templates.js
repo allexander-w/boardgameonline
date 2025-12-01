@@ -1,3 +1,3 @@
 export const TabItemTemplate = (id, name) => `
-    <div class="tab-item" data-id="${ id }">${ name }</div>
+    <button class="tab-btn" data-id="${ id }"><i class="ph ${name}"></i></button>
 `

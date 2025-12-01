@@ -1,5 +1,5 @@
 import MainScene from "../../scenes/MainScene";
-import {cardsManager, layersManager, moduleManager, ws} from "../../core";
+import {cardsManager, emitter, layersManager, moduleManager, ws} from "../../core";
 import FieldCard from "../../entities/FieldCard";
 import cameraModule from "../../modules/camera";
 import resourcesModule from "../../modules/resources";
@@ -8,12 +8,14 @@ import saverModule from "../../modules/saver";
 import StateCard from "../thiswarofmine/entities/state/StateCard";
 import DuosideCard from "../../entities/duoside/DuosideCard";
 
+
 class ViticultureScene extends MainScene {
     constructor(preloadScreen) {
         super(layersManager, ["fixed"], preloadScreen, moduleManager);
         this.moduleManager = moduleManager;
 
         this.initialization();
+        emitter.on("screen.preloader.finish", this.initialized.bind(this, "Виноделие успешно загружено"));
     }
 
     initialization() {
@@ -153,15 +155,7 @@ class ViticultureScene extends MainScene {
         }
         /* dad */
 
-
-        this.moduleManager.registerModule("camera", cameraModule);
         this.moduleManager.registerModule("resources", resourcesModule, config);
-        this.moduleManager.registerModule("saver", saverModule);
-
-        const notificationManager = this.moduleManager.getModule("notifications");
-        notificationManager.notify("This war of mine полностью загружено!");
-
-        ws.connect();
     }
 }
 

@@ -18,9 +18,11 @@ class PreloadManager {
         this.preloadScreen.update(src);
 
         if (this.countLoaded === this.countForLoading) {
-            this.preloadScreen.off();
+            this.preloadScreen.off();``
             this.emitter.off("screen.preloader.loading");
             this.emitter.off("screen.preloader.loaded");
+
+            this.emitter.emit("screen.preloader.finish")
         }
     }
 }

@@ -1,3 +1,5 @@
+import {emitter} from "../index";
+
 class CardsManager {
     constructor(layersManager, senderManager) {
         this.layersManager = layersManager;
@@ -25,12 +27,18 @@ class CardsManager {
         this.cards.set(card.element.id(), card);
     }
 
+    registerCard(card) {
+        this.cards.set(card.element.id(), card);
+    }
+
     removeCard(id) {
         this.cards.delete(id);
     }
 
     dragmove(element) {
         const pointerPos = this.boardLayer.getRelativePointerPosition();
+
+
 
         this.senderManager.send("api.drag.move", { x: element.target.x(), y: element.target.y(), id: element.target.id() });
         this.senderManager.send("api.cursors.move", { x: pointerPos.x, y: pointerPos.y });
@@ -50,6 +58,8 @@ class CardsManager {
 
         card.dragstart();
         this.senderManager.send("api.drag.start", { id: e.target.id() });
+
+        this.layersManager.clearCacheAllGroups();
     }
 
     remoteDragstart(data) {
@@ -57,6 +67,7 @@ class CardsManager {
         if ( !card ) return false;
 
         card.dragstart();
+        this.layersManager.clearCacheAllGroups();
     }
 
     dragend(e) {
@@ -64,22 +75,39 @@ class CardsManager {
         if ( !card ) return false;
 
         card.dragend();
+
+        const stage = this.boardStage;
+        const stageHeight = stage.height();
+
+        const absPos = e.target.getAbsolutePosition();
+        const rect = e.target.getClientRect();
+        const cardBottomYInContainer = absPos.y + rect.height;
+
+        if (cardBottomYInContainer >= stageHeight) {
+            emitter.emit("intersection.bottom", e.target);
+        }
+
         this.senderManager.send("api.drag.end", { id: e.target.id() });
+        this.layersManager.cacheAllGroups(100);
     }
 
     remoteDragend(data) {
         const card = this.getCard(data.id);
         if ( !card ) return false;
-
         card.dragend();
+
+        this.layersManager.cacheAllGroups(100);
     }
 
     remoteAction(data) {
         const card = this.getCard(data.id);
         if ( !card ) return false;
 
+        this.layersManager.clearCacheAllGroups();
+
         if ( card.cardManager && card.cardManager[data.method] ) {
             card.cardManager[data.method]({ server: true }, data.payload);
+            this.layersManager.cacheAllGroups(450);
         }
     }
 }

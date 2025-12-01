@@ -6,25 +6,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vite App</title>
     <link rel="stylesheet" href="./src/assets/preloader.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
   </head>
   <body>
 
-    <div id="interface">
-        <div id="top"></div>
-        <div id="bottom">
-          <div id="actions"></div>
-          <div id="tabs">
-            <div class="tabs-list">
-<!--              <div class="tab-item active" data-id="moduleid">Пользователи</div>-->
-<!--              <div class="tab-item" data-id="moduleid">Еще что то</div>-->
+
+  <div class="custom-cursor">
+  </div>
+
+    <div class="ui-layer">
+        <!-- 1. Top Header -->
+        <header class="glass-panel top-bar">
+            <div class="room-info">
+                <i class="ph ph-users-three" style="font-size: 1.5rem;"></i>
+                <div>
+                    <div class="room-code">ROOM #8291</div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Standard • Co-op</div>
+                </div>
             </div>
-            <div class="tabs-content"></div>
-          </div>
-          <div id="history"></div>
+
+            <div class="turn-tracker-container">
+                <div class="timer-display">01:45</div>
+                <div class="turn-indicator">
+                    <span class="turn-label">Active Turn</span>
+                    <span class="active-player">Player One</span>
+                </div>
+            </div>
+
+            <div class="top-actions">
+<!--                <button class="icon-btn" title="Settings"><i class="ph ph-gear"></i></button>-->
+                <button class="icon-btn" title="Sound"><i class="ph ph-speaker-high"></i></button>
+                <button class="btn-end-turn">Завершить ход</button>
+            </div>
+        </header>
+
+        <!-- 2. Left Sidebar -->
+        <aside class="left-sidebar">
+
+
+            <!-- Tools -->
+<!--            <div class="glass-panel tool-tray tool-tray-cards"></div>-->
+
+            <!-- Zoom Controls -->
+            <div class="glass-panel tool-tray tool-tray-cards" style="margin-top: auto;">
+            </div>
+        </aside>
+
+
+        <!-- 3. Right Sidebar (Tabs) -->
+        <aside class="glass-panel right-sidebar">
+            <div class="tab-header"></div>
+
+            <div class="tab-content tab-pane active">
+            </div>
+        </aside>
+
+        <div class="bottom-pane glass-panel active">
         </div>
+
     </div>
 
-    <div id="app"></div>
+    <div class="game-viewport" id="app"></div>
+
+    <div id="joystick">
+        <div id="stick"></div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

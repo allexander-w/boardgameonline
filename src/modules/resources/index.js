@@ -18,7 +18,7 @@ export default {
         new ResourcesHandler(module, uiManager, emitter, layersManager);
 
 
-        tabsManager.registerTab("resourcesTab", "Ресурсы", module.render.bind(module));
+        tabsManager.registerTab("resourcesTab", "ph-treasure-chest", module.render.bind(module));
         this.module = module;
     }
 }

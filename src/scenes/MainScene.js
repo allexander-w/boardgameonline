@@ -5,13 +5,16 @@ import handsModule from "../modules/hand";
 import tabsModule from "../modules/tabs";
 import resourcesModule from "../modules/resources";
 import saverModule from "../modules/saver";
+import Konva from "konva";
 import {ws} from "../core";
+import createPattern from "../utils/patterns/grid";
 
 class MainScene {
-    constructor(layerManager, layers, preloader, moduleManager) {
+    constructor(layerManager, layers, preloader, moduleManager, cardsManager) {
         /* Менеджер слоев */
         this.layerManager = layerManager;
         this.moduleManager = moduleManager;
+        this.cardsManager = cardsManager;
 
         /* Добавление кастомных слоев */
         this.customLayersInitialization(layers);
@@ -20,10 +23,10 @@ class MainScene {
         this.boardLayer = this.layerManager.getLayer('board');
 
 
+        this.moduleManager.registerModule("tabs", tabsModule);
         this.moduleManager.registerModule("notifications", notificationsModule);
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
-        this.moduleManager.registerModule("tabs", tabsModule);
     }
 
     customLayersInitialization(layers) {
@@ -37,6 +40,8 @@ class MainScene {
     initialized(msg) {
         this.moduleManager.registerModule("camera", cameraModule);
         this.moduleManager.registerModule("saver", saverModule);
+
+        this.layerManager.cacheAllGroups();
 
         const notificationManager = this.moduleManager.getModule("notifications");
         notificationManager.notify(msg);

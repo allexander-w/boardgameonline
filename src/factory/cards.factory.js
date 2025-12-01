@@ -14,6 +14,7 @@ export const duosideElement = (options) => {
             cornerRadius: 30,
             draggable: true,
             flipped: false,
+            perfectDrawEnabled: false,
 
             ...options
         });

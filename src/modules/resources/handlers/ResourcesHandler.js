@@ -35,7 +35,7 @@ class ResourcesHandler {
     }
 
     selectHandler(e) {
-        const parent = e.target.closest(".resource-item");
+        const parent = e.target.closest(".resource-card");
         if ( parent ) {
             this.resourcesManager.select(parent.dataset.id);
         }

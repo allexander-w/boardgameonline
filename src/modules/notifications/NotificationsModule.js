@@ -8,6 +8,10 @@ class NotificationsModule {
         this.notifications.push(message);
         this.uiManager.updateMessageUI(message, options);
     }
+
+    render() {
+        return this.uiManager.getAllMessages(this.notifications.reverse());
+    }
 }
 
 export default NotificationsModule;

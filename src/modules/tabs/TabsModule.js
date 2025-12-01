@@ -14,13 +14,15 @@ class TabsModule {
     }
 
     select(e) {
-        if ( this.selected === e.target.dataset.id ) return false;
-        this.emitter.emit("modules.tabs.prerender", e.target.dataset.id);
+        const parent = e.target.closest('.tab-btn');
 
-        this._render(e.target.dataset.id);
+        if ( this.selected === parent.dataset.id ) return false;
+        this.emitter.emit("modules.tabs.prerender", parent.dataset.id);
 
-        this.emitter.emit("modules.tabs.rendered", e.target.dataset.id);
-        this.selected = e.target.dataset.id;
+        this._render(parent.dataset.id);
+
+        this.emitter.emit("modules.tabs.rendered", parent.dataset.id);
+        this.selected = parent.dataset.id;
     }
 
     registerTab(id, name, renderer) {

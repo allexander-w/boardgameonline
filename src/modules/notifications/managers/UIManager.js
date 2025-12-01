@@ -1,4 +1,4 @@
-import {NotificationItemTemplate} from "../templates/notifications.template";
+import {NotificationItemTemplate, NotificationsTabContent} from "../templates/notifications.template";
 
 class UIManager {
     constructor(generator) {
@@ -6,8 +6,13 @@ class UIManager {
     }
 
     updateMessageUI(message, options) {
-        const wrapper = this.generator.getNode("#history");
+        const wrapper = this.generator.getNode(".log-content");
+        if ( !wrapper ) return false;
         this.generator.appendToBegin(wrapper, NotificationItemTemplate(message, options));
+    }
+
+    getAllMessages(messages) {
+        return NotificationsTabContent(messages);
     }
 }
 

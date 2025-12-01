@@ -27,11 +27,11 @@ class DuosideCard extends InterfaceCard {
 
     get options() {
         return [
-            { method: "flip", name: "Перевернуть" },
-            { method: "rotateLeft", name: "Повернуть влево" },
-            { method: "rotateRight", name: "Повернуть вправо" },
-            { method: "toBottom", name: "Вниз колоды" },
-            { method: "toTop", name: "Вверх колоды" },
+            { method: "flip", name: "Перевернуть", icon: "device-rotate" },
+            { method: "rotateLeft", name: "Повернуть влево", icon: "arrow-counter-clockwise" },
+            { method: "rotateRight", name: "Повернуть вправо", icon: "arrow-clockwise" },
+            { method: "toBottom", name: "Вниз колоды", icon: "arrow-fat-line-down" },
+            { method: "toTop", name: "Вверх колоды", icon: "arrow-fat-line-up" },
         ]
     }
 

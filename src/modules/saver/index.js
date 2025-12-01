@@ -18,7 +18,7 @@ export default {
 
         new SaverHandler(uiManager, module, emitter);
 
-        tabsManager.registerTab("saverTab", "Меню", module.render.bind(module));
+        tabsManager.registerTab("saverTab", "ph-gear", module.render.bind(module));
 
         this.module = module;
     }

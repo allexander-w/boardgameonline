@@ -1,6 +1,7 @@
 import Camera from "./Camera";
 import KeyboardController from "./controllers/KeyboardController";
 import MouseController from "./controllers/MouseController";
+import MobileJoystick from "./controllers/JoystickController";
 import { layersManager, moduleManager } from "../../core";
 
 
@@ -12,6 +13,6 @@ export default {
         const notificationsManager = moduleManager.getModule("notifications");
         notificationsManager.notify("Модуль камеры инициализирован!");
 
-        this.module = new Camera(layersManager, KeyboardController, MouseController);
+        this.module = new Camera(layersManager, KeyboardController, MouseController, MobileJoystick);
     }
 };

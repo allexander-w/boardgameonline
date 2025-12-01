@@ -2,17 +2,23 @@ import config from "../../../config";
 
 export const ResourceTemplate = (item) => {
     return `
-        <div class="resource-item" data-id="${ item.name }">
-            <img src="/${ config.scene }/resources/${item.name}.png" alt="">
-            ${ item.selected ? `<span> ${ item.selected } </span>` : '' }
+        <div class="resource-card" data-id="${ item.name }">
+            <div class="resource-card__wrapper">
+                <div class="res-icon">
+                    <img src="/${config.scene}/resources/${item.name}.png" alt="">
+                </div>
+                <div class="res-val">${item.name}</div>
+            </div>
+            
+            <div style="font-size: 0.7rem; color: var(--text-muted);">${item.selected ? `<span> В руках: ${item.selected} </span>` : ''}</div>
         </div>
     `
 }
 
 const SearchTemplate = () => {
     return `
-        <div class="search">
-            <input class="search-input" type="text" placeholder="Фильтр">
+        <div class="chat-input-area">
+            <input type="text" class="chat-input resources-search-input" placeholder="Поиск по ресурсам...">
         </div>
     `
 }
@@ -20,10 +26,12 @@ const SearchTemplate = () => {
 export const ResourcesListTemplate = (list) => {
     return `
         <div class="resources-wrapper">
-            ${ SearchTemplate() }
+            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Ресурсы</h4>
+        
+            ${SearchTemplate()}
 
-            <div class="resources-list"> 
-                ${ list.map(el => ResourceTemplate(el)).join("") } 
+            <div class="resource-grid">
+                ${list.map(el => ResourceTemplate(el)).join("")} 
             </div>
         </div>
     `

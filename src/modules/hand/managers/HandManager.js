@@ -1,10 +1,11 @@
 import {moduleManager, senderManager, cardsManager} from "../../../core";
 
 class HandManager {
-    constructor(layersManager, cardsManager, moduleManager) {
+    constructor(layersManager, cardsManager, moduleManager, UIManager) {
         this.layersManager = layersManager;
         this.cardsManager = cardsManager;
         this.moduleManager = moduleManager;
+        this.UIManager = UIManager;
 
         this.hands = [];
         this.boardLayer = this.layersManager.getLayer("board");
@@ -34,17 +35,24 @@ class HandManager {
     }
 
     take(el) {
-        console.log( el.getClientRect() );
+        this.layersManager.clearCacheAllGroups();
 
         this.hands.push(el);
         el.hide();
 
+        this.layersManager.cacheAllGroups();
         senderManager.send("modules.hand.take", { id: el.id() });
+
+        this.UIManager.renderCards(this.hands);
     }
 
     remoteTake(data) {
+        this.layersManager.clearCacheAllGroups();
+
         const card = cardsManager.getCard(data.id);
         if ( card ) card.element.hide();
+
+        this.layersManager.cacheAllGroups();
     }
 
     takeAll(el) {
@@ -52,7 +60,11 @@ class HandManager {
 
         if ( elementsAbove.length ) {
             this.hands = [...this.hands, ...elementsAbove];
+            this.layersManager.clearCacheAllGroups();
+
             elementsAbove.forEach(el => el.hide());
+
+            this.layersManager.cacheAllGroups();
 
             const actionsManager = moduleManager.getModule("actions");
             actionsManager.selectCouple(this.hands.length);
@@ -62,10 +74,14 @@ class HandManager {
     }
 
     remoteTakeAll(data) {
+        this.layersManager.clearCacheAllGroups();
+
         for ( const id of data.cards ) {
             const card = cardsManager.getCard(id);
             if ( card ) card.element.hide();
         }
+
+        this.layersManager.cacheAllGroups();
     }
 
     takeHalf(el) {
@@ -75,7 +91,9 @@ class HandManager {
             const half = elementsAbove.slice(Math.ceil(elementsAbove.length / 2));
             this.hands = [...this.hands, ...half];
 
+            this.layersManager.clearCacheAllGroups();
             half.forEach(el => el.hide());
+            this.layersManager.cacheAllGroups();
 
             const actionsManager = moduleManager.getModule("actions");
             actionsManager.selectCouple(this.hands.length);
@@ -85,19 +103,25 @@ class HandManager {
     }
 
     remoteTakeHalf(data) {
+        this.layersManager.clearCacheAllGroups();
+
         for ( const id of data.cards ) {
             const card = cardsManager.getCard(id);
             if ( card ) card.element.hide();
         }
+
+        this.layersManager.cacheAllGroups();
     }
 
     put() {
         const pos = this.boardLayer.getRelativePointerPosition();
         const config = [];
 
+        this.layersManager.clearCacheAllGroups();
+
         this.hands.forEach((el, index) => {
-            el.x(pos.x + (index + 4));
-            el.y(pos.y + (index + 4));
+            el.x(pos.x);
+            el.y(pos.y);
 
             const card = this.cardsManager.getCard(el.id());
             if ( card && card.cardManager && card.cardManager.flipBack ) card.cardManager.flipBack();
@@ -108,6 +132,8 @@ class HandManager {
             config.push({ id: el.id(), zIndex: el.zIndex(), pos });
         })
 
+        this.layersManager.cacheAllGroups();
+
         this.hands = [];
 
         const actionsManager = moduleManager.getModule("actions");
@@ -117,22 +143,25 @@ class HandManager {
     }
 
     remotePut(data) {
+        this.layersManager.clearCacheAllGroups();
+
         let index = 0;
         for ( const el of data.cards ) {
             const card = this.cardsManager.getCard(el.id);
             if ( !card ) continue;
             if ( card && card.cardManager && card.cardManager.flipBack ) card.cardManager.flipBack();
 
-            card.element.x(el.pos.x + (index + 4));
-            card.element.y(el.pos.y + (index + 4));
+            card.element.x(el.pos.x);
+            card.element.y(el.pos.y);
 
             card.element.zIndex(el.zIndex);
             card.element.show();
 
             index ++;
         }
-    }
 
+        this.layersManager.cacheAllGroups();
+    }
 }
 
 export default HandManager;

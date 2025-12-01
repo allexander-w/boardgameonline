@@ -1,4 +1,5 @@
 import './style.css';
+import "./cursor";
 import BeginScreen from "./screens/begin";
 import Preloader from "./screens/preloader";
 

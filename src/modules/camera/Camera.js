@@ -1,10 +1,14 @@
 class Camera {
-    constructor(layersManager, KeyboardController, MouseController) {
+    constructor(layersManager, KeyboardController, MouseController, MobileJoystick) {
         this.stage = layersManager.stage;
         this.boardLayer = layersManager.getLayer("board");
 
         this.keyboardController = new KeyboardController(this);
         this.mouseController = new MouseController(this.stage);
+
+        if ('ontouchstart' in window) {
+            new MobileJoystick(this);
+        }
 
         this.initializeCamera();
 

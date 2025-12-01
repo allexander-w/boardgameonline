@@ -26,7 +26,7 @@ class DiceCard extends InterfaceCard {
 
     get options() {
         return [
-            { method: "roll", name: "Бросить" }
+            { method: "roll", name: "Бросить", icon: "dice-six" }
         ]
     }
 

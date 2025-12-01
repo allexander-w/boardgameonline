@@ -6,10 +6,18 @@ const toLocalTime = () => {
 export const NotificationItemTemplate = (message, options) => {
     return `
         
-        <div class="notification">
+        <div class="log-entry">
             <span>${ toLocalTime() }</span>
-            <p style="color: ${options?.color || '#333'}">${ message }</p>
+            <p style="color: ${options?.color || '#fff'}">${ message }</p>
         </div>
 
+    `
+}
+
+export const NotificationsTabContent = (messages) => {
+    return `
+        <div class="log-content" style="flex: 1; overflow-y: auto;">
+            ${ messages.map(el => NotificationItemTemplate(el)).join("") }
+        </div>
     `
 }

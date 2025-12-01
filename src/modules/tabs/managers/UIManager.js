@@ -6,7 +6,7 @@ class UIManager {
     }
 
     setActiveChild(id, className = 'active') {
-        const node = this.generator.getNode(".tabs-list");
+        const node = this.generator.getNode(".tab-header");
         const children = Array.from(node.children);
 
         children.forEach((child, index) => {
@@ -18,16 +18,16 @@ class UIManager {
     }
 
     getTabsWindow() {
-        return this.generator.getNode(".tabs-list");
+        return this.generator.getNode(".tab-header");
     }
 
     addTab(id, name) {
-        const node = this.generator.getNode(".tabs-list");
+        const node = this.generator.getNode(".tab-header");
         this.generator.appendToBegin(node, TabItemTemplate(id, name));
     }
 
     renderContent(content) {
-        const node = this.generator.getNode(".tabs-content");
+        const node = this.generator.getNode(".tab-content");
         this.generator.removeFirstChild(node);
 
         this.generator.appendToBegin(node, content);

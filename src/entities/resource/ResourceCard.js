@@ -28,7 +28,7 @@ class ResourceCard extends InterfaceCard {
 
     get options() {
         return [
-            { method: "putAway", name: "Убарть" }
+            { method: "putAway", name: "Убарть", icon: "coin" }
         ]
     }
 

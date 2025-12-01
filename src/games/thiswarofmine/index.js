@@ -1,4 +1,4 @@
-import {cardsManager, layersManager, moduleManager, ws} from "../../core";
+import {cardsManager, emitter, layersManager, moduleManager, ws} from "../../core";
 
 import cameraModule from "../../modules/camera";
 import saverModule from "../../modules/saver";
@@ -17,6 +17,7 @@ class TwomScene extends MainScene {
         this.moduleManager = moduleManager;
 
         this.initialization();
+        emitter.on("screen.preloader.finish", this.initialized.bind(this, "TWOM успешно загружено"));
     }
 
     initialization() {
@@ -296,14 +297,14 @@ class TwomScene extends MainScene {
 
         // {x: -2711.373090366681, y: 2139.5407468101944}
 
-        this.moduleManager.registerModule("camera", cameraModule);
+        // this.moduleManager.registerModule("camera", cameraModule);
         this.moduleManager.registerModule("resources", resourcesModule, config);
-        this.moduleManager.registerModule("saver", saverModule);
+        // this.moduleManager.registerModule("saver", saverModule);
 
-        const notificationManager = this.moduleManager.getModule("notifications");
-        notificationManager.notify("This war of mine полностью загружено!");
+        // const notificationManager = this.moduleManager.getModule("notifications");
+        // notificationManager.notify("This war of mine полностью загружено!");
 
-        ws.connect();
+        // ws.connect();
     }
 }
 

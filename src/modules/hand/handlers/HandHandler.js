@@ -7,10 +7,14 @@ class HandHandler {
         this.stage = this.layerManager.stage;
 
 
+        // this.emitter.on("intersection.bottom.move", (s) => console.log('test'));
+
         this.emitter.on("modules.hand.takeHalf", this.handManager.remoteTakeHalf.bind(this.handManager));
         this.emitter.on("modules.hand.take", this.handManager.remoteTake.bind(this.handManager));
         this.emitter.on("modules.hand.put", this.handManager.remotePut.bind(this.handManager));
         this.emitter.on("modules.hand.takeAll", this.handManager.remoteTakeAll.bind(this.handManager));
+
+        this.emitter.on("intersection.bottom", this.handManager.take.bind(this.handManager));
 
         this.board.on("click", this.validateEntityType.bind(this));
         this.stage.on("click", this.validatePutEvent.bind(this));

@@ -8,8 +8,8 @@ import HtmlGenerator from "../../core/markup/HtmlGenerator";
 export default {
     module: null,
     init() {
-        const notificationsManager = moduleManager.getModule("notifications");
-        notificationsManager.notify("Модуль табов инициализирован!");
+        // const notificationsManager = moduleManager.getModule("notifications");
+        // notificationsManager.notify("Модуль табов инициализирован!");
         console.log("tabs module initialized");
 
         const uiManager = new UIManager(new HtmlGenerator());
