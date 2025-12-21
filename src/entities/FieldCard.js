@@ -11,6 +11,10 @@ class FieldCard {
         })
     }
 
+    get banTaking() {
+        return true;
+    }
+
     get forSave() {
         return {
             x: this.element.x(),

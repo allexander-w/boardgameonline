@@ -8,9 +8,14 @@ class DuosideCard extends InterfaceCard {
         super();
 
         this.src = src;
+        this.ban = !!options.ban;
         this.uiManager = new UIManager();
         this.cardManager = new CardManager(src, options, this.uiManager);
         this.cardHandler = new CardHandler(this.cardManager);
+    }
+
+    get banTaking() {
+        return this.ban;
     }
 
     get element() {

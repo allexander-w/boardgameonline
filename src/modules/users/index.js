@@ -1,6 +1,7 @@
-import {moduleManager, usersManager} from "../../core";
+import {moduleManager, usersManager, emitter} from "../../core";
 import UsersManager from "./managers/UsersManager";
 import UIManager from "./managers/UIManager";
+import UsersHandler from "./handlers/UsersHandler";
 
 export default {
     module: null,
@@ -13,8 +14,9 @@ export default {
 
         const uiManager = new UIManager();
         const module = new UsersManager(usersManager, uiManager);
+        new UsersHandler(tabsManager, uiManager, emitter);
 
-        tabsManager.registerTab("usersTab", "Пользователи", module.render.bind(module));
+        tabsManager.registerTab("usersTab", "ph-user-list", module.render.bind(module));
 
         this.module = module;
     }

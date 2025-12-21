@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board Game Sim UI + Gemini</title>
+    <!-- Using Phosphor Icons for a clean, modern look -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style>
+        :root {
+            /* Modern Dark Theme Palette */
+            --bg-dark: #0f172a;
+            --glass-bg: rgba(15, 23, 42, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent: #3b82f6; /* Bright Blue */
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --ai-accent: #a855f7; /* Purple for AI/Oracle */
+            --ai-glow: rgba(168, 85, 247, 0.5);
+            --danger: #ef4444;
+            --success: #22c55e;
+            --warning: #eab308;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --panel-radius: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevent text selection during game dragging */
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- THE GAME BOARD (Canvas Layer) --- */
+        .game-viewport {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            /* Simulated grid pattern for the board */
+            background-image:
+                    linear-gradient(var(--glass-border) 1px, transparent 1px),
+                    linear-gradient(90deg, var(--glass-border) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+            /* Simulated game objects for demo */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-piece {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--danger);
+            box-shadow: 0 0 20px var(--danger);
+            position: absolute;
+            top: 40%;
+            left: 45%;
+        }
+
+        /* --- UI OVERLAY WRAPPER --- */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Let clicks pass through empty spaces */
+            display: grid;
+            grid-template-columns: 280px 1fr 320px;
+            grid-template-rows: auto 1fr auto;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* Common Glassmorphism Style */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--panel-radius);
+            pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- 1. TOP HUD (Turn Info, Timer, Settings) --- */
+        .top-bar {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            height: 70px;
+        }
+
+        .room-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .room-code {
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .turn-tracker-container {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .turn-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .turn-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+        .active-player {
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .timer-display {
+            font-family: monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            background: rgba(0,0,0,0.3);
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .icon-btn {
+            background: transparent;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.2rem;
+        }
+        .icon-btn:hover {
+            background: rgba(255,255,255,0.1);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+        .btn-end-turn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            height: 40px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            transition: var(--transition);
+        }
+        .btn-end-turn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px var(--accent-glow);
+        }
+
+        /* --- 2. LEFT SIDEBAR (MISSION & TOOLS) --- */
+        .left-sidebar {
+            grid-column: 1;
+            grid-row: 2 / -1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            pointer-events: none; /* Wrapper invisible */
+        }
+
+        /* NEW: Info/Mission Panel Styles */
+        .info-panel {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .panel-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-divider {
+            height: 1px;
+            background: var(--glass-border);
+            width: 100%;
+        }
+
+        .objective-text {
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--text-main);
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 8px;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .effects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .effect-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .effect-badge.bad {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        .effect-badge.good {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .quick-note {
+            width: 100%;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            resize: none;
+            outline: none;
+        }
+        .quick-note:focus {
+            border-color: var(--accent);
+        }
+
+        .tool-tray {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 12px;
+            width: fit-content;
+        }
+        .tool-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .tool-btn.active, .tool-btn:hover {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- 3. RIGHT SIDEBAR (Tabs: Users, Chat, Resources) --- */
+        .right-sidebar {
+            grid-column: 3;
+            grid-row: 2 / 4; /* Spans down to bottom */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            margin-bottom: 80px; /* Space for hand to stick out if needed, or visual balance */
+        }
+
+        .tab-header {
+            display: flex;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px 0;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.2rem;
+            position: relative;
+            transition: var(--transition);
+        }
+        .tab-btn:hover {
+            color: var(--text-main);
+            background: rgba(255,255,255,0.03);
+        }
+        .tab-btn.active {
+            color: var(--accent);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent);
+            box-shadow: 0 -2px 10px var(--accent-glow);
+        }
+
+        /* Special styling for the AI tab button */
+        .tab-btn.ai-tab.active {
+            color: var(--ai-accent);
+        }
+        .tab-btn.ai-tab.active::after {
+            background: var(--ai-accent);
+            box-shadow: 0 -2px 10px var(--ai-glow);
+        }
+        .tab-btn.ai-tab:hover {
+            color: #d8b4fe;
+        }
+
+
+        .tab-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            height: 100%;
+            flex-direction: column;
+        }
+        .tab-pane.active {
+            display: flex;
+        }
+
+        /* User List Styles */
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.03);
+        }
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #555;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 5px var(--success);
+        }
+
+        /* History/Chat Styles */
+        .log-entry {
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .log-sys {
+            color: var(--warning);
+            font-style: italic;
+        }
+        .log-user {
+            color: var(--text-muted);
+        }
+        .log-user b {
+            color: var(--accent);
+        }
+
+        /* Oracle AI Chat Styles */
+        .oracle-entry {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: #e9d5ff;
+        }
+        .oracle-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+            font-weight: bold;
+            color: var(--ai-accent);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .ai-loading {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--ai-accent);
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+
+        /* Chat Input */
+        .chat-input-area {
+            margin-top: auto;
+            padding: 10px;
+            border-top: 1px solid var(--glass-border);
+            display: flex;
+            gap: 8px;
+        }
+        .chat-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            padding: 8px;
+            color: white;
+            outline: none;
+        }
+        .chat-input:focus {
+            border-color: var(--accent);
+        }
+        .oracle-input:focus {
+            border-color: var(--ai-accent);
+        }
+
+        .oracle-btn {
+            background: var(--ai-accent);
+            color: white;
+        }
+
+        /* Resource Bank */
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .resource-card {
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+        .res-icon { font-size: 1.5rem; margin-bottom: 5px; color: var(--warning); }
+        .res-val { font-size: 1.2rem; font-weight: 700; }
+
+        /* --- MENU TAB STYLES --- */
+        .menu-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .menu-btn-lg {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        .menu-btn-lg:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(4px);
+        }
+        .menu-btn-lg i {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+        }
+        .menu-btn-lg:hover i {
+            color: var(--accent);
+        }
+        .menu-divider {
+            border: none;
+            border-top: 1px solid var(--glass-border);
+            margin: 10px 0;
+        }
+        .menu-btn-lg.danger {
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        .menu-btn-lg.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+        }
+        .menu-btn-lg.danger i { color: var(--danger); }
+
+
+        /* --- 4. BOTTOM ACTION PANEL (Cards) --- */
+        .bottom-hud {
+            grid-column: 2;
+            grid-row: 3;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            padding-bottom: 10px; /* Lift slightly off bottom */
+        }
+
+        .hand-container {
+            display: flex;
+            gap: -10px; /* Overlap cards slightly */
+            padding: 10px 30px;
+            align-items: flex-end;
+        }
+
+        .game-card {
+            width: 100px;
+            height: 150px;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            margin: 0 5px;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            position: relative;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: visible; /* allow sparkle button to overflow */
+        }
+
+        /* Card Inner Art */
+        .card-art {
+            width: 80%;
+            height: 40%;
+            background: var(--accent);
+            border-radius: 4px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        .card-text {
+            font-size: 0.6rem;
+            text-align: center;
+            padding: 0 5px;
+            color: var(--text-muted);
+        }
+
+        .game-card:hover {
+            transform: translateY(-40px) scale(1.2);
+            z-index: 100;
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+
+        /* AI Sparkle Button on Card */
+        .ai-sparkle-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            background: var(--ai-accent);
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+            border: 2px solid #fff;
+            box-shadow: 0 0 10px var(--ai-glow);
+            z-index: 101;
+        }
+
+        .game-card:hover .ai-sparkle-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .ai-sparkle-btn:hover {
+            background: #d8b4fe;
+            cursor: help;
+        }
+
+        /* --- 5. SELECTION INSPECTOR (New) --- */
+        .selection-inspector {
+            grid-column: 2;
+            grid-row: 2;
+            align-self: start;
+            justify-self: start;
+            width: 280px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-left: 20px; /* Offset from left sidebar */
+            animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 50;
+        }
+
+        .sel-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 12px;
+        }
+        .sel-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            background: var(--danger);
+            box-shadow: 0 0 10px var(--danger);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .sel-info { flex: 1; }
+        .sel-title { font-weight: 700; font-size: 1rem; }
+        .sel-subtitle { font-size: 0.75rem; color: var(--text-muted); }
+
+        .sel-stats {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.2);
+            padding: 8px;
+            border-radius: 8px;
+        }
+        .stat-box { text-align: center; }
+        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; display: block; }
+        .stat-val { font-weight: 700; font-size: 0.9rem; }
+
+        .sel-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .action-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        .action-btn:hover { background: rgba(255,255,255,0.1); }
+        .action-btn.primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+            grid-column: span 2;
+        }
+        .action-btn.primary:hover { background: var(--accent-glow); }
+
+        /* Added a 'danger' style for destructive actions */
+        .action-btn.danger {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        .action-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Scrollbar styling for tabs */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Background Layer: The actual board (canvas placeholder) -->
+<div class="game-viewport">
+    <!-- Updated onclick to use the new demo function with rich data -->
+    <div class="demo-piece" onclick="selectDemoPiece()" style="cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"></div>
+    <!-- Assume logic handles canvas rendering here -->
+</div>
+
+<!-- UI Layer: Overlays -->
+<div class="ui-layer">
+
+    <!-- 1. Top Header -->
+    <header class="glass-panel top-bar">
+        <div class="room-info">
+            <i class="ph ph-users-three" style="font-size: 1.5rem;"></i>
+            <div>
+                <div class="room-code">ROOM #8291</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Standard • Co-op</div>
+            </div>
+        </div>
+
+        <div class="turn-tracker-container">
+            <div class="timer-display">01:45</div>
+            <div class="turn-indicator">
+                <span class="turn-label">Active Turn</span>
+                <span class="active-player">Player One</span>
+            </div>
+        </div>
+
+        <div class="top-actions">
+            <button class="icon-btn" title="Settings"><i class="ph ph-gear"></i></button>
+            <button class="icon-btn" title="Sound"><i class="ph ph-speaker-high"></i></button>
+            <button class="btn-end-turn">End Turn</button>
+        </div>
+    </header>
+
+    <!-- 2. Left Sidebar (Mission & Status) -->
+    <aside class="left-sidebar">
+
+        <!-- NEW: Info/Mission Panel (Replaces Map) -->
+        <div class="glass-panel info-panel">
+            <div class="panel-header"><i class="ph ph-target"></i> Current Objective</div>
+            <div class="objective-text">
+                Defeat the <strong>Red Orb</strong> before the ritual completes.
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="panel-header"><i class="ph ph-lightning"></i> Active Effects</div>
+            <div class="effects-list">
+                <div class="effect-badge bad" title="-1 Movement to all players">
+                    <i class="ph ph-waves"></i> High Tide
+                </div>
+                <div class="effect-badge good" title="+10% Defense">
+                    <i class="ph ph-shield-star"></i> Rally
+                </div>
+            </div>
+
+            <div class="panel-divider"></div>
+
+            <div class="panel-header"><i class="ph ph-notebook"></i> Personal Notes</div>
+            <textarea class="quick-note" placeholder="Jot down plans..."></textarea>
+        </div>
+
+        <!-- Tools -->
+        <div class="glass-panel tool-tray">
+            <button class="tool-btn active" title="Select"><i class="ph ph-cursor"></i></button>
+            <button class="tool-btn" title="Measure"><i class="ph ph-ruler"></i></button>
+            <button class="tool-btn" title="Ping Map"><i class="ph ph-map-pin"></i></button>
+            <div style="height: 1px; background: var(--glass-border); margin: 5px 0;"></div>
+            <button class="tool-btn" title="Roll Dice"><i class="ph ph-dice-five"></i></button>
+        </div>
+
+        <!-- Zoom Controls -->
+        <div class="glass-panel tool-tray" style="margin-top: auto;">
+            <button class="tool-btn" title="Zoom In"><i class="ph ph-plus"></i></button>
+            <button class="tool-btn" title="Zoom Out"><i class="ph ph-minus"></i></button>
+        </div>
+    </aside>
+
+    <!-- 3. Right Sidebar (Tabs) -->
+    <aside class="glass-panel right-sidebar">
+        <div class="tab-header">
+            <button class="tab-btn active" onclick="switchTab('users')"><i class="ph ph-user-list"></i></button>
+            <button class="tab-btn" onclick="switchTab('history')"><i class="ph ph-chat-text"></i></button>
+            <button class="tab-btn" onclick="switchTab('resources')"><i class="ph ph-treasure-chest"></i></button>
+            <!-- New Oracle Tab -->
+            <button class="tab-btn ai-tab" onclick="switchTab('oracle')" title="Ask the Oracle (AI)">
+                <i class="ph ph-sparkle"></i>
+            </button>
+            <!-- NEW: Menu Tab Button -->
+            <button class="tab-btn" onclick="switchTab('menu')" title="Game Menu">
+                <i class="ph ph-list"></i>
+            </button>
+        </div>
+
+        <!-- Tab: Users -->
+        <div id="tab-users" class="tab-content tab-pane active">
+            <h4 style="margin-bottom: 10px; color: var(--text-muted);">Connected (3/4)</h4>
+            <div class="user-item">
+                <div class="user-avatar" style="background: var(--accent);">P1</div>
+                <div style="flex:1">Player One <small>(You)</small></div>
+                <div class="status-dot"></div>
+            </div>
+            <div class="user-item">
+                <div class="user-avatar" style="background: var(--warning);">P2</div>
+                <div style="flex:1">Strategist99</div>
+                <div class="status-dot"></div>
+            </div>
+            <div class="user-item">
+                <div class="user-avatar" style="background: var(--danger);">P3</div>
+                <div style="flex:1">TheRogue</div>
+                <div class="status-dot" style="background: gray;"></div>
+            </div>
+        </div>
+
+        <!-- Tab: History & Chat -->
+        <div id="tab-history" class="tab-content tab-pane">
+            <div class="log-content" style="flex: 1; overflow-y: auto;">
+                <div class="log-entry log-sys">Turn 4 started.</div>
+                <div class="log-entry log-user"><b>Strategist99:</b> Pass me 2 gold?</div>
+                <div class="log-entry log-sys">Player One used "Ancient Scroll".</div>
+                <div class="log-entry log-user"><b>TheRogue:</b> Check the shared bank.</div>
+                <div class="log-entry log-sys">Resource phase complete.</div>
+                <div class="log-entry log-user"><b>Player One:</b> Got it.</div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" placeholder="Type message...">
+                <button class="icon-btn" style="width: 32px; height: 32px; border:none; background: var(--accent); color:white;"><i class="ph ph-paper-plane-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Tab: Resources -->
+        <div id="tab-resources" class="tab-content tab-pane">
+            <h4 style="margin-bottom: 10px; color: var(--text-muted);">Shared Bank</h4>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="res-icon"><i class="ph ph-coins"></i></div>
+                    <div class="res-val">150</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Gold</div>
+                </div>
+                <div class="resource-card">
+                    <div class="res-icon"><i class="ph ph-drop" style="color: #3b82f6;"></i></div>
+                    <div class="res-val">4</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Water</div>
+                </div>
+                <div class="resource-card">
+                    <div class="res-icon"><i class="ph ph-lightning" style="color: #eab308;"></i></div>
+                    <div class="res-val">12</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Energy</div>
+                </div>
+                <div class="resource-card">
+                    <div class="res-icon"><i class="ph ph-skull" style="color: #ef4444;"></i></div>
+                    <div class="res-val">0</div>
+                    <div style="font-size: 0.7rem; color: var(--text-muted);">Threat</div>
+                </div>
+            </div>
+            <hr style="border-color: var(--glass-border); margin: 15px 0;">
+            <button style="width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed var(--text-muted); color: var(--text-muted); border-radius: 8px; cursor: pointer;">
+                + Request Resource
+            </button>
+        </div>
+
+        <!-- Tab: The Oracle (AI) -->
+        <div id="tab-oracle" class="tab-content tab-pane">
+            <div id="oracle-log" class="log-content" style="flex: 1; overflow-y: auto;">
+                <div class="oracle-entry">
+                    <div class="oracle-header"><i class="ph ph-sparkle"></i> The Oracle</div>
+                    Greetings, traveler. I am the spirit of the board. Ask me about rules, lore, or request a random encounter.
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="oracle-input" class="chat-input oracle-input" placeholder="Ask the Oracle...">
+                <button onclick="askOracle()" class="icon-btn oracle-btn" style="width: 32px; height: 32px; border:none;"><i class="ph ph-paper-plane-right"></i></button>
+            </div>
+        </div>
+
+        <!-- NEW: Menu Tab -->
+        <div id="tab-menu" class="tab-content tab-pane">
+            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Game Menu</h4>
+            <div class="menu-list">
+                <button class="menu-btn-lg">
+                    <i class="ph ph-pause"></i>
+                    <span>Pause Game</span>
+                </button>
+                <button class="menu-btn-lg">
+                    <i class="ph ph-floppy-disk"></i>
+                    <span>Save Game</span>
+                </button>
+                <button class="menu-btn-lg">
+                    <i class="ph ph-upload-simple"></i>
+                    <span>Load Game</span>
+                </button>
+                <button class="menu-btn-lg">
+                    <i class="ph ph-arrows-out"></i>
+                    <span>Fullscreen</span>
+                </button>
+                <button class="menu-btn-lg">
+                    <i class="ph ph-question"></i>
+                    <span>Rules & Help</span>
+                </button>
+
+                <hr class="menu-divider">
+
+                <button class="menu-btn-lg danger">
+                    <i class="ph ph-flag"></i>
+                    <span>Surrender</span>
+                </button>
+                <button class="menu-btn-lg danger">
+                    <i class="ph ph-sign-out"></i>
+                    <span>Leave Room</span>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- NEW: Selection Inspector Panel (Hidden by default) -->
+    <div id="selection-panel" class="glass-panel selection-inspector" style="display: none;">
+        <div class="sel-header">
+            <div class="sel-icon"><i class="ph ph-fire"></i></div>
+            <div class="sel-info">
+                <div class="sel-title" id="sel-title">Target Name</div>
+                <div class="sel-subtitle" id="sel-type">Target Type</div>
+            </div>
+            <button class="icon-btn" style="width: 24px; height: 24px; border:none;" onclick="deselectObject()"><i class="ph ph-x"></i></button>
+        </div>
+        <!-- Dynamic Stats Container -->
+        <div class="sel-stats">
+            <!-- content injected by JS -->
+        </div>
+        <!-- Dynamic Actions Container -->
+        <div class="sel-actions">
+            <!-- content injected by JS -->
+        </div>
+    </div>
+
+    <!-- 4. Bottom Action Panel (Hand) -->
+    <footer class="bottom-hud">
+        <div class="glass-panel hand-container">
+            <!-- Card 1 -->
+            <div class="game-card">
+                <div class="ai-sparkle-btn" title="Generate Lore" onclick="generateCardLore('Fireball')"><i class="ph ph-sparkle"></i></div>
+                <div class="card-art"></div>
+                <div class="card-text">Fireball</div>
+            </div>
+            <!-- Card 2 -->
+            <div class="game-card" style="transform: translateY(-20px);">
+                <div class="ai-sparkle-btn" title="Generate Lore" onclick="generateCardLore('Healing Potion')"><i class="ph ph-sparkle"></i></div>
+                <div class="card-art" style="background: var(--success);"></div>
+                <div class="card-text">Heal</div>
+            </div>
+            <!-- Card 3 -->
+            <div class="game-card">
+                <div class="ai-sparkle-btn" title="Generate Lore" onclick="generateCardLore('Iron Shield')"><i class="ph ph-sparkle"></i></div>
+                <div class="card-art" style="background: var(--warning);"></div>
+                <div class="card-text">Shield</div>
+            </div>
+            <!-- Card 4 -->
+            <div class="game-card">
+                <div class="ai-sparkle-btn" title="Generate Lore" onclick="generateCardLore('Void Walk')"><i class="ph ph-sparkle"></i></div>
+                <div class="card-art" style="background: purple;"></div>
+                <div class="card-text">Void</div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    // GEMINI API INTEGRATION
+    const apiKey = ""; // Set by environment
+
+    async function callGemini(prompt) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+
+        const payload = {
+            contents: [{ parts: [{ text: prompt }] }]
+        };
+
+        // Exponential backoff retry logic
+        const delays = [1000, 2000, 4000, 8000, 16000];
+
+        for (let i = 0; i <= delays.length; i++) {
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+
+            } catch (error) {
+                if (i === delays.length) {
+                    console.error("Max retries reached", error);
+                    return "The spirits are silent... (Error connecting to AI)";
+                }
+                // Wait before retrying
+                await new Promise(resolve => setTimeout(resolve, delays[i]));
+            }
+        }
+    }
+
+    async function askOracle() {
+        const inputField = document.getElementById('oracle-input');
+        const query = inputField.value.trim();
+        if (!query) return;
+
+        // Add user query to log
+        const log = document.getElementById('oracle-log');
+        log.innerHTML += `
+                <div class="log-entry log-user" style="text-align:right; margin-top:10px;">
+                    <b>You:</b> ${query}
+                </div>`;
+
+        // Clear input
+        inputField.value = '';
+
+        // Add loading indicator
+        const loadingId = 'loading-' + Date.now();
+        log.innerHTML += `
+                <div id="${loadingId}" class="oracle-entry">
+                    <div class="oracle-header"><i class="ph ph-sparkle"></i> The Oracle</div>
+                    <div class="ai-loading"></div> Thinking...
+                </div>`;
+
+        // Scroll to bottom
+        log.scrollTop = log.scrollHeight;
+
+        // Call Gemini
+        const systemPrompt = "You are 'The Oracle', a mystical and helpful Game Master for a fantasy board game. Be concise, thematic, and helpful. Answer the user's question about rules, lore, or randomness.";
+        const responseText = await callGemini(`${systemPrompt}\n\nUser: ${query}`);
+
+        // Replace loading with response
+        const loadingEl = document.getElementById(loadingId);
+        if (loadingEl) {
+            loadingEl.innerHTML = `
+                    <div class="oracle-header"><i class="ph ph-sparkle"></i> The Oracle</div>
+                    ${responseText}
+                `;
+        }
+
+        log.scrollTop = log.scrollHeight;
+    }
+
+    async function generateCardLore(cardName) {
+        // Switch to Oracle tab to show result
+        switchTab('oracle');
+
+        const log = document.getElementById('oracle-log');
+        const loadingId = 'loading-' + Date.now();
+
+        log.innerHTML += `
+                <div id="${loadingId}" class="oracle-entry">
+                    <div class="oracle-header"><i class="ph ph-sparkle"></i> The Oracle</div>
+                    <div class="ai-loading"></div> Reading the essence of ${cardName}...
+                </div>`;
+
+        const prompt = `Write a short, 2-sentence atmospheric flavor text for a fantasy card named "${cardName}". It should sound epic.`;
+        const responseText = await callGemini(prompt);
+
+        const loadingEl = document.getElementById(loadingId);
+        if (loadingEl) {
+            loadingEl.innerHTML = `
+                    <div class="oracle-header"><i class="ph ph-sparkle"></i> Card Analysis: ${cardName}</div>
+                    <em>"${responseText.trim()}"</em>
+                `;
+        }
+    }
+
+    // Allow Enter key to send in Oracle
+    document.getElementById('oracle-input').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            askOracle();
+        }
+    });
+
+    // --- SELECTION LOGIC ---
+
+    // Wrapper to simulate clicking an object with specific data
+    function selectDemoPiece() {
+        selectObject(
+            'Red Orb',
+            'Entity • Hostile',
+            { 'HP': 450, 'DEF': 12, 'SPD': 4 },
+            [
+                { label: 'Attack', style: 'primary', icon: 'sword' },
+                { label: 'Inspect', style: 'default', icon: 'magnifying-glass' },
+                { label: 'Mark', style: 'default', icon: 'target' },
+                { label: 'Banish', style: 'danger', icon: 'skull' }
+            ]
+        );
+    }
+
+    // Universal selection function
+    function selectObject(name, type, stats, actions) {
+        const panel = document.getElementById('selection-panel');
+        document.getElementById('sel-title').textContent = name;
+        document.getElementById('sel-type').textContent = type;
+
+        // 1. Render Dynamic Stats
+        const statsContainer = document.querySelector('.sel-stats');
+        statsContainer.innerHTML = '';
+        if (stats) {
+            Object.entries(stats).forEach(([key, val]) => {
+                // Simple color coding for common stats
+                let color = '';
+                if (key === 'HP') color = 'var(--danger)';
+                if (key === 'DEF') color = 'var(--accent)';
+                if (key === 'MP') color = 'var(--ai-accent)';
+
+                const html = `
+                        <div class="stat-box">
+                            <span class="stat-label">${key}</span>
+                            <span class="stat-val" style="color: ${color || 'inherit'}">${val}</span>
+                        </div>`;
+                statsContainer.innerHTML += html;
+            });
+        }
+
+        // 2. Render Dynamic Action List
+        const actionsContainer = document.querySelector('.sel-actions');
+        actionsContainer.innerHTML = '';
+
+        if (actions && actions.length > 0) {
+            actions.forEach(act => {
+                const btn = document.createElement('button');
+
+                // Build classes based on style prop
+                let classes = 'action-btn';
+                if (act.style === 'primary') classes += ' primary';
+                if (act.style === 'danger') classes += ' danger';
+                btn.className = classes;
+
+                // Icon support
+                let iconHtml = '';
+                if (act.icon) {
+                    iconHtml = `<i class="ph ph-${act.icon}" style="margin-right:6px;"></i>`;
+                }
+
+                btn.innerHTML = `${iconHtml}${act.label}`;
+
+                // Interaction
+                btn.onclick = () => {
+                    // Add a little press animation
+                    btn.style.transform = 'scale(0.95)';
+                    setTimeout(() => btn.style.transform = 'scale(1)', 100);
+                    console.log(`Action triggered: ${act.label} on ${name}`);
+                };
+
+                actionsContainer.appendChild(btn);
+            });
+        }
+
+        // Reset animation to play it again
+        panel.style.animation = 'none';
+        panel.offsetHeight; /* trigger reflow */
+        panel.style.animation = 'slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)';
+
+        panel.style.display = 'flex';
+    }
+
+    function deselectObject() {
+        document.getElementById('selection-panel').style.display = 'none';
+    }
+
+
+    // Simple tab switching logic
+    function switchTab(tabName) {
+        // 1. Remove active class from all buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        // 2. Remove active class from all panes
+        document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+
+        // 3. Add active class to clicked button
+        const btns = document.querySelectorAll('.tab-btn');
+        if(tabName === 'users') btns[0].classList.add('active');
+        if(tabName === 'history') btns[1].classList.add('active');
+        if(tabName === 'resources') btns[2].classList.add('active');
+        if(tabName === 'oracle') btns[3].classList.add('active');
+        if(tabName === 'menu') btns[4].classList.add('active');
+
+        // 4. Show specific pane
+        document.getElementById('tab-' + tabName).classList.add('active');
+    }
+</script>
+</body>
+</html>

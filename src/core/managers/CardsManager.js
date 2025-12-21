@@ -38,8 +38,6 @@ class CardsManager {
     dragmove(element) {
         const pointerPos = this.boardLayer.getRelativePointerPosition();
 
-
-
         this.senderManager.send("api.drag.move", { x: element.target.x(), y: element.target.y(), id: element.target.id() });
         this.senderManager.send("api.cursors.move", { x: pointerPos.x, y: pointerPos.y });
     }
@@ -83,7 +81,9 @@ class CardsManager {
         const rect = e.target.getClientRect();
         const cardBottomYInContainer = absPos.y + rect.height;
 
-        if (cardBottomYInContainer >= stageHeight) {
+        // console.log(cardBottomYInContainer, stageHeight);
+
+        if (absPos.y >= stageHeight) {
             emitter.emit("intersection.bottom", e.target);
         }
 

@@ -14,6 +14,10 @@ class ResourceCard extends InterfaceCard {
         this.cardHandler = new CardHandler(this.cardManager);
     }
 
+    get banTaking() {
+        return true;
+    }
+
     get element() {
         return this.cardManager.element;
     }

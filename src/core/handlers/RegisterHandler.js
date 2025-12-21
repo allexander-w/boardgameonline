@@ -22,12 +22,17 @@ class RegisterHandler {
 
     disconnect(data) {
         const notificationsManager = this.moduleManager.getModule("notifications");
-        notificationsManager.notify("Пользователь " + name + " отсоединился...");
+        notificationsManager.notify("Пользователь " + data?.name + " отсоединился...");
 
         this.usersManager.deleteUser(data.id);
+        this.emmiter.emit("api.register.disconnected");
     }
 
     join(data) {
+        console.log(data);
+
+        this.usersManager.setSyncPoint(data.syncUser);
+
         if ( this.usersManager.user.id !== data.user.id ) {
             const notificationsManager = this.moduleManager.getModule("notifications");
             notificationsManager.notify("Пользователь " + data.user.name + " подключился к игре!");
@@ -38,10 +43,12 @@ class RegisterHandler {
             this.usersManager.users.set(user.id, {});
         }
 
-        for (const [id, cursor] of this.usersManager.users) {
-            if ( cursor?.attrs ) continue;
+        for (const [id, user] of this.usersManager.users) {
+            if ( user.cursor?.cursor?.attrs ) continue;
             this.cursorsManager.create({ id, user: data.users.find(u => u.id === id) });
         }
+
+        this.sender.send("api.register.joined");
     }
 }
 

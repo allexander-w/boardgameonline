@@ -1,6 +1,6 @@
 export default {
-    scene: "mars",
-    // ws: "ws://192.168.9.84:8002"
-    ws: "ws://localhost:8002"
+    scene: "puertorico",
+    ws: "ws://192.168.0.101:8002"
+    // ws: "ws://localhost:8002"
     // ws: "ws://172.30.216.34:8002"
 }

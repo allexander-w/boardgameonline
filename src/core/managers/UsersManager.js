@@ -6,6 +6,7 @@ class UsersManager {
             avatar: "",
         }
 
+        this.syncPoint = null;
         this.users = new Map();
     }
 
@@ -21,7 +22,14 @@ class UsersManager {
         return this.users.set(id, user);
     }
 
+    setSyncPoint(id) {
+        this.syncPoint = id;
+    }
+
     deleteUser(id) {
+        const deletedUser = this.getUser(id);
+        deletedUser.cursor.destroy();
+
         this.users.delete(id);
     }
 }

@@ -13,12 +13,12 @@ class CursorsManager {
 
     create({ id, user }) {
         const cursor = new Cursor(Konva, this.layersManager, { id, ...user });
-        this.usersManager.setUser(id, cursor);
+        this.usersManager.setUser(id, { ...user, cursor });
     }
 
     remove(id) {
-        const cursor = this.usersManager.getUser(id);
-        cursor.destroy();
+        const user = this.usersManager.getUser(id);
+        user.cursor.destroy();
     }
 
     move() {
@@ -29,8 +29,8 @@ class CursorsManager {
     remoteMove(data) {
         if ( !data ) return false;
 
-        const cursor = this.usersManager.getUser(data.user);
-        cursor.setPosition(data.x, data.y);
+        const user = this.usersManager.getUser(data.user);
+        if ( user ) user.cursor.setPosition(data.x, data.y);
     }
 }
 

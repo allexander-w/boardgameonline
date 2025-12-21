@@ -19,10 +19,6 @@ class User {
         return this.connection.connected;
     }
 
-    get hiddens() {
-        return Array.from(this.hidden);
-    }
-
     setName(name) {
         this.name = name;
     }
@@ -37,19 +33,9 @@ class User {
         }))
     }
 
-    hide(id) {
-        this.hidden.add(id);
-    }
-
-    show(id) {
-        this.hidden.delete(id);
-    }
-
-
     toJSON() {
         return {
             ...this,
-            hidden: this.hiddens
         };
     }
 }

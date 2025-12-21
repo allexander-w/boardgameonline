@@ -7,7 +7,7 @@ class TabsModule {
         this.selected = null;
     }
 
-    _render(id) {
+    render(id) {
         this.uiManager.setActiveChild(id);
         const content = this.tabs[id]() || '';
         this.uiManager.renderContent(content);
@@ -19,7 +19,7 @@ class TabsModule {
         if ( this.selected === parent.dataset.id ) return false;
         this.emitter.emit("modules.tabs.prerender", parent.dataset.id);
 
-        this._render(parent.dataset.id);
+        this.render(parent.dataset.id);
 
         this.emitter.emit("modules.tabs.rendered", parent.dataset.id);
         this.selected = parent.dataset.id;
@@ -29,7 +29,7 @@ class TabsModule {
         this.tabs[id] = renderer;
         this.uiManager.addTab(id, name);
 
-        if ( Object.keys(this.tabs)?.length === 1 ) this._render(id);
+        if ( Object.keys(this.tabs)?.length === 1 ) this.render(id);
     }
 }
 

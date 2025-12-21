@@ -5,4 +5,7 @@ export default [
     { name: "city", width: "120", height: "150" },
     { name: "green", width: "120", height: "150" },
     { name: "water", width: "120", height: "150" },
+    { name: '2', width: 60, height: 70 },
+    { name: '3', width: 60, height: 70 },
+    { name: '4', width: 60, height: 70 },
 ]

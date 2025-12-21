@@ -17,7 +17,7 @@ class SaverHandler {
     }
 
     menuHandler(e) {
-        const target = e.target.closest(".save-button");
+        const target = e.target.closest(".menu-btn-lg");
         if (!target) return false;
 
         const event = target.dataset.event;

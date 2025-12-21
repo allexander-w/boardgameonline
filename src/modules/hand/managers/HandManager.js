@@ -1,4 +1,5 @@
 import {moduleManager, senderManager, cardsManager} from "../../../core";
+import KitManager from "./KitManager";
 
 class HandManager {
     constructor(layersManager, cardsManager, moduleManager, UIManager) {
@@ -8,9 +9,13 @@ class HandManager {
         this.UIManager = UIManager;
 
         this.hands = [];
+        this.kitManager = new KitManager(this._isHandsHas.bind(this));
         this.boardLayer = this.layersManager.getLayer("board");
     }
 
+    _isHandsHas(id) {
+        return !!this.hands.find(el => el.id() === id);
+    }
 
     _findElementsAbove(target) {
         const targetBox = target.getClientRect();
@@ -26,24 +31,45 @@ class HandManager {
         });
     }
 
+    _getRenderCards() {
+        const activeStack = this.kitManager.getActiveKitStack();
+        return this.hands.filter(el => activeStack.has(el.id()));
+    }
+
     shuffle() {
-        this.hands = new Map([...this.hands.entries()].sort(() => Math.random() - 0.5));
-        console.log("shuffle");
+        this.hands = [...this.hands].sort(() => Math.random() - 0.5);
+        console.log("shuffle", this.hands);
 
         const notificationsManager = moduleManager.getModule("notifications");
         notificationsManager.notify("Карты перемешаны", { color: "green" });
     }
 
+    selectStack(id) {
+        this.kitManager.changeActive(id);
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
+    }
+
+    addStack() {
+        this.kitManager.add();
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
+    }
+
     take(el) {
         this.layersManager.clearCacheAllGroups();
+        const card = cardsManager.getCard(el.id());
+        if ( card.banTaking ) return false;
 
         this.hands.push(el);
         el.hide();
+        const cardId = el.id();
+
+        card.cardManager.flipFront();
 
         this.layersManager.cacheAllGroups();
-        senderManager.send("modules.hand.take", { id: el.id() });
+        senderManager.send("modules.hand.take", { id: cardId });
 
-        this.UIManager.renderCards(this.hands);
+        this.kitManager.addToStack(cardId);
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
     }
 
     remoteTake(data) {
@@ -61,8 +87,12 @@ class HandManager {
         if ( elementsAbove.length ) {
             this.hands = [...this.hands, ...elementsAbove];
             this.layersManager.clearCacheAllGroups();
+            this.kitManager.add();
 
-            elementsAbove.forEach(el => el.hide());
+            elementsAbove.forEach(el => {
+                el.hide();
+                this.kitManager.addToStack(el.id());
+            });
 
             this.layersManager.cacheAllGroups();
 
@@ -71,6 +101,8 @@ class HandManager {
 
             senderManager.send("modules.hand.takeAll", { cards: elementsAbove.map((el) => (el.id())) });
         }
+
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
     }
 
     remoteTakeAll(data) {
@@ -92,7 +124,11 @@ class HandManager {
             this.hands = [...this.hands, ...half];
 
             this.layersManager.clearCacheAllGroups();
-            half.forEach(el => el.hide());
+            half.forEach(el => {
+                el.hide();
+                this.kitManager.addToStack(el.id());
+            });
+
             this.layersManager.cacheAllGroups();
 
             const actionsManager = moduleManager.getModule("actions");
@@ -100,6 +136,8 @@ class HandManager {
 
             senderManager.send("modules.hand.takeHalf", { cards: half.map((el) => (el.id())) });
         }
+
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
     }
 
     remoteTakeHalf(data) {
@@ -114,12 +152,27 @@ class HandManager {
     }
 
     put() {
+        function partition(array, predicate) {
+            const pass = [];
+            const fail = [];
+
+            array.forEach(item =>
+                predicate(item) ? pass.push(item) : fail.push(item)
+            );
+
+            return [pass, fail];
+        }
+
         const pos = this.boardLayer.getRelativePointerPosition();
         const config = [];
 
         this.layersManager.clearCacheAllGroups();
 
-        this.hands.forEach((el, index) => {
+
+        const activeStack = this.kitManager.getActiveKitStack();
+        const [passed, failed] = partition(this.hands, el => activeStack.has(el.id()));
+
+        passed.forEach((el, index) => {
             el.x(pos.x);
             el.y(pos.y);
 
@@ -129,17 +182,21 @@ class HandManager {
             el.moveToTop();
             el.show();
 
+            this.kitManager.removeFromStack(el.id());
             config.push({ id: el.id(), zIndex: el.zIndex(), pos });
         })
 
         this.layersManager.cacheAllGroups();
 
-        this.hands = [];
+        this.hands = failed || [];
 
         const actionsManager = moduleManager.getModule("actions");
         actionsManager.selectCouple(0);
 
         senderManager.send("modules.hand.put", { cards: config});
+
+
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
     }
 
     remotePut(data) {
@@ -159,6 +216,60 @@ class HandManager {
 
             index ++;
         }
+
+        this.layersManager.cacheAllGroups();
+    }
+
+
+    putById(id, event) {
+        const stage = this.layersManager.stage;
+        stage.setPointersPositions(event);
+        const pos = this.boardLayer.getRelativePointerPosition();
+
+        const selectedCard = this.hands.find(el => el.id() === id);
+        if ( !selectedCard ) {
+            this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
+            return false;
+        }
+
+        this.layersManager.clearCacheAllGroups();
+
+        selectedCard.x(pos.x);
+        selectedCard.y(pos.y);
+
+        const card = this.cardsManager.getCard(selectedCard.id());
+        if ( card && card.cardManager && card.cardManager.flipBack ) card.cardManager.flipFront();
+
+        selectedCard.moveToTop();
+        selectedCard.show();
+
+        this.kitManager.removeFromStack(id);
+        this.hands = this.hands.filter(el => el.id() !== id);
+        const config = { id: selectedCard.id(), zIndex: selectedCard.zIndex(), pos };
+
+        this.layersManager.cacheAllGroups();
+        this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
+
+        senderManager.send("modules.hand.putById", { card: config});
+    }
+
+    remotePutById(data) {
+        this.layersManager.clearCacheAllGroups();
+
+        const selectedCard = this.cardsManager.getCard(data.card.id);
+        console.log(data, selectedCard);
+        if ( !selectedCard ) {
+            this.layersManager.cacheAllGroups();
+            return;
+        }
+
+        selectedCard.element.x(data.card.pos.x);
+        selectedCard.element.y(data.card.pos.y);
+
+        if ( selectedCard && selectedCard.cardManager && selectedCard.cardManager.flipBack ) selectedCard.cardManager.flipFront();
+
+        selectedCard.element.zIndex(data.card.zIndex);
+        selectedCard.element.show();
 
         this.layersManager.cacheAllGroups();
     }

@@ -25,6 +25,10 @@ class ResourcesManger {
         return id;
     }
 
+    isResourcesSelected() {
+        return this.resources.some(el => el.selected?.length);
+    }
+
     search(value) {
         if ( !value ) {
             this.uiManager.updateList(this.resources);

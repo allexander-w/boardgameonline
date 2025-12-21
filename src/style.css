@@ -367,14 +367,13 @@ h1 {
 
 .user-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 
 .user-item .user-logo {
-  width: 52px;
-  height: 52px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   overflow: hidden;
 }
@@ -1181,11 +1180,9 @@ h1 {
 
 .bottom-pane {
   position: fixed;
-  bottom: 20px;
+  bottom: -290px;
   opacity: 0;
   visibility: hidden;
-
-  height: 100px;
 
   width: 50%;
   z-index: 2000;
@@ -1195,16 +1192,36 @@ h1 {
 
   display: flex;
   align-items: flex-end;
+  transition: .3s ease;
 
   background-color: rgba(255, 255, 255, .01);
+}
+
+.bottom-pane__wrapper {
+  overflow: hidden;
+}
+
+.stack-panel {
+  position: absolute;
+  left: -40px;
+  width: 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+}
+
+.stack-panel .tab-btn {
+  flex: 0;
+  font-size: 10px;
 }
 
 .bottom-pane .scrollable {
   display: flex;
   gap: 10px;
   overflow: auto;
-  padding: 0 10px;
-  height: auto;
+  padding: 10px 10px;
+  height: 320px;
   align-items: flex-end;
 }
 
@@ -1213,19 +1230,26 @@ h1 {
   visibility: visible;
 }
 
-.bottom-pane:empty {
+.bottom-pane:hover {
+  bottom: 0;
+}
+
+.bottom-pane.drag {
+  bottom: -290px;
+}
+
+.bottom-pane:not(:has(.tab-btn)) {
   display: none;
 }
 
 .bottom-pane .playing-card {
-  min-width: 50px;
-  height: 90px;
+  min-width: 200px;
+  height: 300px;
   transition: .3s ease;
   cursor: pointer;
 }
 
 .bottom-pane .playing-card:hover {
-  box-shadow: 1px 1px 20px #fff;
 }
 
 .bottom-pane .playing-card img{

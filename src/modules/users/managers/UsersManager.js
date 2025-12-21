@@ -6,12 +6,13 @@ class UsersManager {
     }
 
     render() {
+        console.log('render users', this.usersManager.users);
         const output = [];
 
         output.push(this.usersManager.user);
 
-        for (const [id, cursor] of this.usersManager.users) {
-            output.push(cursor.user?.user);
+        for (const [id, user] of this.usersManager.users) {
+            output.push(user);
         }
 
         return this.uiManager.getActualUsersData(output);

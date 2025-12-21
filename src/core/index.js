@@ -14,6 +14,7 @@ import SystemHandler from "./handlers/SystemHandler";
 import RegisterHandler from "./handlers/RegisterHandler";
 import CursorHandler from "./handlers/CursorHandler";
 import CardsHandler from "./handlers/CardsHandler";
+import SyncHandler from "./handlers/SyncHandler";
 
 
 const emitter = mitt();
@@ -35,6 +36,7 @@ handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersMan
 handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new CursorHandler(emitter, usersManager, cursorsManager));
 handlerManager.registerHandle(new CardsHandler(emitter, cardsManager, layersManager));
+handlerManager.registerHandle(new SyncHandler(usersManager, cardsManager, layersManager, senderManager, emitter));
 
 
 export {

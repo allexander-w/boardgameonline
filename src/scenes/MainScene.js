@@ -2,6 +2,7 @@ import notificationsModule from "../modules/notifications";
 import cameraModule from "../modules/camera";
 import actionsModule from "../modules/actions";
 import handsModule from "../modules/hand";
+import usersModule from "../modules/users";
 import tabsModule from "../modules/tabs";
 import resourcesModule from "../modules/resources";
 import saverModule from "../modules/saver";
@@ -27,6 +28,7 @@ class MainScene {
         this.moduleManager.registerModule("notifications", notificationsModule);
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
+        this.moduleManager.registerModule("users", usersModule)
     }
 
     customLayersInitialization(layers) {
