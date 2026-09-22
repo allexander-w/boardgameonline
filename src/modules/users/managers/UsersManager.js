@@ -1,4 +1,3 @@
-
 class UsersManager {
     constructor(usersManager, uiManager) {
         this.usersManager = usersManager;
@@ -6,7 +5,6 @@ class UsersManager {
     }
 
     render() {
-        console.log('render users', this.usersManager.users);
         const output = [];
 
         output.push(this.usersManager.user);
@@ -15,7 +13,7 @@ class UsersManager {
             output.push(user);
         }
 
-        return this.uiManager.getActualUsersData(output);
+        return this.uiManager.getActualUsersData(output, this.usersManager.user);
     }
 }
 

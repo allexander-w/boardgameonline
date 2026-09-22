@@ -12,6 +12,8 @@ class Room {
         if ( !this.syncUser ) {
             this.syncUser = user.id;
         }
+
+        this.refreshRoles();
     }
 
     removeUser(userId) {
@@ -19,6 +21,14 @@ class Room {
 
         if ( this.syncUser === userId ) {
             this.syncUser = this.users[0]?.id || null;
+        }
+
+        this.refreshRoles();
+    }
+
+    refreshRoles() {
+        for ( const user of this.users ) {
+            user.setRole(user.id === this.syncUser ? "host" : "player");
         }
     }
 

@@ -1,4 +1,4 @@
-import {moduleManager, usersManager, emitter} from "../../core";
+import {moduleManager, usersManager, senderManager, emitter} from "../../core";
 import UsersManager from "./managers/UsersManager";
 import UIManager from "./managers/UIManager";
 import UsersHandler from "./handlers/UsersHandler";
@@ -17,6 +17,13 @@ export default {
         new UsersHandler(tabsManager, uiManager, emitter);
 
         tabsManager.registerTab("usersTab", "ph-user-list", module.render.bind(module));
+
+        document.querySelector(".tab-content").addEventListener("click", (e) => {
+            const button = e.target.closest(".user-action");
+            if ( !button ) return;
+
+            senderManager.send(button.dataset.action, { target: Number(button.dataset.target) });
+        });
 
         this.module = module;
     }

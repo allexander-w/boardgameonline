@@ -9,6 +9,9 @@ class RegisterHandler {
         this.emmiter.on("api.register.connected", this.connected.bind(this));
         this.emmiter.on("api.register.disconnect", this.disconnect.bind(this));
         this.emmiter.on("api.register.join", this.join.bind(this));
+        this.emmiter.on("api.room.hostChanged", this.hostChanged.bind(this));
+        this.emmiter.on("api.room.kicked", this.kicked.bind(this));
+        this.emmiter.on("api.room.rejected", this.rejected.bind(this));
     }
 
 
@@ -17,6 +20,7 @@ class RegisterHandler {
         notificationsManager.notify("Вы подключены к игре!");
 
         this.usersManager.user.id = data.user.id;
+        this.usersManager.user.role = data.user.role;
         this.sender.executeStack();
     }
 
@@ -49,6 +53,30 @@ class RegisterHandler {
         }
 
         this.sender.send("api.register.joined");
+    }
+
+    hostChanged(data) {
+        this.usersManager.setSyncPoint(data.syncUser);
+        this.usersManager.user.role = this.usersManager.user.id === data.syncUser ? "host" : "player";
+
+        for ( const user of data.users ) {
+            const known = this.usersManager.getUser(user.id);
+            if ( known ) known.role = user.role;
+        }
+
+        const notificationsManager = this.moduleManager.getModule("notifications");
+        notificationsManager.notify("Хост комнаты изменился");
+
+        this.emmiter.emit("api.register.roleChanged");
+    }
+
+    kicked() {
+        const notificationsManager = this.moduleManager.getModule("notifications");
+        notificationsManager.notify("Вас удалили из комнаты");
+    }
+
+    rejected(data) {
+        console.warn("Действие отклонено сервером:", data?.action);
     }
 }
 

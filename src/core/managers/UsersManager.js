@@ -5,6 +5,7 @@ class UsersManager {
             name: "",
             avatar: "",
             room: "",
+            role: "player",
         }
 
         this.syncPoint = null;

@@ -4,6 +4,7 @@ class UsersHandler {
 
         this.emitter.on("api.register.disconnected", tabsManager.render.bind(tabsManager, "usersTab"));
         this.emitter.on("api.register.joined", tabsManager.render.bind(tabsManager, "usersTab"));
+        this.emitter.on("api.register.roleChanged", tabsManager.render.bind(tabsManager, "usersTab"));
     }
 }
 
