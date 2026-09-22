@@ -21,7 +21,7 @@ class SolitairScene extends MainScene {
 
     initialization() {
 
-        for ( const [index, value] of new Array(52).entries() ) {
+        for ( const [index, value] of new Array(49).entries() ) {
             const src = '/solitair/cards/' + (index + 1) + '.png';
             const options =  { draggable: true, x: 0, y: 0, width: 652, height: 993, opacity: 1, id: "card_" + (index + 1) };
 

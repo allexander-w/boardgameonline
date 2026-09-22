@@ -1,6 +1,6 @@
 const CardTemplate = (card) => {
     return `
-        <div class="playing-card" data-id="${ card.id() }">
+        <div class="playing-card fan-card" data-id="${ card.id() }">
             <img draggable="true" src="${ card.attrs.fillPatternImage?.currentSrc }" alt="">
         </div>
     `
@@ -14,8 +14,12 @@ const StackTemplate = (id, stack) => {
 
 export const CardsPane = (cards) => {
     return `
-        <div class="scrollable">
-            ${ cards.map(card => CardTemplate(card)).join("") }
+        <div class="fan-container">
+            <div class="fan-viewport">
+                <div class="fan-track">
+                    ${ cards.map(card => CardTemplate(card)).join("") }
+                </div>
+            </div>
         </div>
     `
 }

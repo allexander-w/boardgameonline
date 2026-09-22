@@ -4,6 +4,7 @@ class UsersManager {
             id: null,
             name: "",
             avatar: "",
+            room: "",
         }
 
         this.syncPoint = null;

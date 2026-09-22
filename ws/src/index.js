@@ -3,21 +3,13 @@ const { unserialize } = require("../../shared/utils/serialize.util.cjs");
 
 const Router = require("./models/router.model");
 const User = require("./models/user.model");
-const Bank = require("./models/bank.model");
+const RoomStore = require("./models/room.store");
 
-const actions = require("../../shared/actions/action.types.cjs");
-
-const fs = require("fs");
-const path = require("path");
-
-let users = [];
-let syncUser = null;
-let bank = null;
+const roomStore = new RoomStore();
 
 ws.on("request", req => {
     const connection = req.accept("", req.origin);
 
-    /* [Жизненный цикл]: Процесс взаимодействия */
     connection.on("message", async msg => {
         const propertyName = msg.type + "Data";
         const data = unserialize(msg[propertyName]);
@@ -25,170 +17,44 @@ ws.on("request", req => {
         const router = Router(data);
 
         router.use("api.register.connected", async (data) => {
-                const user = new User(Date.now(), connection);
-                user.setName(data.payload?.name || "");
-                user.setAvatar(data.payload?.avatar || "");
-                users.push(user);
+            const roomId = String(data.payload?.room || "default");
+            const room = roomStore.getOrCreate(roomId);
 
-                if ( !syncUser ) {
-                    syncUser = user.id;
-                }
+            const user = new User(Date.now(), connection);
+            user.setName(data.payload?.name || "");
+            user.setAvatar(data.payload?.avatar || "");
 
-                console.log(users);
-                user.send("api.register.connected", { user: user, message: "connected" });
+            connection.roomId = roomId;
+            connection.userId = user.id;
 
-                users.forEach(u => {
-                    if (u.id === data.payload.user) return false;
-                    u.send("api.register.join", { user, users, syncUser: syncUser });
-                });
-        })
+            room.addUser(user);
+
+            user.send("api.register.connected", { user, room: roomId, message: "connected" });
+            room.broadcast("api.register.join", { user, users: room.users, syncUser: room.syncUser }, user.id);
+        });
 
         if ( data.action === "api.register.connected" ) {
             return false;
         }
 
-        router.redirect(data.action, users);
-        return false;
+        const room = roomStore.get(connection.roomId);
+        if ( !room ) return false;
 
-        router.redirect(actions.mousemove, users);
-        router.redirect(actions.flip, users);
-        router.redirect(actions.dragmove, users);
-        router.redirect(actions.dragend, users);
-        router.redirect("dragstart", users);
-        router.redirect(actions.sync, users);
-        router.redirect('shuffle', users);
-        router.redirect('entire', users);
-        router.redirect('shuffle_end', users);
-        router.redirect('select', users);
-        router.redirect('translate', users);
-        router.redirect('groupmove', users);
-        router.redirect('movetop', users);
-        router.redirect('roll', users);
-        router.redirect('rolled', users);
-        router.redirect('rotate', users);
-
-        router.redirect('element.destroy', users);
-
-        /* HAND API */
-        router.redirect('api.hand.take', users);
-        router.redirect('api.hand.takeAll', users);
-        router.redirect('api.hand.takeHalf', users);
-
-        router.redirect('api.hand.put', users);
-        /* HAND API */
-
-
-
-        // router.use("api.images.scan", (data) => {
-        //     const user = users.find(element => element.id === data.payload.user);
-        //     const result = {};
-        //
-        //     const dir = path.join(__dirname, "public/paleo");
-        //
-        //     fs.readdirSync(dir).forEach(folder => {
-        //         const folderPath = path.join(dir, folder);
-        //         if (fs.lstatSync(folderPath).isDirectory()) {
-        //             result[folder] = fs.readdirSync(folderPath)
-        //                 .filter(file => /\.(png|jpe?g|gif)$/i.test(file))
-        //                 .map(file => `${folder}/${file}`);
-        //         }
-        //     });
-        //
-        //     user.send('api.images.scan', { user, result });
-        // })
-
-        /* BANK API */
-        router.redirect('api.bank.table', users);
-
-        router.use("api.bank.creation", (data) => {
-            const user = users.find(element => element.id === data.payload.user);
-            if ( bank ) {
-                user.send('api.bank.creation', { user, message: "resources bank already exists", bank: bank.bank });
-                return false;
-            }
-
-            bank = new Bank(data.payload.resources);
-            user.send('api.bank.creation', { user, message: "resources bank successfull creation", bank: bank.bank });
-        })
-
-        router.use("api.bank.put", (data) => {
-            const user = users.find(element => element.id === data.payload.user);
-            if ( !user ) return;
-
-            bank.add(data.payload.id);
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('api.bank.put', { user, bank: bank.bank });
-            });
-        })
-
-        router.use("api.bank.take", (data) => {
-            const user = users.find(element => element.id === data.payload.user);
-            if ( !user ) return;
-
-            bank.remove(data.payload.id);
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('api.bank.take', { user, bank: bank.bank });
-            });
-        })
-        /* BANK API */
-
-
-        router.use('hide', (data) => {
-            const user = users.find(element => element.id === data.payload.user);
-            if ( !user ) return;
-
-            user.hide(data.payload.id);
-
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('hide', { user, hiddens: user.hiddens, id: data.payload.id });
-            });
-        })
-
-        router.use('show', (data) => {
-            const user = users.find(element => element.id === data.payload.user);
-            if ( !user ) return;
-
-            user.show(data.payload.id);
-
-            users.forEach(u => {
-                if (u.id === data.payload.user) return false;
-                u.send('show', { user, hiddens: user.hiddens, id: data.payload.id });
-            });
-        })
-
-        // router.redirect('hide', users);
-        // router.redirect('show', users);
+        router.redirect(data.action, room.users);
     });
 
-    /* [Жизненный цикл]: Дисконнект игрока */
-    connection.on("close", async (msg, reason) => {
+    connection.on("close", async () => {
+        const room = roomStore.get(connection.roomId);
+        if ( !room ) return false;
 
-        /* [Дисконнект]: Получение удаленного пользователя */
-        const disconnectedUser = users.find(user => !user.connected);
+        const disconnectedUser = room.getUser(connection.userId);
+        if ( !disconnectedUser ) return false;
 
-        /* [Дисконнект]: Если пользователь неопределен */
-        if ( !disconnectedUser ) {
-            console.log("Disconnected user is not found");
-            return false;
+        room.removeUser(disconnectedUser.id);
+        room.broadcast("api.register.disconnect", disconnectedUser);
+
+        if ( room.isEmpty ) {
+            roomStore.delete(room.id);
         }
-
-        console.log("Disconnnect");
-
-        /* [Дисконнект]: Если пользователь определен */
-        users = users.filter(user => user.id !== disconnectedUser.id);
-        if ( syncUser === disconnectedUser.id ) {
-            syncUser = users[0]?.id || null;
-        }
-
-        for ( const user of users ) {
-            user.send("api.register.disconnect", disconnectedUser);
-        }
-
-        if ( !users.length ) {
-            bank = null;
-        }
-    })
+    });
 });
