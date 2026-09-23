@@ -22,19 +22,43 @@ class BeginScreen {
     }
 
     renderRooms(rooms, onSelect) {
-        if ( !this.roomsList || !rooms.length ) return;
+        // if ( !this.roomsList || !rooms.length ) return;
+        //
+        // this.roomsList.classList.add("active");
+        // this.roomsList.innerHTML = rooms.map(room =>
+        //     `<button type="button" class="room-chip" data-id="${room.id}">${room.name}</button>`
+        // ).join("") + `<button type="button" class="room-chip room-chip--new" data-id="">Новая комната</button>`;
+        //
+        // this.roomsList.querySelectorAll(".room-chip").forEach(chip => {
+        //     chip.addEventListener("click", () => {
+        //         this.roomsList.querySelectorAll(".room-chip").forEach(el => el.classList.remove("active"));
+        //         chip.classList.add("active");
+        //         onSelect(chip.dataset.id || null);
+        //     });
+        // });
+
+        if (!this.roomsList) return;
 
         this.roomsList.classList.add("active");
-        this.roomsList.innerHTML = rooms.map(room =>
-            `<button type="button" class="room-chip" data-id="${room.id}">${room.name}</button>`
-        ).join("") + `<button type="button" class="room-chip room-chip--new" data-id="">Новая комната</button>`;
 
-        this.roomsList.querySelectorAll(".room-chip").forEach(chip => {
-            chip.addEventListener("click", () => {
-                this.roomsList.querySelectorAll(".room-chip").forEach(el => el.classList.remove("active"));
-                chip.classList.add("active");
-                onSelect(chip.dataset.id || null);
-            });
+        // Формируем список опций: сначала "Новая комната", затем существующих
+        const optionsHtml = `
+            <option value="">Новая комната</option>
+            ${rooms.map(room => `<option value="${room.id}">${room.name}</option>`).join("")}
+        `;
+
+        // Создаем элемент select
+        this.roomsList.innerHTML = `<select class="rooms-select">${optionsHtml}</select>`;
+
+        const selectEl = this.roomsList.querySelector(".rooms-select");
+
+        // Сразу передаем initial значение (null, так как выбрана "Новая комната")
+        onSelect(null);
+
+        // При изменении выбора вызываем callback
+        selectEl.addEventListener("change", (e) => {
+            const selectedId = e.target.value || null;
+            onSelect(selectedId);
         });
     }
 
