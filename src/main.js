@@ -6,6 +6,7 @@ import Preloader from "./screens/preloader";
 import config from "./config";
 import { usersManager } from "./core";
 import { getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList } from "./core/room";
+import gamesRegistry from "./games/registry";
 
 function randomInteger(min, max) {
     let rand = min - 0.5 + Math.random() * (max - min + 1);
@@ -13,6 +14,8 @@ function randomInteger(min, max) {
 }
 
 let roomId = getRoomFromUrl();
+let selectedScene = config.scene;
+
 const roomCodeNode = document.querySelector(".room-code");
 
 function updateRoomCode() {
@@ -22,6 +25,11 @@ function updateRoomCode() {
 updateRoomCode();
 
 const beginScreen = BeginScreen.init();
+
+beginScreen.renderGames(gamesRegistry, selectedScene, (id) => {
+    selectedScene = id;
+    beginScreen.setBackground("/" + selectedScene + "/bg.png");
+});
 
 if ( !roomId ) {
     fetchRoomList(config.ws).then(rooms => {
@@ -46,7 +54,7 @@ beginScreen.emitter.on("sign", async (name) => {
 
     Preloader.init();
 
-    const result = import ("./games/" + config.scene);
+    const result = import ("./games/" + selectedScene);
     const scene = await result;
 
     const UndefinedScene = scene.default;

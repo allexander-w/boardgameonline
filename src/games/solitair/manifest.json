@@ -1,0 +1,15 @@
+{
+    "id": "solitair",
+    "name": "Пасьянс",
+    "groups": [
+        {
+            "type": "duoside",
+            "id": "card",
+            "count": 49,
+            "front": "/solitair/cards/{n}.png",
+            "back": "/solitair/cards/bg.png",
+            "position": { "x": 0, "y": 0 },
+            "size": { "w": 652, "h": 993 }
+        }
+    ]
+}

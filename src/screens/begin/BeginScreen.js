@@ -13,6 +13,8 @@ class BeginScreen {
         this.button = generator.getNode(".sign");
         this.form = generator.getNode("form.field-wrapper");
         this.roomsList = generator.getNode(".rooms-list");
+        this.gamesList = generator.getNode(".games-list");
+        this.screenNode = generator.getNode(".begin-screen");
 
         this.emitter = mitt();
         this.bindedSignFunction = this.sign.bind(this);
@@ -21,41 +23,44 @@ class BeginScreen {
         this.form.addEventListener("submit", this.bindedSignFunction);
     }
 
-    renderRooms(rooms, onSelect) {
-        // if ( !this.roomsList || !rooms.length ) return;
-        //
-        // this.roomsList.classList.add("active");
-        // this.roomsList.innerHTML = rooms.map(room =>
-        //     `<button type="button" class="room-chip" data-id="${room.id}">${room.name}</button>`
-        // ).join("") + `<button type="button" class="room-chip room-chip--new" data-id="">Новая комната</button>`;
-        //
-        // this.roomsList.querySelectorAll(".room-chip").forEach(chip => {
-        //     chip.addEventListener("click", () => {
-        //         this.roomsList.querySelectorAll(".room-chip").forEach(el => el.classList.remove("active"));
-        //         chip.classList.add("active");
-        //         onSelect(chip.dataset.id || null);
-        //     });
-        // });
+    setBackground(bg) {
+        if ( this.screenNode ) this.screenNode.style.backgroundImage = `url('${bg}')`;
+    }
 
-        if (!this.roomsList) return;
+    renderGames(games, selectedId, onSelect) {
+        if ( !this.gamesList || !games.length ) return;
+
+        this.gamesList.classList.add("active");
+
+        const optionsHtml = games.map(game =>
+            `<option value="${game.id}" ${game.id === selectedId ? "selected" : ""}>${game.name}</option>`
+        ).join("");
+
+        this.gamesList.innerHTML = `<select class="games-select">${optionsHtml}</select>`;
+
+        const selectEl = this.gamesList.querySelector(".games-select");
+
+        selectEl.addEventListener("change", (e) => {
+            onSelect(e.target.value);
+        });
+    }
+
+    renderRooms(rooms, onSelect) {
+        if ( !this.roomsList ) return;
 
         this.roomsList.classList.add("active");
 
-        // Формируем список опций: сначала "Новая комната", затем существующих
         const optionsHtml = `
             <option value="">Новая комната</option>
             ${rooms.map(room => `<option value="${room.id}">${room.name}</option>`).join("")}
         `;
 
-        // Создаем элемент select
         this.roomsList.innerHTML = `<select class="rooms-select">${optionsHtml}</select>`;
 
         const selectEl = this.roomsList.querySelector(".rooms-select");
 
-        // Сразу передаем initial значение (null, так как выбрана "Новая комната")
         onSelect(null);
 
-        // При изменении выбора вызываем callback
         selectEl.addEventListener("change", (e) => {
             const selectedId = e.target.value || null;
             onSelect(selectedId);

@@ -1,0 +1,175 @@
+{
+  "id": "puertorico",
+  "name": "Пуэрто-Рико",
+  "field": {
+    "front": "/puertorico/field.webp",
+    "x": 0,
+    "y": 0,
+    "width": 2442.6,
+    "height": 3456
+  },
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "bigbuilds",
+      "count": 8,
+      "front": "/puertorico/bigbuilds/{n}.webp",
+      "back": "/puertorico/bigbuilds/bg_{n}.webp",
+      "position": { "x": 0, "y": 0 },
+      "size": { "w": 477, "h": 570 }
+    },
+    {
+      "type": "duoside",
+      "id": "builds",
+      "count": 28,
+      "front": "/puertorico/builds/{n}.webp",
+      "back": "/puertorico/builds/bg_{n}.webp",
+      "position": { "x": 500, "y": 0 },
+      "size": { "w": 480, "h": 285 }
+    },
+    {
+      "type": "duoside",
+      "id": "fabrics",
+      "count": 26,
+      "front": "/puertorico/fabrics/{n}.webp",
+      "back": "/puertorico/fabrics/bg.webp",
+      "position": { "x": 500, "y": 0 },
+      "size": { "w": 480, "h": 285 }
+    },
+    {
+      "type": "duoside",
+      "id": "plant_1",
+      "count": 11,
+      "front": "/puertorico/plant/1.png",
+      "back": "/puertorico/plant/bg.png",
+      "position": { "x": 1200, "y": 0 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "plant_2",
+      "count": 9,
+      "front": "/puertorico/plant/2.png",
+      "back": "/puertorico/plant/bg.png",
+      "position": { "x": 1500, "y": 0 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "plant_3",
+      "count": 10,
+      "front": "/puertorico/plant/3.png",
+      "back": "/puertorico/plant/bg.png",
+      "position": { "x": 1800, "y": 0 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "plant_4",
+      "count": 12,
+      "front": "/puertorico/plant/4.png",
+      "back": "/puertorico/plant/bg.png",
+      "position": { "x": 2100, "y": 0 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "plant_5",
+      "count": 8,
+      "front": "/puertorico/plant/5.png",
+      "back": "/puertorico/plant/bg.png",
+      "position": { "x": 2400, "y": 0 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "products_1",
+      "count": 9,
+      "front": "/puertorico/products/1.png",
+      "back": "same",
+      "position": { "x": 1200, "y": 400 },
+      "size": { "w": 130, "h": 129 }
+    },
+    {
+      "type": "duoside",
+      "id": "products_2",
+      "count": 9,
+      "front": "/puertorico/products/2.png",
+      "back": "same",
+      "position": { "x": 1200, "y": 400 },
+      "size": { "w": 130, "h": 129 }
+    },
+    {
+      "type": "duoside",
+      "id": "products_3",
+      "count": 10,
+      "front": "/puertorico/products/3.png",
+      "back": "same",
+      "position": { "x": 1200, "y": 400 },
+      "size": { "w": 130, "h": 129 }
+    },
+    {
+      "type": "duoside",
+      "id": "products_4",
+      "count": 11,
+      "front": "/puertorico/products/4.png",
+      "back": "same",
+      "position": { "x": 1200, "y": 400 },
+      "size": { "w": 130, "h": 129 }
+    },
+    {
+      "type": "duoside",
+      "id": "products_5",
+      "count": 11,
+      "front": "/puertorico/products/5.png",
+      "back": "same",
+      "position": { "x": 1200, "y": 400 },
+      "size": { "w": 130, "h": 129 }
+    },
+    {
+      "type": "duoside",
+      "id": "roles",
+      "count": 10,
+      "front": "/puertorico/roles/{n}.webp",
+      "back": "same",
+      "position": { "x": 0, "y": 1000 },
+      "size": { "w": 477, "h": 783 }
+    },
+    {
+      "type": "duoside",
+      "id": "ships",
+      "count": 6,
+      "front": "/puertorico/ships/{n}.png",
+      "back": "same",
+      "position": { "x": 1000, "y": 1000 },
+      "size": { "w": 630, "h": 1115 }
+    },
+    {
+      "type": "duoside",
+      "id": "stone",
+      "count": 8,
+      "front": "/puertorico/stone/1.png",
+      "back": "/puertorico/stone/bg.png",
+      "position": { "x": 1800, "y": 400 },
+      "size": { "w": 300, "h": 308 }
+    },
+    {
+      "type": "duoside",
+      "id": "fields",
+      "count": 2,
+      "front": "/puertorico/fields/1.webp",
+      "back": "/puertorico/fields/bg.webp",
+      "position": { "x": 0, "y": 2000 },
+      "size": { "w": 3456, "h": 2466 }
+    },
+    {
+      "type": "duoside",
+      "id": "meepl",
+      "count": 42,
+      "front": "/puertorico/meepl/1.webp",
+      "back": "/puertorico/meepl/bg.webp",
+      "position": { "x": 2000, "y": 2000 },
+      "size": { "w": 130, "h": 130 }
+    }
+  ]
+}
