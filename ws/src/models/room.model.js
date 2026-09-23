@@ -1,9 +1,31 @@
 class Room {
-    constructor(id) {
+    constructor(id, name) {
         this.id = id;
+        this.name = name || id;
         this.users = [];
         this.syncUser = null;
         this.bank = null;
+        this.hands = new Map();
+        this.state = { elements: [], resources: [] };
+    }
+
+    checkpoint(payload) {
+        this.state = {
+            elements: payload.elements || [],
+            resources: payload.resources || [],
+        };
+    }
+
+    hasState() {
+        return this.state.elements.length > 0 || this.state.resources.length > 0;
+    }
+
+    getSyncPayload() {
+        return { ...this.state, hands: this.getHandIds() };
+    }
+
+    getPersistableState() {
+        return { ...this.state, hands: this.getHandIds() };
     }
 
     addUser(user) {
@@ -34,6 +56,40 @@ class Room {
 
     getUser(userId) {
         return this.users.find(user => user.id === userId);
+    }
+
+    takeToHand(cardId, ownerId) {
+        this.hands.set(cardId, ownerId);
+    }
+
+    releaseFromHand(cardId) {
+        this.hands.delete(cardId);
+    }
+
+    getHandIds() {
+        return Array.from(this.hands.keys());
+    }
+
+    getHandCounts() {
+        const counts = {};
+
+        for ( const ownerId of this.hands.values() ) {
+            counts[ownerId] = (counts[ownerId] || 0) + 1;
+        }
+
+        return counts;
+    }
+
+    releaseUserHands(userId) {
+        const released = [];
+
+        for ( const [cardId, ownerId] of this.hands.entries() ) {
+            if ( ownerId !== userId ) continue;
+            released.push(cardId);
+            this.hands.delete(cardId);
+        }
+
+        return released;
     }
 
     broadcast(action, payload, excludeUserId) {

@@ -13,7 +13,7 @@ class UsersManager {
             output.push(user);
         }
 
-        return this.uiManager.getActualUsersData(output, this.usersManager.user);
+        return this.uiManager.getActualUsersData(output, this.usersManager.user, this.usersManager.handCounts);
     }
 }
 

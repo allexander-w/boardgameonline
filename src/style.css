@@ -269,6 +269,47 @@ h1 {
   border-radius: 48px;
 }
 
+
+.modal.active {
+    height: 160px;
+    padding: 32px;
+    border-radius: 48px;
+}
+
+.rooms-list {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rooms-list.active {
+    display: flex;
+}
+
+.room-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.4);
+    background: rgba(255,255,255,0.15);
+    color: #333;
+    font-size: 13px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.room-chip:hover {
+    background: rgba(255,255,255,0.35);
+}
+
+.room-chip.active {
+    background: rgba(255,255,255,0.6);
+    border-color: rgba(0,0,0,0.2);
+}
+
+.room-chip--new {
+    border-style: dashed;
+}
+
 .field-wrapper {
   position: relative;
   display: flex;
@@ -1345,4 +1386,15 @@ button {
     --hover-scale: 1.05;
     z-index: 9999 !important;
     filter: brightness(1.15) saturate(1.1) drop-shadow(0 22px 40px rgba(0, 0, 0, 0.85));
+}
+
+.hand-count {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
 }

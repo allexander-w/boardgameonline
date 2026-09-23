@@ -273,6 +273,17 @@ class HandManager {
 
         this.layersManager.cacheAllGroups();
     }
+
+    remoteReleased(data) {
+        this.layersManager.clearCacheAllGroups();
+
+        for ( const id of data.cards || [] ) {
+            const card = cardsManager.getCard(id);
+            if ( card ) card.element.show();
+        }
+
+        this.layersManager.cacheAllGroups();
+    }
 }
 
 export default HandManager;

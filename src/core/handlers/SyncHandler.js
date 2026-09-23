@@ -12,11 +12,11 @@ class SyncHandler {
 
         this.emitter.on("api.register.joined", this.getConfig.bind(this));
         this.emitter.on("api.register.sync", this.loadConfig.bind(this));
+
+        this.startAutosave();
     }
 
-    getConfig() {
-        if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return false;
-
+    buildSave() {
         const save = {
             timestamp: new Date(),
             elements: [],
@@ -29,7 +29,25 @@ class SyncHandler {
             else save.elements.push(config);
         }
 
-        this.sender.send("api.register.sync", save);
+        return save;
+    }
+
+    getConfig() {
+        if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return false;
+        this.sender.send("api.register.sync", this.buildSave());
+    }
+
+    checkpoint() {
+        this.sender.send("api.room.checkpoint", this.buildSave());
+    }
+
+    startAutosave() {
+        setInterval(() => {
+            if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return;
+            this.checkpoint();
+        }, 20000);
+
+        window.addEventListener("pagehide", () => this.checkpoint());
     }
 
     loadConfig(data) {
@@ -37,7 +55,7 @@ class SyncHandler {
         this.layersManager.clearCacheAllGroups();
 
         for ( const el of save.resources ) {
-            if ( cardsManager.cards.has(el.id) ) return false;
+            if ( cardsManager.cards.has(el.id) ) continue;
             const options =  { draggable: true, x: el.x, y: el.y, width: el.width, height: el.height, opacity: 1, id: el.id };
             const resourceCard = new ResourceCard({ front: el.src }, options);
             cardsManager.createCard(resourceCard);
@@ -46,6 +64,11 @@ class SyncHandler {
         for ( const el of save.elements ) {
             const card = cardsManager.getCard(el.id);
             card.forLoad(el);
+        }
+
+        for ( const id of save.hands || [] ) {
+            const card = cardsManager.getCard(id);
+            if ( card ) card.element.hide();
         }
 
         this.layersManager.cacheAllGroups();

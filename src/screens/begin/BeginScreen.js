@@ -12,12 +12,30 @@ class BeginScreen {
         this.input = generator.getNode("#fname");
         this.button = generator.getNode(".sign");
         this.form = generator.getNode("form.field-wrapper");
+        this.roomsList = generator.getNode(".rooms-list");
 
         this.emitter = mitt();
         this.bindedSignFunction = this.sign.bind(this);
 
         this.button.addEventListener("click", this.bindedSignFunction);
         this.form.addEventListener("submit", this.bindedSignFunction);
+    }
+
+    renderRooms(rooms, onSelect) {
+        if ( !this.roomsList || !rooms.length ) return;
+
+        this.roomsList.classList.add("active");
+        this.roomsList.innerHTML = rooms.map(room =>
+            `<button type="button" class="room-chip" data-id="${room.id}">${room.name}</button>`
+        ).join("") + `<button type="button" class="room-chip room-chip--new" data-id="">Новая комната</button>`;
+
+        this.roomsList.querySelectorAll(".room-chip").forEach(chip => {
+            chip.addEventListener("click", () => {
+                this.roomsList.querySelectorAll(".room-chip").forEach(el => el.classList.remove("active"));
+                chip.classList.add("active");
+                onSelect(chip.dataset.id || null);
+            });
+        });
     }
 
     sign(e) {

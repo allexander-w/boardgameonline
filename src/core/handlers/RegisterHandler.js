@@ -12,6 +12,7 @@ class RegisterHandler {
         this.emmiter.on("api.room.hostChanged", this.hostChanged.bind(this));
         this.emmiter.on("api.room.kicked", this.kicked.bind(this));
         this.emmiter.on("api.room.rejected", this.rejected.bind(this));
+        this.emmiter.on("api.room.handCounts", this.handCounts.bind(this));
     }
 
 
@@ -77,6 +78,11 @@ class RegisterHandler {
 
     rejected(data) {
         console.warn("Действие отклонено сервером:", data?.action);
+    }
+
+    handCounts(data) {
+        this.usersManager.setHandCounts(data.counts);
+        this.emmiter.emit("api.register.roleChanged");
     }
 }
 

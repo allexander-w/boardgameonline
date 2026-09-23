@@ -2,6 +2,7 @@ export const beginScreenTemplate = (bg) => {
     return `
         <div class="begin-screen" style="background-image: url('${ bg }');">
           <div class="modal">
+            <div class="rooms-list"></div>
             <form class="field-wrapper active">
               <input autocomplete="off" name="hidden" class="field" maxlength="256" placeholder="Имя" type="text" id="fname" required="">
               <button type="submit" class="sign">

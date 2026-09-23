@@ -12,6 +12,7 @@ const PLAYER_COMMANDS = new Set([
     "modules.hand.put",
     "modules.hand.putById",
     "modules.resources.put",
+    "api.room.checkpoint",
 ]);
 
 const HOST_COMMANDS = new Set([

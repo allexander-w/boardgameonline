@@ -2,8 +2,8 @@ import {UsersListTemplate} from "../templates/users.template";
 
 class UIManager {
 
-    getActualUsersData(users, viewer) {
-        return UsersListTemplate(users, viewer);
+    getActualUsersData(users, viewer, handCounts) {
+        return UsersListTemplate(users, viewer, handCounts);
     }
 }
 

@@ -3,9 +3,16 @@ const { unserialize } = require("../../shared/utils/serialize.util.cjs");
 
 const User = require("./models/user.model");
 const RoomStore = require("./models/room.store");
+const database = require("./storage/database");
 const { isAllowed } = require("./commands");
 
 const roomStore = new RoomStore();
+
+setInterval(() => {
+    for ( const room of roomStore.rooms.values() ) {
+        database.saveRoom(room.id, room.name, room.getPersistableState());
+    }
+}, 30000);
 
 function handleConnected(connection, data) {
     const roomId = String(data.payload?.room || "default");
@@ -21,6 +28,11 @@ function handleConnected(connection, data) {
     room.addUser(user);
 
     user.send("api.register.connected", { user, room: roomId, message: "connected" });
+
+    if ( room.users.length === 1 && room.hasState() ) {
+        user.send("api.register.sync", room.getSyncPayload());
+    }
+
     room.broadcast("api.register.join", { user, users: room.users, syncUser: room.syncUser });
 }
 
@@ -40,6 +52,36 @@ function handleTransferHost(room, data) {
     room.refreshRoles();
     room.broadcast("api.room.hostChanged", { syncUser: room.syncUser, users: room.users });
 }
+
+function trackHandOwnership(room, actingUser, data) {
+    if ( data.action === "modules.hand.take" ) {
+        room.takeToHand(data.payload.id, actingUser.id);
+    }
+
+    if ( data.action === "modules.hand.takeAll" || data.action === "modules.hand.takeHalf" ) {
+        for ( const cardId of data.payload.cards || [] ) {
+            room.takeToHand(cardId, actingUser.id);
+        }
+    }
+
+    if ( data.action === "modules.hand.put" ) {
+        for ( const card of data.payload.cards || [] ) {
+            room.releaseFromHand(card.id);
+        }
+    }
+
+    if ( data.action === "modules.hand.putById" ) {
+        room.releaseFromHand(data.payload.card.id);
+    }
+}
+
+const HAND_ACTIONS = new Set([
+    "modules.hand.take",
+    "modules.hand.takeAll",
+    "modules.hand.takeHalf",
+    "modules.hand.put",
+    "modules.hand.putById",
+]);
 
 ws.on("request", req => {
     const connection = req.accept("", req.origin);
@@ -72,6 +114,24 @@ ws.on("request", req => {
             return handleTransferHost(room, data);
         }
 
+        if ( HAND_ACTIONS.has(data.action) ) {
+            trackHandOwnership(room, actingUser, data);
+            room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
+            room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
+            return;
+        }
+
+        if ( data.action === "api.register.sync" ) {
+            room.checkpoint(data.payload);
+            room.broadcast(data.action, { ...data.payload, user: actingUser.id, hands: room.getHandIds() }, actingUser.id);
+            return;
+        }
+
+        if ( data.action === "api.room.checkpoint" ) {
+            room.checkpoint(data.payload);
+            return;
+        }
+
         room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
     });
 
@@ -82,11 +142,18 @@ ws.on("request", req => {
         const disconnectedUser = room.getUser(connection.userId);
         if ( !disconnectedUser ) return;
 
+        const releasedCards = room.releaseUserHands(disconnectedUser.id);
+
         room.removeUser(disconnectedUser.id);
         room.broadcast("api.register.disconnect", disconnectedUser);
 
+        if ( releasedCards.length ) {
+            room.broadcast("modules.hand.released", { cards: releasedCards });
+            room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
+        }
+
         if ( room.isEmpty ) {
-            roomStore.delete(room.id);
+            roomStore.persistAndEvict(room);
         }
     });
 });

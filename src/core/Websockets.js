@@ -5,10 +5,12 @@ class Websockets {
     constructor(emitter) {
         this.socket = null;
         this.emitter = emitter;
+
+        this.handleUnload = this.handleUnload.bind(this);
     }
 
     get ready() {
-        return this.socket?.readyState === 1;
+        return this.socket?.readyState === WebSocket.OPEN;
     }
 
     connect() {
@@ -19,6 +21,7 @@ class Websockets {
         };
 
         this.socket.onclose = (e) => {
+            this.removeUnloadListeners();
             this.emitter.emit('system.websockets.onclose', e);
         };
 
@@ -26,6 +29,28 @@ class Websockets {
             const data = unserialize(event.data);
             this.emitter.emit(data.action, data.payload);
         };
+
+        this.addUnloadListeners();
+    }
+
+    disconnect(code = 1000, reason = "Client disconnected") {
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.close(code, reason);
+        }
+    }
+
+    handleUnload() {
+        this.disconnect(1000, "Page unloaded");
+    }
+
+    addUnloadListeners() {
+        window.addEventListener("beforeunload", this.handleUnload);
+        window.addEventListener("pagehide", this.handleUnload);
+    }
+
+    removeUnloadListeners() {
+        window.removeEventListener("beforeunload", this.handleUnload);
+        window.removeEventListener("pagehide", this.handleUnload);
     }
 }
 

@@ -1,4 +1,5 @@
 const Room = require("./room.model");
+const database = require("../storage/database");
 
 class RoomStore {
     constructor() {
@@ -11,17 +12,21 @@ class RoomStore {
 
     getOrCreate(roomId) {
         let room = this.rooms.get(roomId);
+        if ( room ) return room;
 
-        if ( !room ) {
-            room = new Room(roomId);
-            this.rooms.set(roomId, room);
-        }
+        const saved = database.getRoom(roomId);
 
+        room = new Room(roomId, saved?.name);
+        if ( saved ) room.checkpoint(saved.state);
+        else database.createRoom(roomId);
+
+        this.rooms.set(roomId, room);
         return room;
     }
 
-    delete(roomId) {
-        this.rooms.delete(roomId);
+    persistAndEvict(room) {
+        database.saveRoom(room.id, room.name, room.getPersistableState());
+        this.rooms.delete(room.id);
     }
 }
 

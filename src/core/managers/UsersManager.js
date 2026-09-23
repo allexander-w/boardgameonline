@@ -10,6 +10,11 @@ class UsersManager {
 
         this.syncPoint = null;
         this.users = new Map();
+        this.handCounts = {};
+    }
+
+    setHandCounts(counts) {
+        this.handCounts = counts || {};
     }
 
     register(user) {
