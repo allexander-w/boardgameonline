@@ -1,7 +1,8 @@
 class Room {
-    constructor(id, name) {
+    constructor(id, name, game) {
         this.id = id;
         this.name = name || id;
+        this.game = game || null;
         this.users = [];
         this.syncUser = null;
         this.bank = null;

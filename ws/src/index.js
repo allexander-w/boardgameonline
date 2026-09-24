@@ -10,13 +10,13 @@ const roomStore = new RoomStore();
 
 setInterval(() => {
     for ( const room of roomStore.rooms.values() ) {
-        database.saveRoom(room.id, room.name, room.getPersistableState());
+        database.saveRoom(room.id, room.name, room.game, room.getPersistableState());
     }
 }, 30000);
 
 function handleConnected(connection, data) {
     const roomId = String(data.payload?.room || "default");
-    const room = roomStore.getOrCreate(roomId);
+    const room = roomStore.getOrCreate(roomId, data.payload?.game);
 
     const user = new User(Date.now(), connection);
     user.setName(data.payload?.name || "");
@@ -27,7 +27,7 @@ function handleConnected(connection, data) {
 
     room.addUser(user);
 
-    user.send("api.register.connected", { user, room: roomId, message: "connected" });
+    user.send("api.register.connected", { user, room: roomId, game: room.game, message: "connected" });
 
     if ( room.users.length === 1 && room.hasState() ) {
         user.send("api.register.sync", room.getSyncPayload());

@@ -17,6 +17,13 @@ class RegisterHandler {
 
 
     connected(data) {
+        if ( data.game && this.usersManager.user.game && data.game !== this.usersManager.user.game ) {
+            const url = new URL(window.location.href);
+            url.searchParams.set("game", data.game);
+            window.location.href = url.toString();
+            return;
+        }
+
         const notificationsManager = this.moduleManager.getModule("notifications");
         notificationsManager.notify("Вы подключены к игре!");
 

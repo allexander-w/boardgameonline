@@ -45,6 +45,13 @@ class BeginScreen {
         });
     }
 
+    lockGame(name) {
+        if ( !this.gamesList ) return;
+
+        this.gamesList.classList.add("active");
+        this.gamesList.innerHTML = `<div class="games-locked">Игра в комнате: ${name}</div>`;
+    }
+
     renderRooms(rooms, onSelect) {
         if ( !this.roomsList ) return;
 

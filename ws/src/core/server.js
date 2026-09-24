@@ -12,6 +12,18 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    if ( req.method === "GET" && req.url.startsWith("/room/") ) {
+        const id = decodeURIComponent(req.url.slice("/room/".length));
+        const room = database.getRoom(id);
+
+        res.writeHead(room ? 200 : 404, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        });
+        res.end(JSON.stringify(room ? { id: room.id, name: room.name, game: room.game } : { message: "not found" }));
+        return;
+    }
+
     res.writeHead(200);
     res.end();
 });
