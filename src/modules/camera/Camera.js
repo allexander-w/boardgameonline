@@ -3,8 +3,12 @@ class Camera {
         this.stage = layersManager.stage;
         this.boardLayer = layersManager.getLayer("board");
 
+        this.baseScale = 1;
+        this.minScale = 0.1;
+        this.maxScale = 30;
+
         this.keyboardController = new KeyboardController(this);
-        this.mouseController = new MouseController(this.stage);
+        this.mouseController = new MouseController(this);
 
         if ('ontouchstart' in window) {
             new MobileJoystick(this);
@@ -32,23 +36,34 @@ class Camera {
         this.stage.offsetY(y);
     }
 
-    initializeCamera() {
-        const layoutClientRect = this.stage.getClientRect();
-        const coordinates = {
-            width: (layoutClientRect.x + layoutClientRect.width) || 1,
-            height: (layoutClientRect.y + layoutClientRect.height) || 1
-        };
+    clampScale(scale) {
+        return Math.min(this.maxScale, Math.max(this.minScale, scale));
+    }
 
-        const isWidthMore = (window.innerWidth / coordinates.width >= window.innerHeight / coordinates.height);
-        const scale = isWidthMore ? window.innerHeight / coordinates.height : window.innerWidth / coordinates.width;
+    initializeCamera() {
+        const rect = this.stage.getClientRect();
+        const width = rect.width || 1;
+        const height = rect.height || 1;
+
+        const centerX = rect.x + width / 2;
+        const centerY = rect.y + height / 2;
+
+        const scale = Math.min(window.innerWidth / width, window.innerHeight / height);
+
+        this.baseScale = scale;
+        this.minScale = scale * 0.1;
+        this.maxScale = scale * 1;
 
         this.stage.scale({ x: scale, y: scale });
-        this.move((window.innerWidth - (coordinates.width * scale)) / 2, 0);
+        this.stage.position({
+            x: window.innerWidth / 2 - centerX * scale,
+            y: window.innerHeight / 2 - centerY * scale,
+        });
     }
 
     zoom(factor, pointer) {
         const oldScale = this.stage.scaleX();
-        const newScale = factor > 0 ? oldScale / 1.1 : oldScale * 1.1;
+        const newScale = this.clampScale(factor > 0 ? oldScale / 1.1 : oldScale * 1.1);
         const mousePointTo = {
             x: (pointer.x - this.stage.x()) / oldScale,
             y: (pointer.y - this.stage.y()) / oldScale,

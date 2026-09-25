@@ -1,6 +1,7 @@
 class MouseController {
-    constructor(stage) {
-        this.stage = stage;
+    constructor(camera) {
+        this.camera = camera;
+        this.stage = camera.stage;
     }
 
     setupMouseListeners() {
@@ -15,19 +16,19 @@ class MouseController {
         const scaleBy = 1.1;
         const oldScale = this.stage.scaleX();
 
-        // Определяем новый масштаб
         const pointer = this.stage.getPointerPosition();
         const mousePointTo = {
             x: (pointer.x - this.stage.x()) / oldScale,
             y: (pointer.y - this.stage.y()) / oldScale,
         };
 
-        const newScale =
-            e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
+        const rawScale = e.evt.deltaY > 0 ? oldScale / scaleBy : oldScale * scaleBy;
+        const newScale = this.camera.clampScale(rawScale);
+
+        if ( newScale === oldScale ) return;
 
         this.stage.scale({ x: newScale, y: newScale });
 
-        // Обновляем позицию, чтобы зум происходил относительно указателя мыши
         const newPos = {
             x: pointer.x - mousePointTo.x * newScale,
             y: pointer.y - mousePointTo.y * newScale,

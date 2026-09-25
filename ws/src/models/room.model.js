@@ -8,6 +8,7 @@ class Room {
         this.bank = null;
         this.hands = new Map();
         this.state = { elements: [], resources: [] };
+        this.releaseCount = 0;
     }
 
     checkpoint(payload) {
@@ -26,7 +27,7 @@ class Room {
     }
 
     getPersistableState() {
-        return { ...this.state, hands: this.getHandIds() };
+        return { ...this.state };
     }
 
     addUser(user) {

@@ -1,5 +1,6 @@
 import {moduleManager, senderManager, cardsManager} from "../../../core";
 import KitManager from "./KitManager";
+import ResourceCard from "../../../entities/resource/ResourceCard";
 
 class HandManager {
     constructor(layersManager, cardsManager, moduleManager, UIManager) {
@@ -9,6 +10,7 @@ class HandManager {
         this.UIManager = UIManager;
 
         this.hands = [];
+        this.selectedStack = [];
         this.kitManager = new KitManager(this._isHandsHas.bind(this));
         this.boardLayer = this.layersManager.getLayer("board");
     }
@@ -37,11 +39,63 @@ class HandManager {
     }
 
     shuffle() {
-        this.hands = [...this.hands].sort(() => Math.random() - 0.5);
-        console.log("shuffle", this.hands);
+        this.layersManager.clearCacheAllGroups();
+
+        if (this.selectedStack.length > 1) {
+            const visibleCards = this.selectedStack.filter(el => el.isVisible() && el.getStage());
+
+            if (visibleCards.length <= 1) {
+                this.selectedStack = [];
+                this.layersManager.cacheAllGroups();
+                return;
+            }
+
+            let maxStack = [];
+
+            visibleCards.forEach(targetCard => {
+                const overlapping = this._findElementsAbove(targetCard).filter(el =>
+                    visibleCards.includes(el)
+                );
+
+                if (overlapping.length > maxStack.length) {
+                    maxStack = overlapping;
+                }
+            });
+
+            if (maxStack.length > 1) {
+                const basePos = {
+                    x: maxStack[0].x(),
+                    y: maxStack[0].y()
+                };
+
+                const shuffled = [...maxStack].sort(() => Math.random() - 0.5);
+
+                const config = [];
+                shuffled.forEach((el) => {
+                    el.moveToTop();
+                    el.x(basePos.x);
+                    el.y(basePos.y);
+
+                    config.push({
+                        id: el.id(),
+                        zIndex: el.zIndex(),
+                        pos: basePos
+                    });
+                });
+
+                this.selectedStack = shuffled;
+                senderManager.send("modules.hand.shuffleStack", { cards: config });
+            } else {
+                this.selectedStack = [];
+            }
+        }
+
+        this.layersManager.cacheAllGroups();
 
         const notificationsManager = moduleManager.getModule("notifications");
-        notificationsManager.notify("Карты перемешаны", { color: "green" });
+        if (notificationsManager) {
+            notificationsManager.notify("Карты перемешаны", { color: "green" });
+        }
     }
 
     selectStack(id) {
@@ -52,6 +106,21 @@ class HandManager {
     addStack() {
         this.kitManager.add();
         this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
+    }
+
+    select(el) {
+        const elementsAbove = this._findElementsAbove(el);
+        this.selectedStack = elementsAbove;
+
+        const actionsManager = moduleManager.getModule("actions");
+        if ( elementsAbove.length === 1 ) actionsManager.select(el);
+        if ( elementsAbove.length > 1 ) actionsManager.selectCouple(elementsAbove.length);
+    }
+
+    clearSelection() {
+        this.selectedStack = [];
+        const actionsManager = moduleManager.getModule("actions");
+        actionsManager.selectCouple(0);
     }
 
     take(el) {
@@ -277,12 +346,49 @@ class HandManager {
     remoteReleased(data) {
         this.layersManager.clearCacheAllGroups();
 
-        for ( const id of data.cards || [] ) {
-            const card = cardsManager.getCard(id);
-            if ( card ) card.element.show();
+        for ( const placement of data.cards || [] ) {
+            const card = cardsManager.getCard(placement.id);
+            if ( !card ) continue;
+
+            card.element.x(placement.x);
+            card.element.y(placement.y);
+            card.element.show();
+        }
+
+        if ( data.pile ) {
+            this.createHandLabel(data.pile.id, data.owner, data.pile.x, data.pile.y);
         }
 
         this.layersManager.cacheAllGroups();
+    }
+
+    createHandLabel(id, owner, x, y) {
+        if ( cardsManager.getCard(id) ) return;
+
+        const width = 240;
+        const height = 70;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "rgba(20, 20, 20, 0.85)";
+        ctx.beginPath();
+        ctx.roundRect(0, 0, width, height, 14);
+        ctx.fill();
+
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "600 20px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(`Рука: ${owner}`, width / 2, height / 2);
+
+        const label = new ResourceCard({ front: canvas.toDataURL("image/png") }, {
+            x, y, width, height, draggable: true, opacity: 1, id,
+        });
+
+        cardsManager.createCard(label);
     }
 }
 

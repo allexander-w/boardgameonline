@@ -10,7 +10,7 @@ class ActionsModule {
     }
 
     select(e) {
-        const element = this.cardsManager.getCard(e.target.id());
+        const element = this.cardsManager.getCard(e.id());
         if ( this.exceptions.every(el => element instanceof el) ) return false;
 
         this.selected = element;

@@ -24,6 +24,17 @@ function resolveRoomId() {
     return room;
 }
 
+function getGameFromUrl() {
+    const url = new URL(window.location.href);
+    return url.searchParams.get("game");
+}
+
+function setGameId(game) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("game", game);
+    window.history.replaceState(null, "", url);
+}
+
 async function fetchRoomList(wsUrl) {
     try {
         const httpUrl = wsUrl.replace(/^ws/, "http") + "/rooms";
@@ -35,4 +46,15 @@ async function fetchRoomList(wsUrl) {
     }
 }
 
-export { resolveRoomId, getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList };
+async function fetchRoom(wsUrl, roomId) {
+    try {
+        const httpUrl = wsUrl.replace(/^ws/, "http") + "/room/" + encodeURIComponent(roomId);
+        const response = await fetch(httpUrl);
+        if ( !response.ok ) return null;
+        return await response.json();
+    } catch (e) {
+        return null;
+    }
+}
+
+export { resolveRoomId, getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList, fetchRoom, getGameFromUrl, setGameId };

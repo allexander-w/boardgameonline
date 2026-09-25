@@ -83,6 +83,24 @@ const HAND_ACTIONS = new Set([
     "modules.hand.putById",
 ]);
 
+function buildReleasePayload(room, ownerName, releasedCards) {
+    const pileIndex = room.releaseCount++;
+    const baseX = -600 - pileIndex * 260;
+    const baseY = -600;
+
+    const cards = releasedCards.map((id, index) => ({
+        id,
+        x: baseX + (index % 5) * 40,
+        y: baseY + Math.floor(index / 5) * 40,
+    }));
+
+    return {
+        cards,
+        owner: ownerName,
+        pile: { id: `handlabel_${room.id}_${pileIndex}`, x: baseX, y: baseY - 110 },
+    };
+}
+
 ws.on("request", req => {
     const connection = req.accept("", req.origin);
 
@@ -148,7 +166,7 @@ ws.on("request", req => {
         room.broadcast("api.register.disconnect", disconnectedUser);
 
         if ( releasedCards.length ) {
-            room.broadcast("modules.hand.released", { cards: releasedCards });
+            room.broadcast("modules.hand.released", buildReleasePayload(room, disconnectedUser.name, releasedCards));
             room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
         }
 

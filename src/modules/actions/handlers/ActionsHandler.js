@@ -4,7 +4,11 @@ class ActionsHandler {
         this.boardLayer = layersManager.getLayer("board");
         this.moduleManager = moduleManager;
         this.actionsManager = actionsManager;
-        this.boardLayer.on("click tap", this.actionsManager.select.bind(this.actionsManager));
+
+        this.boardLayer.on("click tap", (el) => {
+            const handModule = this.moduleManager.getModule("hands");
+            handModule.select(el.target);
+        });
 
         document.querySelector(".tool-tray-cards").addEventListener("click", (e) => {
             const group = e.target.closest(".group-item");
