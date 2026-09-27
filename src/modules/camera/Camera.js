@@ -52,7 +52,7 @@ class Camera {
 
         this.baseScale = scale;
         this.minScale = scale * 0.1;
-        this.maxScale = scale * 1;
+        this.maxScale = scale * 10;
 
         this.stage.scale({ x: scale, y: scale });
         this.stage.position({

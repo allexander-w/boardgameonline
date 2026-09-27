@@ -289,6 +289,21 @@ class HandManager {
         this.layersManager.cacheAllGroups();
     }
 
+    remoteShuffleStack(data) {
+        this.layersManager.clearCacheAllGroups();
+
+        for ( const el of data.cards || [] ) {
+            const card = this.cardsManager.getCard(el.id);
+            if ( !card ) continue;
+
+            card.element.x(el.pos.x);
+            card.element.y(el.pos.y);
+            card.element.zIndex(el.zIndex);
+        }
+
+        this.layersManager.cacheAllGroups();
+    }
+
 
     putById(id, event) {
         const stage = this.layersManager.stage;

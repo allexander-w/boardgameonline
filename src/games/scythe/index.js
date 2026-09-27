@@ -1,19 +1,22 @@
-import Camera from "../../core/camera";
-import GeneralScene from "../../scenes/general";
-import ScytheHeaps from "./entities/heaps";
-import heapsConfig from "./config/index";
+import MainScene from "../../scenes/MainScene";
+import {cardsManager, emitter, layersManager, moduleManager} from "../../core";
+import GameBuilder from "../../core/builders/GameBuilder";
+import resourcesModule from "../../modules/resources";
+import manifest from "./manifest.json";
 
-function ScytheScene(user, preload) {
-    GeneralScene.apply(this, [...arguments, { layers: ["fixed"] }]);
+class ScytheScene extends MainScene {
+    constructor(preloadScreen) {
+        super(layersManager, ["fixed"], preloadScreen, moduleManager);
+        this.moduleManager = moduleManager;
 
-    /* Загрузка игрового поля */
-    this.loadGameField("/scythe/field.png", { width: 1902, height: 1474, opacity: 0.8 })
-        .then(() => new Camera(this.board));
+        this.initialization();
+        emitter.on("screen.preloader.finish", this.initialized.bind(this, "Виноделие успешно загружено"));
+    }
 
-    /* Иинициализация всех куч элементов */
-    new ScytheHeaps(this.board, heapsConfig);
-
-    this.initialize();
+    initialization() {
+        const builder = new GameBuilder(cardsManager);
+        builder.build(manifest);
+    }
 }
 
 export default ScytheScene;

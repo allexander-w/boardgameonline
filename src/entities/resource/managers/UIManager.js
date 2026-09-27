@@ -1,5 +1,6 @@
 import {duosideElement, loadImageDuosideElement} from "../../../factory/cards.factory";
 import Konva from "konva";
+import config from "../../../config"
 
 class UIManager {
     createElement(options) {
@@ -7,7 +8,7 @@ class UIManager {
     }
 
     createSideImages(el, src) {
-        loadImageDuosideElement(el, src.front);
+        loadImageDuosideElement(el, config.s3BaseUrl(src.front));
     }
 
     dragstart(el) {

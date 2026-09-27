@@ -1,3 +1,6 @@
+import {moduleManager} from "../../../core";
+
+
 class HandHandler {
     constructor( handManager, layerManager, emitter) {
         this.handManager = handManager;
@@ -12,6 +15,7 @@ class HandHandler {
         this.emitter.on("modules.hand.takeAll", this.handManager.remoteTakeAll.bind(this.handManager));
         this.emitter.on("modules.hand.putById", this.handManager.remotePutById.bind(this.handManager));
         this.emitter.on("modules.hand.released", this.handManager.remoteReleased.bind(this.handManager));
+        this.emitter.on("modules.hand.shuffleStack", this.handManager.remoteShuffleStack.bind(this.handManager));
 
         this.emitter.on("intersection.bottom", this.handManager.take.bind(this.handManager));
 

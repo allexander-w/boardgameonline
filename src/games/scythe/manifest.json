@@ -1,0 +1,468 @@
+{
+  "id": "scythe",
+  "name": "Scythe",
+  "field": {
+    "front": "/scythe/field.png",
+    "x": 0,
+    "y": 0,
+    "width": 1902,
+    "height": 1474
+  },
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "tile_1",
+      "count": 1,
+      "front": "/scythe/tiles/5.png",
+      "back": null,
+      "position": { "x": 700, "y": 460 },
+      "size": { "w": 472, "h": 460 },
+      "options": { "draggable": false, "opacity": 0.8 }
+    },
+    {
+      "type": "duoside",
+      "id": "tile_2",
+      "count": 1,
+      "front": "/scythe/tiles/6.png",
+      "back": null,
+      "position": { "x": 1325, "y": 460 },
+      "size": { "w": 472, "h": 460 },
+      "options": { "draggable": false, "opacity": 0.8 }
+    },
+    {
+      "type": "duoside",
+      "id": "tile_3",
+      "count": 1,
+      "front": "/scythe/tiles/7.png",
+      "back": null,
+      "position": { "x": 700, "y": 1005 },
+      "size": { "w": 472, "h": 460 },
+      "options": { "draggable": false, "opacity": 0.8 }
+    },
+    {
+      "type": "duoside",
+      "id": "tile_4",
+      "count": 1,
+      "front": "/scythe/tiles/1.png",
+      "back": null,
+      "position": { "x": 1325, "y": 1005 },
+      "size": { "w": 472, "h": 460 },
+      "options": { "draggable": false, "opacity": 0.8 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chip_1_1",
+      "count": 7,
+      "front": "/scythe/chips/1/1/{n}.png",
+      "back": null,
+      "position": { "x": -1500, "y": 2500 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 50, "h": 50 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_1_2",
+      "count": 8,
+      "front": "/scythe/chips/1/2/{n}.png",
+      "back": null,
+      "position": { "x": -1500, "y": 2570 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_1_3",
+      "count": 6,
+      "front": "/scythe/chips/1/3/{n}.png",
+      "back": null,
+      "position": { "x": -1500, "y": 2640 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_1_4",
+      "count": 6,
+      "front": "/scythe/chips/1/4/{n}.png",
+      "back": null,
+      "position": { "x": -1500, "y": 2710 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 27, "h": 27 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_1_5",
+      "count": 4,
+      "front": "/scythe/chips/1/5/{n}.png",
+      "back": null,
+      "position": { "x": -1500, "y": 2780 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chip_2_1",
+      "count": 7,
+      "front": "/scythe/chips/2/1/{n}.png",
+      "back": null,
+      "position": { "x": -500, "y": 2500 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 50, "h": 50 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_2_2",
+      "count": 8,
+      "front": "/scythe/chips/2/2/{n}.png",
+      "back": null,
+      "position": { "x": -500, "y": 2570 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_2_3",
+      "count": 6,
+      "front": "/scythe/chips/2/3/{n}.png",
+      "back": null,
+      "position": { "x": -500, "y": 2640 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_2_4",
+      "count": 6,
+      "front": "/scythe/chips/2/4/{n}.png",
+      "back": null,
+      "position": { "x": -500, "y": 2710 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 27, "h": 27 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_2_5",
+      "count": 4,
+      "front": "/scythe/chips/2/5/{n}.png",
+      "back": null,
+      "position": { "x": -500, "y": 2780 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chip_3_1",
+      "count": 7,
+      "front": "/scythe/chips/3/1/{n}.png",
+      "back": null,
+      "position": { "x": 500, "y": 2500 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 50, "h": 50 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_3_2",
+      "count": 8,
+      "front": "/scythe/chips/3/2/{n}.png",
+      "back": null,
+      "position": { "x": 500, "y": 2570 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_3_3",
+      "count": 6,
+      "front": "/scythe/chips/3/3/{n}.png",
+      "back": null,
+      "position": { "x": 500, "y": 2640 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_3_4",
+      "count": 6,
+      "front": "/scythe/chips/3/4/{n}.png",
+      "back": null,
+      "position": { "x": 500, "y": 2710 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 27, "h": 27 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_3_5",
+      "count": 4,
+      "front": "/scythe/chips/3/5/{n}.png",
+      "back": null,
+      "position": { "x": 500, "y": 2780 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chip_4_1",
+      "count": 7,
+      "front": "/scythe/chips/4/1/{n}.png",
+      "back": null,
+      "position": { "x": 1500, "y": 2500 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 50, "h": 50 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_4_2",
+      "count": 8,
+      "front": "/scythe/chips/4/2/{n}.png",
+      "back": null,
+      "position": { "x": 1500, "y": 2570 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_4_3",
+      "count": 6,
+      "front": "/scythe/chips/4/3/{n}.png",
+      "back": null,
+      "position": { "x": 1500, "y": 2640 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_4_4",
+      "count": 6,
+      "front": "/scythe/chips/4/4/{n}.png",
+      "back": null,
+      "position": { "x": 1500, "y": 2710 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 27, "h": 27 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_4_5",
+      "count": 4,
+      "front": "/scythe/chips/4/5/{n}.png",
+      "back": null,
+      "position": { "x": 1500, "y": 2780 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chip_5_1",
+      "count": 7,
+      "front": "/scythe/chips/5/1/{n}.png",
+      "back": null,
+      "position": { "x": 2500, "y": 2500 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 50, "h": 50 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_5_2",
+      "count": 8,
+      "front": "/scythe/chips/5/2/{n}.png",
+      "back": null,
+      "position": { "x": 2500, "y": 2570 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_5_3",
+      "count": 6,
+      "front": "/scythe/chips/5/3/{n}.png",
+      "back": null,
+      "position": { "x": 2500, "y": 2640 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_5_4",
+      "count": 6,
+      "front": "/scythe/chips/5/4/{n}.png",
+      "back": null,
+      "position": { "x": 2500, "y": 2710 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 27, "h": 27 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "chip_5_5",
+      "count": 4,
+      "front": "/scythe/chips/5/5/{n}.png",
+      "back": null,
+      "position": { "x": 2500, "y": 2780 },
+      "offset": { "x": 70, "y": 0 },
+      "size": { "w": 40, "h": 40 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "table_1",
+      "count": 1,
+      "front": "/scythe/tables/1.png",
+      "back": null,
+      "position": { "x": -1100, "y": 2100 },
+      "size": { "w": 905, "h": 640 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "table_2",
+      "count": 1,
+      "front": "/scythe/tables/2.png",
+      "back": null,
+      "position": { "x": -100, "y": 2100 },
+      "size": { "w": 905, "h": 640 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "table_3",
+      "count": 1,
+      "front": "/scythe/tables/3.png",
+      "back": null,
+      "position": { "x": 900, "y": 2100 },
+      "size": { "w": 905, "h": 640 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "table_4",
+      "count": 1,
+      "front": "/scythe/tables/4.png",
+      "back": null,
+      "position": { "x": 1900, "y": 2100 },
+      "size": { "w": 905, "h": 640 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "table_5",
+      "count": 1,
+      "front": "/scythe/tables/5.png",
+      "back": null,
+      "position": { "x": 2900, "y": 2100 },
+      "size": { "w": 905, "h": 640 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "mex_1",
+      "count": 4,
+      "front": "/scythe/mex/1.png",
+      "back": null,
+      "position": { "x": -1078, "y": 1700 },
+      "offset": { "x": 118, "y": 0 },
+      "size": { "w": 100, "h": 100 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "mex_2",
+      "count": 4,
+      "front": "/scythe/mex/2.png",
+      "back": null,
+      "position": { "x": -78, "y": 1700 },
+      "offset": { "x": 118, "y": 0 },
+      "size": { "w": 100, "h": 100 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "mex_3",
+      "count": 4,
+      "front": "/scythe/mex/3.png",
+      "back": null,
+      "position": { "x": 922, "y": 1700 },
+      "offset": { "x": 118, "y": 0 },
+      "size": { "w": 100, "h": 100 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "mex_4",
+      "count": 4,
+      "front": "/scythe/mex/4.png",
+      "back": null,
+      "position": { "x": 1922, "y": 1700 },
+      "offset": { "x": 118, "y": 0 },
+      "size": { "w": 100, "h": 100 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "mex_5",
+      "count": 4,
+      "front": "/scythe/mex/5.png",
+      "back": null,
+      "position": { "x": 2922, "y": 1700 },
+      "offset": { "x": 118, "y": 0 },
+      "size": { "w": 100, "h": 100 },
+      "options": { "draggable": true, "cornerRadius": 0, "custom": true }
+    },
+
+    {
+      "type": "duoside",
+      "id": "warTablet_1",
+      "count": 1,
+      "front": "/scythe/warTablet/1.png",
+      "back": null,
+      "position": { "x": 2300, "y": 210 },
+      "size": { "w": 677, "h": 390 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    },
+    {
+      "type": "duoside",
+      "id": "warTablet_2",
+      "count": 1,
+      "front": "/scythe/warTablet/2.png",
+      "back": null,
+      "position": { "x": 2300, "y": 610 },
+      "size": { "w": 677, "h": 390 },
+      "layer": "fixed",
+      "options": { "draggable": false, "cornerRadius": 0, "custom": true }
+    }
+  ]
+}

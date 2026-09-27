@@ -7,7 +7,7 @@ class BeginScreen {
         this.generator = generator;
 
         this.body = generator.getNode("body");
-        generator.appendToBegin(this.body, beginScreenTemplate('/' + config.scene + "/bg.png"));
+        generator.appendToBegin(this.body, beginScreenTemplate('https://s3bgstorage.duckdns.org/files' + '/' + config.scene + "/bg.png"));
 
         this.input = generator.getNode("#fname");
         this.button = generator.getNode(".sign");

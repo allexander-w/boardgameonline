@@ -11,7 +11,7 @@ class PuertoRicoScene extends MainScene {
         this.moduleManager = moduleManager;
 
         this.initialization();
-        emitter.on("screen.preloader.finish", this.initialized.bind(this, "Виноделие успешно загружено"));
+        emitter.on("screen.preloader.finish", this.initialized.bind(this, "Пуэрто-рико успешно загружено"));
     }
 
     initialization() {

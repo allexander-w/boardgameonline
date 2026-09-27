@@ -1,4 +1,5 @@
 import {duosideElement, loadImageDuosideElement} from "../factory/cards.factory";
+import config from "../config";
 
 class FieldCard {
     constructor(src, options) {
@@ -6,7 +7,9 @@ class FieldCard {
         /* Загрузка картинки элемента */
         this.element = duosideElement(options);
 
-        loadImageDuosideElement(this.element, src.front).then(image => {
+
+
+        loadImageDuosideElement(this.element, config.s3BaseUrl(src.front)).then(image => {
             this.front = image;
         })
     }

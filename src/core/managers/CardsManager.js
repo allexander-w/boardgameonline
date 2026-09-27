@@ -38,6 +38,8 @@ class CardsManager {
         const card = this.getCard(target.id());
         if (!card) return;
 
+        this._clearLongPressTimer();
+
         this.startPointerPos = this.boardStage.getPointerPosition();
 
         this.longPressTimer = setTimeout(() => {
@@ -72,6 +74,10 @@ class CardsManager {
     _startStackDrag(target) {
         this._clearLongPressTimer();
 
+        if (this.activeGroup) {
+            this._endStackDrag();
+        }
+
         const stackElements = this._findElementsAbove(target);
         if (stackElements.length <= 1) return;
 
@@ -105,11 +111,11 @@ class CardsManager {
         this.activeGroup.on('dragmove', () => {
             const pointerPos = this.boardLayer.getRelativePointerPosition();
             const config = this.draggedStack.map(el => {
-                const absPos = el.getAbsolutePosition();
+                const pos = el.getAbsolutePosition(this.boardLayer);
                 return {
                     id: el.id(),
-                    x: absPos.x,
-                    y: absPos.y
+                    x: pos.x,
+                    y: pos.y
                 };
             });
 
@@ -143,7 +149,10 @@ class CardsManager {
             el.moveTo(this.boardLayer);
             el.setAbsolutePosition(absPos);
 
-            config.push({ id: el.id(), x: absPos.x, y: absPos.y });
+            const card = this.getCard(el.id());
+            if (card && card.dragend) card.dragend();
+
+            config.push({ id: el.id(), x: el.x(), y: el.y() });
         });
 
         // Уничтожаем временную группу

@@ -1,5 +1,6 @@
 import {duosideElement, loadImageDuosideElement} from "../../../factory/cards.factory";
 import Konva from "konva";
+import config from "../../../config";
 
 class UIManager {
 
@@ -8,7 +9,7 @@ class UIManager {
     }
 
     createSideImages(el, src, sides = 6) {
-        loadImageDuosideElement(el, src.front, sides);
+        loadImageDuosideElement(el, config.s3BaseUrl(src.front), sides);
     }
 
     getRollAnimation(el, cb) {

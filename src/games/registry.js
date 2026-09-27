@@ -11,4 +11,5 @@ export default [
     { id: "flashpoint", name: "Flashpoint" },
     { id: "iki", name: "Iki" },
     { id: "sevenwonders", name: "7 Чудес" },
+    { id: "scythe", name: "Серп" },
 ];
