@@ -1,6 +1,6 @@
-export const beginScreenTemplate = (bg) => {
+export const beginScreenTemplate = () => {
     return `
-        <div class="begin-screen" style="background-image: url('${ bg }');">
+        <div class="begin-screen">
           <div class="modal">
             <div class="rooms-list"></div>
             <div class="games-list"></div>

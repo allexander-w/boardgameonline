@@ -1,4 +1,3 @@
-
 class ActionsHandler {
     constructor(actionsManager, layersManager, moduleManager) {
         this.boardLayer = layersManager.getLayer("board");
@@ -22,7 +21,7 @@ class ActionsHandler {
 
             const element = e.target.closest(".action-tool");
             if ( element ) {
-                this.actionsManager.selected.cardManager[element.dataset.type]();
+                this.actionsManager.cardsManager.dispatchAction(this.actionsManager.selected.cardManager, element.dataset.type);
             }
         })
     }

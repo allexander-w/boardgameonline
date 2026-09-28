@@ -1,7 +1,6 @@
-import {cardsManager, senderManager} from "../../../core";
+import {cardsManager, senderManager, gameManager} from "../../../core";
 import config from "../../../config";
 import ResourceCard from "../../../entities/resource/ResourceCard";
-
 
 
 
@@ -11,7 +10,6 @@ class ResourcesManger {
         this.uiManager = uiManager;
 
         this.searchValue = "";
-
         this.generatedIds = new Set();
     }
 
@@ -55,7 +53,7 @@ class ResourcesManger {
             if ( !card.selected ) continue;
 
             for ( const element of new Array(card.selected) ) {
-                const src = `/${ config.scene }/resources/${ card.name }.png`;
+                const src = `/${ gameManager.getId() }/resources/${ card.name }.png`;
                 const id = "resource_" + this._generateUniqueId();
                 const options =  { draggable: true, x: pos.x, y: pos.y, width: parseInt(card.width), height: parseInt(card.height), opacity: 1, id };
 

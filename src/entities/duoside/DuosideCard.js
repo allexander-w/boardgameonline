@@ -18,6 +18,10 @@ class DuosideCard extends InterfaceCard {
         return this.ban;
     }
 
+    get magnet() {
+        return this.element.getAttr("magnet");
+    }
+
     get element() {
         return this.cardManager.element;
     }

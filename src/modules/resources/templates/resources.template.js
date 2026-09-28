@@ -1,11 +1,16 @@
 import config from "../../../config";
+import {gameManager} from "../../../core";
 
 export const ResourceTemplate = (item) => {
+    const getUri = () => {
+        return `/${ gameManager.getId() }/resources/${item.name}.png`
+    }
+
     return `
         <div class="resource-card" data-id="${ item.name }">
             <div class="resource-card__wrapper">
                 <div class="res-icon">
-                    <img src="/${config.scene}/resources/${item.name}.png" alt="">
+                    <img src="${ config.s3BaseUrl(getUri()) }" alt="">
                 </div>
                 <div class="res-val">${item.name}</div>
             </div>

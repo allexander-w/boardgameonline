@@ -151,7 +151,11 @@
       "front": "/puertorico/stone/1.png",
       "back": "/puertorico/stone/bg.png",
       "position": { "x": 1800, "y": 400 },
-      "size": { "w": 300, "h": 308 }
+      "size": { "w": 300, "h": 308 },
+      "magnet": {
+        "group": "stone",
+        "distance": 80
+      }
     },
     {
       "type": "duoside",

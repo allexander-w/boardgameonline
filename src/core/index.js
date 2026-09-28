@@ -9,6 +9,8 @@ import LayersManager from "./managers/LayersManager";
 import UsersManager from "./managers/UsersManager";
 import CursorsManager from "./managers/CursorsManager";
 import CardsManager from "./managers/CardsManager";
+import GameManager from "./managers/GameManager";
+import MagnetManager from "./managers/MagnetManager";
 
 import SystemHandler from "./handlers/SystemHandler";
 import RegisterHandler from "./handlers/RegisterHandler";
@@ -16,13 +18,14 @@ import CursorHandler from "./handlers/CursorHandler";
 import CardsHandler from "./handlers/CardsHandler";
 import SyncHandler from "./handlers/SyncHandler";
 
-
 const emitter = mitt();
 const ws = new Websockets(emitter);
 const usersManager = new UsersManager();
 const senderManager = new SenderManager(ws, usersManager);
 const moduleManager = new ModuleManager();
 const layersManager = new LayersManager(Konva);
+const gameManager = new GameManager();
+
 
 /* Добавление default слоев */
 layersManager.registerLayer('board');
@@ -31,6 +34,8 @@ layersManager.registerLayer('cursors');
 const cursorsManager = new CursorsManager(usersManager, layersManager, senderManager);
 const handlerManager = new HandlerManager();
 const cardsManager = new CardsManager(layersManager, senderManager);
+const magnetManager = new MagnetManager(layersManager, cardsManager);
+cardsManager.setMagnetManager(magnetManager);
 
 handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
@@ -48,5 +53,6 @@ export {
     usersManager,
     handlerManager,
     cursorsManager,
-    cardsManager
+    cardsManager,
+    gameManager
 }

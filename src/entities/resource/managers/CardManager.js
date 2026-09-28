@@ -1,4 +1,4 @@
-import {cardsManager, senderManager} from "../../../core";
+import {cardsManager} from "../../../core";
 
 class CardManager {
     constructor(src, options, uiManager) {
@@ -9,14 +9,11 @@ class CardManager {
         this.uiManager.createSideImages(this.element, src);
     }
 
-    putAway(ws) {
+    putAway() {
         this.element.off();
         this.element.remove();
         this.element.destroy();
         cardsManager.removeCard(this.element.id());
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'putAway', id: this.element.id() });
     }
 
 }

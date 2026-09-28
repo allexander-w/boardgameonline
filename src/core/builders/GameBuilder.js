@@ -62,6 +62,7 @@ class GameBuilder {
                 height: group.size?.h,
                 opacity: 1,
                 id: `${group.id}_${index + 1}`,
+                magnet: group.magnet,
                 ...group.options,
             };
 

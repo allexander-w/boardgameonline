@@ -1,4 +1,4 @@
-import {senderManager, layersManager} from "../../../core";
+import {layersManager} from "../../../core";
 
 class CardManager {
     constructor(src, options, uiManager) {
@@ -20,7 +20,7 @@ class CardManager {
     }
 
     /* Поворот карточки */
-    flip(ws) {
+    flip() {
         layersManager.clearCacheAllGroups();
 
         const animation = this.uiManager.getFlipAnimation(this.element, () => {
@@ -29,52 +29,37 @@ class CardManager {
         })
 
         animation.play();
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'flip', id: this.element.id() });
     }
 
-    rotateRight(ws) {
+    rotateRight() {
         layersManager.clearCacheAllGroups();
 
         const rotationDeg = this.element.rotation() === 360 ? 90 : this.element.rotation() + 90;
         this.uiManager.setRotateDeg(this.element, rotationDeg);
 
         layersManager.cacheAllGroups();
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'rotateRight', id: this.element.id() });
     }
 
-    rotateLeft(ws) {
+    rotateLeft() {
         layersManager.clearCacheAllGroups();
 
         const rotationDeg = this.element.rotation() === 0 ? -90 : this.element.rotation() - 90;
         this.uiManager.setRotateDeg(this.element, rotationDeg);
 
         layersManager.cacheAllGroups();
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'rotateLeft', id: this.element.id() });
     }
 
-    toBottom(ws) {
+    toBottom() {
         layersManager.clearCacheAllGroups();
         this.element.moveToBottom();
 
         layersManager.cacheAllGroups();
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'toBottom', id: this.element.id() });
     }
 
-    toTop(ws) {
+    toTop() {
         layersManager.clearCacheAllGroups();
         this.element.moveToTop();
         layersManager.cacheAllGroups();
-
-        if ( ws && ws.server ) return false;
-        senderManager.send("api.cards.action", { method: 'toTop', id: this.element.id() });
     }
 }
 

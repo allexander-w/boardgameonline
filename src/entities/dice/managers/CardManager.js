@@ -43,7 +43,7 @@ class CardManager {
         animation.play();
     }
 
-    remoteRollEnd(ws, data) {
+    remoteRollEnd(data) {
         this.element.fillPatternOffset({ x: (this.element.width() * parseInt(data.index)) / this.element.fillPatternScale().x, y: 0 });
     }
 

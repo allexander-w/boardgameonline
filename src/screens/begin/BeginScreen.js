@@ -7,7 +7,7 @@ class BeginScreen {
         this.generator = generator;
 
         this.body = generator.getNode("body");
-        generator.appendToBegin(this.body, beginScreenTemplate('https://s3bgstorage.duckdns.org/files' + '/' + config.scene + "/bg.png"));
+        generator.appendToBegin(this.body, beginScreenTemplate());
 
         this.input = generator.getNode("#fname");
         this.button = generator.getNode(".sign");
@@ -37,7 +37,6 @@ class BeginScreen {
         ).join("");
 
         this.gamesList.innerHTML = `<select class="games-select">${optionsHtml}</select>`;
-
         const selectEl = this.gamesList.querySelector(".games-select");
 
         selectEl.addEventListener("change", (e) => {
@@ -54,7 +53,6 @@ class BeginScreen {
 
     renderRooms(rooms, onSelect) {
         if ( !this.roomsList ) return;
-
         this.roomsList.classList.add("active");
 
         const optionsHtml = `
@@ -63,9 +61,7 @@ class BeginScreen {
         `;
 
         this.roomsList.innerHTML = `<select class="rooms-select">${optionsHtml}</select>`;
-
         const selectEl = this.roomsList.querySelector(".rooms-select");
-
         onSelect(null);
 
         selectEl.addEventListener("change", (e) => {

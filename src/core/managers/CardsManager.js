@@ -1,5 +1,7 @@
 import {emitter} from "../index";
 
+const GENERIC_ACTION_METHODS = new Set(["flip", "rotateLeft", "rotateRight", "toBottom", "toTop", "putAway"]);
+
 class CardsManager {
     constructor(layersManager, senderManager) {
         this.layersManager = layersManager;
@@ -31,6 +33,10 @@ class CardsManager {
                 targetBox.y + (otherBox.height / 2) > otherBox.y + otherBox.height
             );
         });
+    }
+
+    setMagnetManager(magnetManager) {
+        this.magnetManager = magnetManager;
     }
 
     onPointerDown(e) {
@@ -70,7 +76,6 @@ class CardsManager {
         }
     }
 
-    // Старт перетаскивания всей стопки
     _startStackDrag(target) {
         this._clearLongPressTimer();
 
@@ -137,13 +142,11 @@ class CardsManager {
         }
     }
 
-    // Завершение перетаскивания всей стопки
     _endStackDrag() {
         if (!this.activeGroup) return;
 
         const config = [];
 
-        // Переносим карты из временной группы обратно на boardLayer
         this.draggedStack.forEach((el) => {
             const absPos = el.getAbsolutePosition();
             el.moveTo(this.boardLayer);
@@ -155,7 +158,6 @@ class CardsManager {
             config.push({ id: el.id(), x: el.x(), y: el.y() });
         });
 
-        // Уничтожаем временную группу
         this.activeGroup.destroy();
         this.activeGroup = null;
         this.draggedStack = [];
@@ -163,7 +165,6 @@ class CardsManager {
 
         this.layersManager.cacheAllGroups(100);
 
-        // Отправляем пакет на сервер
         this.senderManager.send("api.drag.stackEnd", { cards: config });
     }
 
@@ -192,6 +193,7 @@ class CardsManager {
     }
 
     dragmove(element) {
+        this.magnetManager?.move();
         const pointerPos = this.boardLayer.getRelativePointerPosition();
 
         this.senderManager.send("api.drag.move", { x: element.target.x(), y: element.target.y(), id: element.target.id() });
@@ -211,6 +213,7 @@ class CardsManager {
         if ( !card ) return false;
 
         card.dragstart();
+        this.magnetManager?.start(card);
         this.senderManager.send("api.drag.start", { id: e.target.id() });
 
         this.layersManager.clearCacheAllGroups();
@@ -226,7 +229,17 @@ class CardsManager {
 
     dragend(e) {
         const card = this.getCard(e.target.id());
-        if ( !card ) return false;
+        if (!card) return false;
+
+        const snapped = this.magnetManager?.end();
+
+        if (snapped) {
+            this.senderManager.send("api.drag.move", {
+                x: e.target.x(),
+                y: e.target.y(),
+                id: e.target.id(),
+            });
+        }
 
         card.dragend();
 
@@ -235,22 +248,33 @@ class CardsManager {
 
         const absPos = e.target.getAbsolutePosition();
         const rect = e.target.getClientRect();
-        const cardBottomYInContainer = absPos.y + rect.height;
 
         if (absPos.y >= stageHeight) {
             emitter.emit("intersection.bottom", e.target);
         }
 
-        this.senderManager.send("api.drag.end", { id: e.target.id() });
+        this.senderManager.send("api.drag.end", {
+            id: e.target.id(),
+            x: e.target.x(),
+            y: e.target.y()
+        });
+
         this.layersManager.cacheAllGroups(100);
     }
-
     remoteDragend(data) {
         const card = this.getCard(data.id);
         if ( !card ) return false;
         card.dragend();
 
         this.layersManager.cacheAllGroups(100);
+    }
+
+    dispatchAction(cardManager, method) {
+        if ( !cardManager || !cardManager[method] ) return false;
+        cardManager[method]();
+
+        if ( !GENERIC_ACTION_METHODS.has(method) ) return;
+        this.senderManager.send("api.cards.action", { method, id: cardManager.element.id() });
     }
 
     remoteAction(data) {
@@ -260,7 +284,7 @@ class CardsManager {
         this.layersManager.clearCacheAllGroups();
 
         if ( card.cardManager && card.cardManager[data.method] ) {
-            card.cardManager[data.method]({ server: true }, data.payload);
+            card.cardManager[data.method](data.payload);
             this.layersManager.cacheAllGroups(450);
         }
     }

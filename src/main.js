@@ -4,7 +4,7 @@ import BeginScreen from "./screens/begin";
 import Preloader from "./screens/preloader";
 
 import config from "./config";
-import { usersManager } from "./core";
+import { usersManager, gameManager } from "./core";
 import { getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList, fetchRoom, getGameFromUrl, setGameId } from "./core/room";
 import gamesRegistry from "./games/registry";
 
@@ -13,12 +13,12 @@ function randomInteger(min, max) {
     return Math.round(rand);
 }
 
-function gameName(id) {
-    return gamesRegistry.find(g => g.id === id)?.name || id;
-}
-
+// function gameName(id) {
+//     return gamesRegistry.find(g => g.id === id)?.name || id;
+// }
+//
 let roomId = getRoomFromUrl();
-let selectedScene = getGameFromUrl() || config.scene;
+// let selectedScene = getGameFromUrl();
 
 const roomCodeNode = document.querySelector(".room-code");
 
@@ -31,15 +31,21 @@ updateRoomCode();
 const beginScreen = BeginScreen.init();
 
 function lockToGame(gameId) {
-    selectedScene = gameId;
-    beginScreen.lockGame(gameName(gameId));
-    beginScreen.setBackground("/" + gameId + "/bg.png");
+    // selectedScene = gameId;
+    const game = gamesRegistry.find(game => game.id === gameId);
+    gameManager.set(game);
+
+    beginScreen.lockGame(game.name);
+    beginScreen.setBackground(config.s3BaseUrl("/" + gameId + "/bg.png"));
 }
 
 function unlockGame() {
-    beginScreen.renderGames(gamesRegistry, selectedScene, (id) => {
-        selectedScene = id;
-        beginScreen.setBackground("/" + selectedScene + "/bg.png");
+    beginScreen.renderGames(gamesRegistry, gameManager.getId(), (id) => {
+        // selectedScene = id;
+        const game = gamesRegistry.find(game => game.id === id);
+        gameManager.set(game);
+
+        beginScreen.setBackground(config.s3BaseUrl("/" + game.id + "/bg.png"));
     });
 }
 
@@ -73,11 +79,10 @@ beginScreen.emitter.on("sign", async (name) => {
         updateRoomCode();
     }
 
-    usersManager.register({ name, avatar: randomInteger(1, 10), room: roomId, game: selectedScene });
-
+    usersManager.register({ name, avatar: randomInteger(1, 10), room: roomId, game: gameManager.getId() });
     Preloader.init();
 
-    const result = import ("./games/" + selectedScene);
+    const result = import ("./games/" + gameManager.getId());
     const scene = await result;
 
     const UndefinedScene = scene.default;
