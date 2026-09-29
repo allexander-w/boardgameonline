@@ -12,4 +12,5 @@ export default [
     { id: "iki", name: "Iki" },
     { id: "sevenwonders", name: "7 Чудес" },
     { id: "scythe", name: "Серп" },
+    { id: "grail", name: "Грааль" },
 ];

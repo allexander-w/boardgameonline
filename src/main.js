@@ -5,7 +5,7 @@ import Preloader from "./screens/preloader";
 
 import config from "./config";
 import { usersManager, gameManager } from "./core";
-import { getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList, fetchRoom, getGameFromUrl, setGameId } from "./core/room";
+import { getRoomFromUrl, setRoomId, generateRoomId, fetchRoomList, fetchRoom } from "./core/room";
 import gamesRegistry from "./games/registry";
 
 function randomInteger(min, max) {
@@ -13,13 +13,7 @@ function randomInteger(min, max) {
     return Math.round(rand);
 }
 
-// function gameName(id) {
-//     return gamesRegistry.find(g => g.id === id)?.name || id;
-// }
-//
 let roomId = getRoomFromUrl();
-// let selectedScene = getGameFromUrl();
-
 const roomCodeNode = document.querySelector(".room-code");
 
 function updateRoomCode() {
@@ -27,11 +21,9 @@ function updateRoomCode() {
 }
 
 updateRoomCode();
-
 const beginScreen = BeginScreen.init();
 
 function lockToGame(gameId) {
-    // selectedScene = gameId;
     const game = gamesRegistry.find(game => game.id === gameId);
     gameManager.set(game);
 
@@ -41,7 +33,6 @@ function lockToGame(gameId) {
 
 function unlockGame() {
     beginScreen.renderGames(gamesRegistry, gameManager.getId(), (id) => {
-        // selectedScene = id;
         const game = gamesRegistry.find(game => game.id === id);
         gameManager.set(game);
 

@@ -12,7 +12,6 @@ class CardsManager {
 
         this.cards = new Map();
 
-
         this.longPressTimer = null;
         this.longPressDelay = 300;
         this.startPointerPos = null;
@@ -24,6 +23,10 @@ class CardsManager {
         const targetBox = target.getClientRect();
         return this.boardLayer.find('Rect').filter((other) => {
             if (!other.isVisible()) return false;
+
+            // ⛔ Исключаем из стопки любые карты, пристыкованные к зонам
+            if (this.zoneManager?.getDock(other.id())) return false;
+
             const otherBox = other.getClientRect();
 
             return !(
@@ -39,10 +42,17 @@ class CardsManager {
         this.magnetManager = magnetManager;
     }
 
+    setZoneManager(zoneManager) {
+        this.zoneManager = zoneManager;
+    }
+
     onPointerDown(e) {
         const target = e.target;
         const card = this.getCard(target.id());
         if (!card) return;
+
+        // ⛔ Если эта карта сама лежит в зоне (docked) — запуск stackDrag ЗАПРЕЩЕН
+        if (this.zoneManager?.getDock(target.id())) return;
 
         this._clearLongPressTimer();
 
@@ -89,12 +99,13 @@ class CardsManager {
         this.draggedStack = stackElements;
         this.layersManager.clearCacheAllGroups();
 
-
         const cursor = document.querySelector(".custom-cursor");
-        cursor.innerHTML = "";
-        cursor.insertAdjacentHTML("afterbegin", `
-            <img src="/cursors/takeAll.svg" />
-        `)
+        if (cursor) {
+            cursor.innerHTML = "";
+            cursor.insertAdjacentHTML("afterbegin", `
+                <img src="/cursors/takeAll.svg" />
+            `);
+        }
 
         this.activeGroup = new Konva.Group({
             draggable: true,
@@ -104,6 +115,11 @@ class CardsManager {
         this.boardLayer.add(this.activeGroup);
 
         stackElements.forEach((el) => {
+            // Если карта случайно попала в группу, гарантируем её undock
+            if (this.zoneManager?.getDock(el.id())) {
+                this.zoneManager.undock(el.id());
+            }
+
             const absPos = el.getAbsolutePosition();
             el.moveTo(this.activeGroup);
             el.setAbsolutePosition(absPos);
@@ -155,6 +171,9 @@ class CardsManager {
             const card = this.getCard(el.id());
             if (card && card.dragend) card.dragend();
 
+            // Синхронизируем положение вложенных карт, если среди них были владельцы зон
+            this.zoneManager?.follow(el.id());
+
             config.push({ id: el.id(), x: el.x(), y: el.y() });
         });
 
@@ -182,10 +201,12 @@ class CardsManager {
 
         layer.add(card.element);
         this.cards.set(card.element.id(), card);
+        this.zoneManager?.register(card);
     }
 
     registerCard(card) {
         this.cards.set(card.element.id(), card);
+        this.zoneManager?.register(card);
     }
 
     removeCard(id) {
@@ -193,7 +214,11 @@ class CardsManager {
     }
 
     dragmove(element) {
-        this.magnetManager?.move();
+        this.zoneManager?.follow(element.target.id());
+
+        if (this.zoneManager?.move()) this.magnetManager?.suspend();
+        else this.magnetManager?.move();
+
         const pointerPos = this.boardLayer.getRelativePointerPosition();
 
         this.senderManager.send("api.drag.move", { x: element.target.x(), y: element.target.y(), id: element.target.id() });
@@ -205,6 +230,7 @@ class CardsManager {
         if ( card ) {
             card.element.x(data.x);
             card.element.y(data.y);
+            this.zoneManager?.follow(data.id);
         }
     }
 
@@ -213,6 +239,7 @@ class CardsManager {
         if ( !card ) return false;
 
         card.dragstart();
+        this.zoneManager?.start(card);
         this.magnetManager?.start(card);
         this.senderManager.send("api.drag.start", { id: e.target.id() });
 
@@ -224,6 +251,7 @@ class CardsManager {
         if ( !card ) return false;
 
         card.dragstart();
+        this.zoneManager?.restack(data.id);
         this.layersManager.clearCacheAllGroups();
     }
 
@@ -231,7 +259,9 @@ class CardsManager {
         const card = this.getCard(e.target.id());
         if (!card) return false;
 
-        const snapped = this.magnetManager?.end();
+        const zoneSnapped = this.zoneManager?.end();
+        if (zoneSnapped) this.magnetManager?.suspend();
+        const snapped = this.magnetManager?.end() || zoneSnapped;
 
         if (snapped) {
             this.senderManager.send("api.drag.move", {
@@ -247,7 +277,6 @@ class CardsManager {
         const stageHeight = stage.height();
 
         const absPos = e.target.getAbsolutePosition();
-        const rect = e.target.getClientRect();
 
         if (absPos.y >= stageHeight) {
             emitter.emit("intersection.bottom", e.target);
@@ -261,6 +290,7 @@ class CardsManager {
 
         this.layersManager.cacheAllGroups(100);
     }
+
     remoteDragend(data) {
         const card = this.getCard(data.id);
         if ( !card ) return false;
@@ -272,6 +302,7 @@ class CardsManager {
     dispatchAction(cardManager, method) {
         if ( !cardManager || !cardManager[method] ) return false;
         cardManager[method]();
+        this.zoneManager?.afterAction(cardManager.element.id(), method);
 
         if ( !GENERIC_ACTION_METHODS.has(method) ) return;
         this.senderManager.send("api.cards.action", { method, id: cardManager.element.id() });
@@ -285,6 +316,7 @@ class CardsManager {
 
         if ( card.cardManager && card.cardManager[data.method] ) {
             card.cardManager[data.method](data.payload);
+            this.zoneManager?.afterAction(data.id, data.method);
             this.layersManager.cacheAllGroups(450);
         }
     }
@@ -296,6 +328,7 @@ class CardsManager {
                 if (card && card.element) {
                     card.element.x(item.x);
                     card.element.y(item.y);
+                    this.zoneManager?.follow(item.id);
                 }
             });
         }

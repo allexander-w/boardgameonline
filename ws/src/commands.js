@@ -8,6 +8,9 @@ const PLAYER_COMMANDS = new Set([
     "api.drag.stackMove",
     "api.drag.stackEnd",
     "api.cards.action",
+    "api.zones.dock",
+    "api.zones.undock",
+
     "modules.hand.take",
     "modules.hand.takeAll",
     "modules.hand.takeHalf",

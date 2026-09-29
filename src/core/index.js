@@ -11,6 +11,7 @@ import CursorsManager from "./managers/CursorsManager";
 import CardsManager from "./managers/CardsManager";
 import GameManager from "./managers/GameManager";
 import MagnetManager from "./managers/MagnetManager";
+import ZoneManager from "./managers/ZoneManager";
 
 import SystemHandler from "./handlers/SystemHandler";
 import RegisterHandler from "./handlers/RegisterHandler";
@@ -35,7 +36,9 @@ const cursorsManager = new CursorsManager(usersManager, layersManager, senderMan
 const handlerManager = new HandlerManager();
 const cardsManager = new CardsManager(layersManager, senderManager);
 const magnetManager = new MagnetManager(layersManager, cardsManager);
+const zoneManager = new ZoneManager(layersManager, cardsManager, senderManager);
 cardsManager.setMagnetManager(magnetManager);
+cardsManager.setZoneManager(zoneManager);
 
 handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
@@ -54,5 +57,6 @@ export {
     handlerManager,
     cursorsManager,
     cardsManager,
-    gameManager
+    gameManager,
+    zoneManager,
 }

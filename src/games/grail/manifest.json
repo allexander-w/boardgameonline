@@ -1,0 +1,271 @@
+{
+  "id": "grail",
+  "name": "Оскверненный грааль",
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "map",
+      "count": 63,
+      "front": "/grail/big/map/{n}/front.webp",
+      "back": "/grail/big/map/{n}/bg.webp",
+      "position": { "x": 100, "y": 0 },
+      "size": { "w": 945, "h": 1410 },
+      "magnet": {
+        "group": "map",
+        "distance": 80
+      }
+    },
+
+    {
+      "type": "duoside",
+      "id": "green_diplomacy",
+      "count": 25,
+      "front": "/grail/middle/green/diplomacy/{n}.webp",
+      "back": "/grail/middle/green/diplomacy/bg.webp",
+      "position": { "x": 0, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "green_war",
+      "count": 25,
+      "front": "/grail/middle/green/war/{n}.webp",
+      "back": "/grail/middle/green/war/bg.webp",
+      "position": { "x": 795, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "ailei_diplomacy",
+      "count": 15,
+      "front": "/grail/middle/ailei/diplomacy/{n}.webp",
+      "back": "/grail/middle/green/diplomacy/bg.webp",
+      "position": { "x": 1640, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "ailei_war",
+      "count": 15,
+      "front": "/grail/middle/ailei/war/{n}.webp",
+      "back": "/grail/middle/green/war/bg.webp",
+      "position": { "x": 2435, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+
+    {
+      "type": "duoside",
+      "id": "red_diplomacy",
+      "count": 25,
+      "front": "/grail/middle/red/diplomacy/{n}.webp",
+      "back": "/grail/middle/red/diplomacy/bg.webp",
+      "position": { "x": 0, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "red_war",
+      "count": 25,
+      "front": "/grail/middle/red/war/{n}.webp",
+      "back": "/grail/middle/red/war/bg.webp",
+      "position": { "x": 795, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "cher_diplomacy",
+      "count": 15,
+      "front": "/grail/middle/cher/diplomacy/{n}.webp",
+      "back": "/grail/middle/red/diplomacy/bg.webp",
+      "position": { "x": 1640, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "cher_war",
+      "count": 15,
+      "front": "/grail/middle/cher/war/{n}.webp",
+      "back": "/grail/middle/red/war/bg.webp",
+      "position": { "x": 2435, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "gray_diplomacy",
+      "count": 25,
+      "front": "/grail/middle/gray/diplomacy/{n}.webp",
+      "back": "/grail/middle/gray/diplomacy/bg.webp",
+      "position": { "x": 0, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "gray_war",
+      "count": 25,
+      "front": "/grail/middle/gray/war/{n}.webp",
+      "back": "/grail/middle/gray/war/bg.webp",
+      "position": { "x": 795, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "arev_diplomacy",
+      "count": 15,
+      "front": "/grail/middle/arev/diplomacy/{n}.webp",
+      "back": "/grail/middle/gray/diplomacy/bg.webp",
+      "position": { "x": 1640, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "arev_war",
+      "count": 15,
+      "front": "/grail/middle/arev/war/{n}.webp",
+      "back": "/grail/middle/gray/war/bg.webp",
+      "position": { "x": 2435, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "blue_diplomacy",
+      "count": 25,
+      "front": "/grail/middle/blue/diplomacy/{n}.webp",
+      "back": "/grail/middle/blue/diplomacy/bg.webp",
+      "position": { "x": 0, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "blue_war",
+      "count": 25,
+      "front": "/grail/middle/blue/war/{n}.webp",
+      "back": "/grail/middle/blue/war/bg.webp",
+      "position": { "x": 795, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "beor_diplomacy",
+      "count": 15,
+      "front": "/grail/middle/breor/diplomacy/{n}.webp",
+      "back": "/grail/middle/blue/diplomacy/bg.webp",
+      "position": { "x": 1640, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "beor_war",
+      "count": 15,
+      "front": "/grail/middle/breor/war/{n}.webp",
+      "back": "/grail/middle/blue/war/bg.webp",
+      "position": { "x": 2435, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "green_enemy",
+      "count": 30,
+      "front": "/grail/middle/enemies/green/{n}.webp",
+      "back": "/grail/middle/enemies/green/bg.webp",
+      "position": { "x": 3280, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "gray_enemy",
+      "count": 30,
+      "front": "/grail/middle/enemies/gray/{n}.webp",
+      "back": "/grail/middle/enemies/gray/bg.webp",
+      "position": { "x": 4075, "y": 1500 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "red_enemy",
+      "count": 30,
+      "front": "/grail/middle/enemies/red/{n}.webp",
+      "back": "/grail/middle/enemies/red/bg.webp",
+      "position": { "x": 3280, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "blue_enemy",
+      "count": 30,
+      "front": "/grail/middle/enemies/blue/{n}.webp",
+      "back": "/grail/middle/enemies/blue/bg.webp",
+      "position": { "x": 4075, "y": 2594 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "mind",
+      "count": 4,
+      "front": "/grail/middle/mind/{n}.webp",
+      "back": "/grail/middle/mind/bg.webp",
+      "position": { "x": 3280, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "died",
+      "count": 5,
+      "front": "/grail/middle/died/{n}.webp",
+      "back": "/grail/middle/died/bg.webp",
+      "position": { "x": 4075, "y": 3688 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "scenario",
+      "count": 44,
+      "front": "/grail/middle/events/scenario/{n}/front.webp",
+      "back": "/grail/middle/events/scenario/{n}/bg.webp",
+      "position": { "x": 3280, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "especial",
+      "count": 9,
+      "front": "/grail/middle/events/especial/{n}/front.webp",
+      "back": "/grail/middle/events/especial/{n}/bg.webp",
+      "position": { "x": 4075, "y": 4782 },
+      "size": { "w": 745, "h": 1044 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "thing",
+      "count": 57,
+      "front": "/grail/small/thing/{n}.webp",
+      "back": "/grail/small/thing/bg.webp",
+      "position": { "x": -115, "y": 5926 },
+      "size": { "w": 515, "h": 790 }
+    }
+
+  ]
+}

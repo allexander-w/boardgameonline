@@ -26,6 +26,12 @@ class CardsHandler {
         this.emitter.on("api.drag.stackEnd", this.cardsManager.remoteStackEnd.bind(this.cardsManager));
 
         this.emitter.on("api.cards.action", this.cardsManager.remoteAction.bind(this.cardsManager));
+
+        const zoneManager = this.cardsManager.zoneManager;
+        if ( zoneManager ) {
+            this.emitter.on("api.zones.dock", zoneManager.remoteDock.bind(zoneManager));
+            this.emitter.on("api.zones.undock", zoneManager.remoteUndock.bind(zoneManager));
+        }
     }
 }
 

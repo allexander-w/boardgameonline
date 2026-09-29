@@ -2,6 +2,7 @@ import UIManager from "./managers/UIManager";
 import CardHandler from "./handlers/CardHandler";
 import CardManager from "./managers/CardManager";
 import InterfaceCard from "../InterfaceCard";
+import {zoneManager} from "../../core";
 
 class DuosideCard extends InterfaceCard {
     constructor(src, options) {
@@ -53,6 +54,7 @@ class DuosideCard extends InterfaceCard {
             id: this.element.id(),
 
             flipped: this.element.flipped(),
+            dock: zoneManager.getDock(this.element.id()),
         }
     }
 
@@ -64,6 +66,7 @@ class DuosideCard extends InterfaceCard {
         this.element.rotation(options.rotation);
 
         options.flipped ? this.cardManager.flipFront() : this.cardManager.flipBack();
+        if ( options.dock ) zoneManager.restore(this.element.id(), options.dock);
     }
 }
 

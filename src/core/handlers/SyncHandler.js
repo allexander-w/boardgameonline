@@ -1,5 +1,5 @@
 import config from "../../config";
-import {cardsManager} from "../index";
+import {cardsManager, zoneManager} from "../index";
 import ResourceCard from "../../entities/resource/ResourceCard";
 
 class SyncHandler {
@@ -13,7 +13,7 @@ class SyncHandler {
         this.emitter.on("api.register.joined", this.getConfig.bind(this));
         this.emitter.on("api.register.sync", this.loadConfig.bind(this));
 
-        this.startAutosave();
+        // this.startAutosave();
     }
 
     buildSave() {
@@ -44,7 +44,7 @@ class SyncHandler {
     startAutosave() {
         setInterval(() => {
             if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return;
-            this.checkpoint();
+            // this.checkpoint();
         }, 20000);
 
         window.addEventListener("pagehide", () => this.checkpoint());
@@ -65,6 +65,8 @@ class SyncHandler {
             const card = cardsManager.getCard(el.id);
             card.forLoad(el);
         }
+
+        zoneManager.followAll();
 
         for ( const id of save.hands || [] ) {
             const card = cardsManager.getCard(id);

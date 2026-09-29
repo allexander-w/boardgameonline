@@ -45,6 +45,14 @@ class MagnetManager {
         this.highlight(target.card.element, target.side);
     }
 
+    suspend() {
+        if (!this.active) return;
+
+        this.clearHighlight();
+        this.active.target = null;
+        this.active.side = null;
+    }
+
     end() {
         if (!this.active) return false;
 
