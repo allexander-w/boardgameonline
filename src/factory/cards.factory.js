@@ -11,7 +11,7 @@ export const duosideElement = (options) => {
             width: 120,
             height: 120,
             fillPatternRepeat: "no-repeat",
-            cornerRadius: 30,
+            cornerRadius: 10,
             draggable: true,
             flipped: false,
             perfectDrawEnabled: false,

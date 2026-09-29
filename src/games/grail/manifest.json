@@ -9,7 +9,7 @@
       "front": "/grail/big/map/{n}/front.webp",
       "back": "/grail/big/map/{n}/bg.webp",
       "position": { "x": 100, "y": 0 },
-      "size": { "w": 945, "h": 1410 },
+      "size": { "w": 236, "h": 352 },
       "magnet": {
         "group": "map",
         "distance": 80
@@ -22,8 +22,8 @@
       "count": 25,
       "front": "/grail/middle/green/diplomacy/{n}.webp",
       "back": "/grail/middle/green/diplomacy/bg.webp",
-      "position": { "x": 0, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 0, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -32,8 +32,8 @@
       "count": 25,
       "front": "/grail/middle/green/war/{n}.webp",
       "back": "/grail/middle/green/war/bg.webp",
-      "position": { "x": 795, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 265, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -42,8 +42,8 @@
       "count": 15,
       "front": "/grail/middle/ailei/diplomacy/{n}.webp",
       "back": "/grail/middle/green/diplomacy/bg.webp",
-      "position": { "x": 1640, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 546.67, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -52,10 +52,9 @@
       "count": 15,
       "front": "/grail/middle/ailei/war/{n}.webp",
       "back": "/grail/middle/green/war/bg.webp",
-      "position": { "x": 2435, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 811.67, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
-
 
     {
       "type": "duoside",
@@ -63,8 +62,8 @@
       "count": 25,
       "front": "/grail/middle/red/diplomacy/{n}.webp",
       "back": "/grail/middle/red/diplomacy/bg.webp",
-      "position": { "x": 0, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 0, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -73,8 +72,8 @@
       "count": 25,
       "front": "/grail/middle/red/war/{n}.webp",
       "back": "/grail/middle/red/war/bg.webp",
-      "position": { "x": 795, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 265, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -83,8 +82,8 @@
       "count": 15,
       "front": "/grail/middle/cher/diplomacy/{n}.webp",
       "back": "/grail/middle/red/diplomacy/bg.webp",
-      "position": { "x": 1640, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 546.67, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -93,8 +92,8 @@
       "count": 15,
       "front": "/grail/middle/cher/war/{n}.webp",
       "back": "/grail/middle/red/war/bg.webp",
-      "position": { "x": 2435, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 811.67, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -103,8 +102,8 @@
       "count": 25,
       "front": "/grail/middle/gray/diplomacy/{n}.webp",
       "back": "/grail/middle/gray/diplomacy/bg.webp",
-      "position": { "x": 0, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 0, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -113,8 +112,8 @@
       "count": 25,
       "front": "/grail/middle/gray/war/{n}.webp",
       "back": "/grail/middle/gray/war/bg.webp",
-      "position": { "x": 795, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 265, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -123,8 +122,8 @@
       "count": 15,
       "front": "/grail/middle/arev/diplomacy/{n}.webp",
       "back": "/grail/middle/gray/diplomacy/bg.webp",
-      "position": { "x": 1640, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 546.67, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -133,8 +132,8 @@
       "count": 15,
       "front": "/grail/middle/arev/war/{n}.webp",
       "back": "/grail/middle/gray/war/bg.webp",
-      "position": { "x": 2435, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 811.67, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -143,8 +142,8 @@
       "count": 25,
       "front": "/grail/middle/blue/diplomacy/{n}.webp",
       "back": "/grail/middle/blue/diplomacy/bg.webp",
-      "position": { "x": 0, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 0, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -153,8 +152,8 @@
       "count": 25,
       "front": "/grail/middle/blue/war/{n}.webp",
       "back": "/grail/middle/blue/war/bg.webp",
-      "position": { "x": 795, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 265, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -163,8 +162,8 @@
       "count": 15,
       "front": "/grail/middle/breor/diplomacy/{n}.webp",
       "back": "/grail/middle/blue/diplomacy/bg.webp",
-      "position": { "x": 1640, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 546.67, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -173,8 +172,8 @@
       "count": 15,
       "front": "/grail/middle/breor/war/{n}.webp",
       "back": "/grail/middle/blue/war/bg.webp",
-      "position": { "x": 2435, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 811.67, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -183,8 +182,8 @@
       "count": 30,
       "front": "/grail/middle/enemies/green/{n}.webp",
       "back": "/grail/middle/enemies/green/bg.webp",
-      "position": { "x": 3280, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1093.33, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -193,8 +192,8 @@
       "count": 30,
       "front": "/grail/middle/enemies/gray/{n}.webp",
       "back": "/grail/middle/enemies/gray/bg.webp",
-      "position": { "x": 4075, "y": 1500 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1358.33, "y": 500 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -203,8 +202,8 @@
       "count": 30,
       "front": "/grail/middle/enemies/red/{n}.webp",
       "back": "/grail/middle/enemies/red/bg.webp",
-      "position": { "x": 3280, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1093.33, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -213,8 +212,8 @@
       "count": 30,
       "front": "/grail/middle/enemies/blue/{n}.webp",
       "back": "/grail/middle/enemies/blue/bg.webp",
-      "position": { "x": 4075, "y": 2594 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1358.33, "y": 864.67 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -223,8 +222,8 @@
       "count": 4,
       "front": "/grail/middle/mind/{n}.webp",
       "back": "/grail/middle/mind/bg.webp",
-      "position": { "x": 3280, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1093.33, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -233,8 +232,8 @@
       "count": 5,
       "front": "/grail/middle/died/{n}.webp",
       "back": "/grail/middle/died/bg.webp",
-      "position": { "x": 4075, "y": 3688 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1358.33, "y": 1229.33 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -243,8 +242,8 @@
       "count": 44,
       "front": "/grail/middle/events/scenario/{n}/front.webp",
       "back": "/grail/middle/events/scenario/{n}/bg.webp",
-      "position": { "x": 3280, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1093, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -253,8 +252,28 @@
       "count": 9,
       "front": "/grail/middle/events/especial/{n}/front.webp",
       "back": "/grail/middle/events/especial/{n}/bg.webp",
-      "position": { "x": 4075, "y": 4782 },
-      "size": { "w": 745, "h": 1044 }
+      "position": { "x": 1358, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "random",
+      "count": 22,
+      "front": "/grail/middle/events/random/{n}.webp",
+      "back": "/grail/middle/events/random/bg.webp",
+      "position": { "x": 1594, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "prepare",
+      "count": 17,
+      "front": "/grail/middle/events/prepare/{n}/front.webp",
+      "back": "/grail/middle/events/prepare/{n}/bg.webp",
+      "position": { "x": 1830, "y": 1594 },
+      "size": { "w": 186, "h": 261 }
     },
 
     {
@@ -263,8 +282,58 @@
       "count": 57,
       "front": "/grail/small/thing/{n}.webp",
       "back": "/grail/small/thing/bg.webp",
-      "position": { "x": -115, "y": 5926 },
-      "size": { "w": 515, "h": 790 }
+      "position": { "x": -29, "y": 1975 },
+      "size": { "w": 128, "h": 197 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "secrets",
+      "count": 42,
+      "front": "/grail/small/secrets/{n}/front.webp",
+      "back": "/grail/small/secrets/{n}/bg.webp",
+      "position": { "x": 178, "y": 1975 },
+      "size": { "w": 128, "h": 197 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "skills",
+      "count": 72,
+      "front": "/grail/small/skills/{n}.webp",
+      "back": "/grail/small/skills/bg.webp",
+      "position": { "x": 356, "y": 1975 },
+      "size": { "w": 128, "h": 197 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "persons",
+      "count": 4,
+      "front": "/grail/persons/{n}/front.webp",
+      "back": "/grail/persons/{n}/bg.webp",
+      "position": { "x": 750, "y": 2500 },
+      "size": { "w": 383, "h": 297 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "tables",
+      "count": 4,
+      "front": "/grail/tablets/{n}.webp",
+      "back": "/grail/tablets/{n}.webp",
+      "position": { "x": 0, "y": 2500 },
+      "size": { "w": 699, "h": 458 },
+      "zones": [
+        {
+          "id": "person_slot",
+          "x": 84,
+          "y": 0,
+          "w": 390,
+          "h": 300,
+          "accepts": { "kind": ["persons"] }
+        }
+      ]
     }
 
   ]
