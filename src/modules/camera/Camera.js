@@ -1,7 +1,19 @@
+import InteractionSnapshot from "./InteractionSnapshot";
+import LodController from "./LodController";
+import {cardsManager} from "../../core";
+
 class Camera {
     constructor(layersManager, KeyboardController, MouseController, MobileJoystick) {
         this.stage = layersManager.stage;
         this.boardLayer = layersManager.getLayer("board");
+
+        /* На большом числе карт подменяет отрисовку снимком, пока камера движется */
+        this.interaction = new InteractionSnapshot(layersManager);
+
+        /* Превью-текстуры, когда карты на экране маленькие */
+        this.lod = new LodController(layersManager);
+        this.interaction.beforeFinish = () => this.lod.update();
+        this.lod.isBusy = () => this.interaction.active || !!cardsManager.activeGroup;
 
         this.baseScale = 1;
         this.minScale = 0.1;
@@ -16,11 +28,20 @@ class Camera {
 
         this.initializeCamera();
 
+        this.lod.update();
+
         this.keyboardController.setupKeyboardListeners();
         this.mouseController.setupMouseListeners();
     }
 
+    /* Любое движение камеры: снимок доски (много карт) или отложенный LOD (мало карт) */
+    moved() {
+        this.interaction.touch();
+        if ( !this.interaction.active ) this.lod.schedule();
+    }
+
     move(dx, dy) {
+        this.moved();
         this.stage.position({
             x: this.stage.x() + dx,
             y: this.stage.y() + dy,
@@ -62,6 +83,7 @@ class Camera {
     }
 
     zoom(factor, pointer) {
+        this.moved();
         const oldScale = this.stage.scaleX();
         const newScale = this.clampScale(factor > 0 ? oldScale / 1.1 : oldScale * 1.1);
         const mousePointTo = {

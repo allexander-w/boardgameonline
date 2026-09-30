@@ -8,11 +8,24 @@ class MouseController {
         this.stage.on("wheel", (e) => this.handleZoom(e));
         this.stage.on("mousedown", () => this.stage.draggable(true));
         this.stage.on("mouseup", () => this.stage.draggable(false));
+
+        /* Перетаскивание самой сцены (панорама): только если тащат не карту */
+        this.stage.on("dragmove", (e) => {
+            if ( e.target === this.stage ) this.camera.moved();
+        });
+        this.stage.on("dragend", (e) => {
+            if ( e.target !== this.stage ) return;
+
+            this.camera.interaction.finish();
+            this.camera.lod.schedule();
+        });
     }
 
     handleZoom(e) {
         e.evt.preventDefault();
         if ( e.evt.stackWheelHandled ) return;
+
+        this.camera.moved();
 
         const scaleBy = 1.1;
         const oldScale = this.stage.scaleX();

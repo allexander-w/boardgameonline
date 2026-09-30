@@ -46,8 +46,8 @@ class ModelViewerModule {
     /* ---------- загрузка моделей ---------- */
 
     resolveUrl(path) {
-        // return /^https?:\/\//.test(path) ? path : config.s3BaseUrl(path);
-        return path;
+        return /^https?:\/\//.test(path) ? path : config.s3BaseUrl(path);
+        // return path;
     }
 
     /** Предзагрузка: учитывается в счётчике экрана загрузки (тот же протокол, что у картинок). */

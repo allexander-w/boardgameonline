@@ -61,6 +61,11 @@ if ( roomId ) {
     });
 }
 
+
+const gameModules = import.meta.glob("./games/**/index.js", {
+    eager: false
+});
+
 beginScreen.emitter.on("sign", async (name) => {
     beginScreen.off();
 
@@ -73,8 +78,14 @@ beginScreen.emitter.on("sign", async (name) => {
     usersManager.register({ name, avatar: randomInteger(1, 10), room: roomId, game: gameManager.getId() });
     Preloader.init();
 
-    const result = import ("./games/" + gameManager.getId());
-    const scene = await result;
+    const path = `./games/${gameManager.getId()}/index.js`;
+    const loader = gameModules[path];
+
+    if (!loader) {
+        throw new Error(`Game module not found: ${path}`);
+    }
+
+    const scene = await loader();
 
     const UndefinedScene = scene.default;
     new UndefinedScene();

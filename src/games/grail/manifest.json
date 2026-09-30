@@ -17,6 +17,18 @@
 
     {
       "type": "duoside",
+      "id": "chips",
+      "count": 4,
+      "front": "/grail/chips/{n}.webp",
+      "back": "same",
+      "model": "/grail/models/persons/{n}.3mf",
+      "modelRotation": { "3": [0, 30, 40] },
+      "position": { "x": 1000, "y": 2500 },
+      "size": { "w": 120, "h": 120 }
+    },
+
+    {
+      "type": "duoside",
       "id": "tables",
       "count": 4,
       "front": "/grail/tablets/{n}.webp",
@@ -382,7 +394,7 @@
   "counters": [
     {
       "id": "counter",
-      "bg": "/counter.jpeg",
+      "bg": "/grail/counters/counter.webp",
       "count": 5,
       "position": { "x": 100, "y": 200 },
       "size": { "w": 86, "h": 92 },
@@ -411,7 +423,7 @@
 
     {
       "id": "mengir",
-      "bg": "/grail/mengir/1.jpeg",
+      "bg": "/grail/counters/merngir.webp",
       "count": 3,
       "position": { "x": 1200, "y": 200 },
       "size": { "w": 99, "h": 106 },
@@ -434,7 +446,9 @@
   ],
   "resources": [
     { "name": "marker_red", "width": 35, "height": 35 },
-    { "name": "marker_blue", "width": 35, "height": 35 }
+    { "name": "marker_blue", "width": 35, "height": 35 },
+    { "name": "time", "width": 35, "height": 35 },
+    { "name": "grail", "width": 35, "height": 35 }
   ],
   "dice": [
     {
@@ -442,6 +456,14 @@
       "y": -500,
       "id": "dice6",
       "front": "/dice/dice-sprite.png",
+      "sides": 6
+    },
+
+    {
+      "x": 300,
+      "y": -500,
+      "id": "dice_guardian",
+      "front": "/dice/avalon.png",
       "sides": 6
     }
   ]

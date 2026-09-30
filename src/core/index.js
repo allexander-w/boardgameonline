@@ -24,6 +24,8 @@ const ws = new Websockets(emitter);
 const usersManager = new UsersManager();
 const senderManager = new SenderManager(ws, usersManager);
 const moduleManager = new ModuleManager();
+/* Ограничиваем плотность пикселей: на 2x-3x экранах стоимость кадра растет квадратично */
+Konva.pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
 const layersManager = new LayersManager(Konva);
 const gameManager = new GameManager();
 

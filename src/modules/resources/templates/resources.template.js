@@ -10,8 +10,7 @@ export const ResourceTemplate = (item) => {
         <div class="resource-card" data-id="${ item.name }">
             <div class="resource-card__wrapper">
                 <div class="res-icon">
-<!--                    <img src="${ config.s3BaseUrl(getUri()) }" alt="">-->
-                    <img src="${ getUri() }" alt="">
+                    <img src="${ config.s3BaseUrl(getUri()) }" alt="">
                 </div>
                 <div class="res-val">${item.name}</div>
             </div>

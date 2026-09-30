@@ -12,8 +12,7 @@ class CounterUIManager {
     }
 
     loadImage(group, src) {
-        // const fullPath = typeof src === "string" && src.startsWith("http") ? src : config.s3BaseUrl(src);
-        const fullPath = src;
+        const fullPath = typeof src === "string" && src.startsWith("http") ? src : config.s3BaseUrl(src);
         return loadImageCounterElement(group, fullPath).then((img) => {
             this.backgroundImage = img;
         });
