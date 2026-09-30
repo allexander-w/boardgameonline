@@ -2,6 +2,8 @@ import FieldCard from "../../entities/FieldCard";
 import DuosideCard from "../../entities/duoside/DuosideCard";
 import DiceCard from "../../entities/dice/DiceCard";
 import StateCard from "../../games/thiswarofmine/entities/state/StateCard";
+import CounterCard from "../../entities/counter/CounterCard";
+import { emitter } from "../index";
 
 class GameBuilder {
     constructor(cardsManager) {
@@ -11,21 +13,39 @@ class GameBuilder {
     build(manifest) {
         if ( manifest.field ) this.buildField(manifest.field);
 
-        for ( const group of manifest.groups || [] ) {
-            this.buildGroup(group);
+        // Обратный проход по массиву групп
+        const groups = manifest.groups || [];
+        for ( let i = groups.length - 1; i >= 0; i-- ) {
+            this.buildGroup(groups[i]);
         }
 
-        for ( const dice of manifest.dice || [] ) {
-            this.buildDice(dice);
+        // Обратный проход по массиву костей
+        const diceList = manifest.dice || [];
+        for ( let i = diceList.length - 1; i >= 0; i-- ) {
+            this.buildDice(diceList[i]);
         }
 
-        for ( const state of manifest.states || [] ) {
-            this.buildState(state);
+        // Обратный проход по массиву состояний
+        const states = manifest.states || [];
+        for ( let i = states.length - 1; i >= 0; i-- ) {
+            this.buildState(states[i]);
+        }
+
+        // Обратный проход по массиву счетчиков
+        const counters = manifest.counters || [];
+        for ( let i = counters.length - 1; i >= 0; i-- ) {
+            this.buildCounter(counters[i]);
         }
     }
 
     resolveTemplate(template, index) {
         return template.replace("{n}", index + 1);
+    }
+
+    /* modelRotation: [x, y, z] для всей группы или { "2": [180, 0, 0] } — только для карточки №2 */
+    resolveModelRotation(rotation, index) {
+        if ( !rotation ) return undefined;
+        return Array.isArray(rotation) ? rotation : rotation[index + 1];
     }
 
     resolveBack(back, front, index) {
@@ -50,7 +70,8 @@ class GameBuilder {
     buildGroup(group) {
         const count = group.count || 1;
 
-        for ( let index = 0; index < count; index++ ) {
+        // Генерация карточек внутри группы от конца к началу
+        for ( let index = count - 1; index >= 0; index-- ) {
             const front = this.resolveTemplate(group.front, index);
             const back = this.resolveBack(group.back, group.front, index);
 
@@ -65,11 +86,15 @@ class GameBuilder {
                 magnet: group.magnet,
                 kind: group.kind || group.id,
                 zones: group.zones,
+                model: group.model ? this.resolveTemplate(group.model, index) : undefined,
+                modelTitle: group.modelTitle,
+                modelRotation: this.resolveModelRotation(group.modelRotation, index),
                 ...group.options,
             };
 
             const card = new DuosideCard({ front, bg: back }, options);
             this.cardsManager.createCard(card);
+            if ( options.model ) emitter.emit("model-viewer.preload", options.model);
         }
     }
 
@@ -96,6 +121,35 @@ class GameBuilder {
         });
 
         this.cardsManager.createCard(card);
+    }
+
+    buildCounter(counter) {
+        const count = counter.count || 1;
+
+        // Генерация счетчиков от конца к началу
+        for ( let index = count - 1; index >= 0; index-- ) {
+            const options = {
+                draggable: counter.draggable ?? true,
+                x: counter.position?.x ?? counter.x ?? 0,
+                y: counter.position?.y ?? counter.y ?? 0,
+                width: counter.size?.w ?? counter.width ?? 160,
+                height: counter.size?.h ?? counter.height ?? 160,
+                initialValue: counter.value ?? counter.initialValue ?? 0,
+                opacity: 1,
+                id: `${counter.id}_${index + 1}`,
+                magnet: counter.magnet,
+                kind: counter.kind || counter.id,
+                zones: counter.zones,
+                model: counter.model ? this.resolveTemplate(counter.model, index) : undefined,
+                modelTitle: counter.modelTitle,
+                modelRotation: this.resolveModelRotation(counter.modelRotation, index),
+                ...counter.options,
+            };
+
+            const card = new CounterCard(counter.bg || counter.front || counter.src, options);
+            this.cardsManager.createCard(card);
+            if ( options.model ) emitter.emit("model-viewer.preload", options.model);
+        }
     }
 }
 

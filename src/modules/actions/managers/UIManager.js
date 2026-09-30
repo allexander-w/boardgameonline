@@ -1,4 +1,4 @@
-import {SelectedCardTemplate, EmptyActionsTemplate, SelectedGroupCardTemplate} from "../templates/actions.templates";
+import {SelectedCardTemplate, EmptyActionsTemplate, SelectedGroupCardTemplate, SelectedStackTemplate} from "../templates/actions.templates";
 
 class UIManager {
     constructor(generator) {
@@ -11,6 +11,12 @@ class UIManager {
         const wrapper = this.generator.getNode(".tool-tray-cards");
         wrapper.innerText = '';
         this.generator.appendToBegin(wrapper, SelectedCardTemplate(el));
+    }
+
+    renderStackUI(total, limit) {
+        const wrapper = this.generator.getNode(".tool-tray-cards");
+        wrapper.innerText = '';
+        this.generator.appendToBegin(wrapper, SelectedStackTemplate(total, limit));
     }
 
     renderGroupUI(count) {

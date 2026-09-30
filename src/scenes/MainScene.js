@@ -6,6 +6,7 @@ import usersModule from "../modules/users";
 import tabsModule from "../modules/tabs";
 import resourcesModule from "../modules/resources";
 import saverModule from "../modules/saver";
+import modelViewerModule from "../modules/model-viewer";
 import Konva from "konva";
 import {ws} from "../core";
 import createPattern from "../utils/patterns/grid";
@@ -28,7 +29,8 @@ class MainScene {
         this.moduleManager.registerModule("notifications", notificationsModule);
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
-        this.moduleManager.registerModule("users", usersModule)
+        this.moduleManager.registerModule("users", usersModule);
+        // this.moduleManager.registerModule("modelViewer", modelViewerModule);
     }
 
     customLayersInitialization(layers) {

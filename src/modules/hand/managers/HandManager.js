@@ -22,6 +22,7 @@ class HandManager {
     _findElementsAbove(target) {
         const targetBox = target.getClientRect();
         return this.boardLayer.find('Rect').filter((other) => {
+            if (!other.draggable()) return false;
             const otherBox = other.getClientRect();
 
             return !(
@@ -113,14 +114,38 @@ class HandManager {
         this.selectedStack = elementsAbove;
 
         const actionsManager = moduleManager.getModule("actions");
-        if ( elementsAbove.length === 1 ) actionsManager.select(el);
-        if ( elementsAbove.length > 1 ) actionsManager.selectCouple(elementsAbove.length);
+
+        if ( elementsAbove.length === 1 ) {
+            this.cardsManager.clearStackSelection({ silent: true });
+            actionsManager.select(el);
+        }
+
+        if ( elementsAbove.length > 1 ) {
+            /* UI панели обновится по событию stack.selection.changed */
+            this.cardsManager.setStackSelection(elementsAbove);
+        }
+
+        if ( !elementsAbove.length ) this.cardsManager.clearStackSelection({ silent: true });
     }
 
     clearSelection() {
         this.selectedStack = [];
+        this.cardsManager.clearStackSelection({ silent: true });
         const actionsManager = moduleManager.getModule("actions");
         actionsManager.selectCouple(0);
+    }
+
+    /* Групповые действия над n верхними картами выбранной стопки */
+    flipStack() {
+        this.cardsManager.dispatchStackAction("flip");
+    }
+
+    rotateStackLeft() {
+        this.cardsManager.dispatchStackAction("rotateLeft");
+    }
+
+    rotateStackRight() {
+        this.cardsManager.dispatchStackAction("rotateRight");
     }
 
     take(el) {

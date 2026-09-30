@@ -17,6 +17,92 @@ class CardsManager {
         this.startPointerPos = null;
         this.activeGroup = null;
         this.draggedStack = [];
+        this.draggedLimited = false;
+
+        /* Выбранная стопка и сколько карт сверху с ней работаем (null = все) */
+        this.stackSelection = [];
+        this.stackLimit = null;
+    }
+
+    /* ---------- выбранная стопка: лимит n и групповые действия ---------- */
+
+    _sortByZ(elements) {
+        return [...elements].sort((a, b) => a.zIndex() - b.zIndex());
+    }
+
+    _notifyStackSelection() {
+        emitter.emit("stack.selection.changed", {
+            total: this.stackSelection.length,
+            limit: this.getStackLimit(),
+        });
+    }
+
+    setStackSelection(elements) {
+        this.stackSelection = this._sortByZ(elements);
+        this.stackLimit = null;
+        this._notifyStackSelection();
+    }
+
+    clearStackSelection({ silent = false } = {}) {
+        if (!this.stackSelection.length && this.stackLimit === null) return;
+
+        this.stackSelection = [];
+        this.stackLimit = null;
+        if (!silent) this._notifyStackSelection();
+    }
+
+    /* Сколько карт берем сейчас (по умолчанию - вся стопка) */
+    getStackLimit() {
+        const total = this.stackSelection.length;
+        if (!total) return 0;
+        return this.stackLimit === null ? total : Math.min(this.stackLimit, total);
+    }
+
+    setStackLimit(n) {
+        const total = this.stackSelection.length;
+        if (total < 2) return;
+
+        const value = Math.max(1, Math.min(total, Math.round(n)));
+        this.stackLimit = value === total ? null : value;
+        this._notifyStackSelection();
+    }
+
+    adjustStackLimit(delta) {
+        this.setStackLimit(this.getStackLimit() + delta);
+    }
+
+    /* Верхние n карт выбранной стопки (только те, что еще на столе) */
+    getSelectedTop() {
+        const alive = this._sortByZ(this.stackSelection.filter(el => el.isVisible() && el.getStage()));
+        const limit = this.getStackLimit();
+        return limit ? alive.slice(-limit) : alive;
+    }
+
+    _isInSelection(target) {
+        return this.stackSelection.length > 1 && this.stackSelection.includes(target);
+    }
+
+    onWheel(e) {
+        if (!this._isInSelection(e.target)) return;
+
+        e.evt.preventDefault();
+        /* Сообщаем камере, что зум не нужен */
+        e.evt.stackWheelHandled = true;
+
+        this.adjustStackLimit(e.evt.deltaY < 0 ? 1 : -1);
+    }
+
+    /* Групповое действие над верхними n картами: flip / rotateLeft / rotateRight */
+    dispatchStackAction(method) {
+        const elements = this.getSelectedTop();
+        if (!elements.length) return false;
+
+        elements.forEach(el => {
+            const card = this.getCard(el.id());
+            if (card) this.dispatchAction(card.cardManager, method);
+        });
+
+        return true;
     }
 
     _findElementsAbove(target) {
@@ -70,7 +156,9 @@ class CardsManager {
         if (!currentPos || !this.startPointerPos) return;
 
         const dist = Math.hypot(currentPos.x - this.startPointerPos.x, currentPos.y - this.startPointerPos.y);
-        if (dist > 5) {
+
+        // Уменьшен порог сдвига до 3px для большей отзывчивости
+        if (dist > 3) {
             this._clearLongPressTimer();
         }
     }
@@ -84,6 +172,7 @@ class CardsManager {
             clearTimeout(this.longPressTimer);
             this.longPressTimer = null;
         }
+        this.startPointerPos = null;
     }
 
     _startStackDrag(target) {
@@ -93,10 +182,17 @@ class CardsManager {
             this._endStackDrag();
         }
 
-        const stackElements = this._findElementsAbove(target);
-        if (stackElements.length <= 1) return;
+        let stackElements = this._sortByZ(this._findElementsAbove(target));
+
+        /* Если стопка выбрана и задано n - берем только n верхних карт */
+        const limited = this._isInSelection(target) && this.stackLimit !== null;
+        if (limited) stackElements = stackElements.slice(-this.getStackLimit());
+
+        if (stackElements.length <= 1 && !limited) return;
+        if (!stackElements.length) return;
 
         this.draggedStack = stackElements;
+        this.draggedLimited = limited;
         this.layersManager.clearCacheAllGroups();
 
         const cursor = document.querySelector(".custom-cursor");
@@ -148,7 +244,7 @@ class CardsManager {
             this._endStackDrag();
         });
 
-        emitter.emit("notification", { message: "Перемещение всей стопки", color: "blue" });
+        emitter.emit("notification", { message: limited ? `Перемещение карт: ${stackElements.length}` : "Перемещение всей стопки", color: "blue" });
     }
 
     _resetCustomCursor() {
@@ -181,6 +277,12 @@ class CardsManager {
         this.activeGroup = null;
         this.draggedStack = [];
         this._resetCustomCursor();
+
+        /* Часть карт ушла из стопки - прежнее выделение больше не актуально */
+        if (this.draggedLimited) {
+            this.draggedLimited = false;
+            this.clearStackSelection();
+        }
 
         this.layersManager.cacheAllGroups(100);
 
@@ -235,6 +337,9 @@ class CardsManager {
     }
 
     dragstart(e) {
+        // 🔥 ВАЖНО: Сбрасываем таймер долгий нажатий сразу при старте одиночного drag
+        this._clearLongPressTimer();
+
         const card = this.getCard(e.target.id());
         if ( !card ) return false;
 
@@ -256,6 +361,9 @@ class CardsManager {
     }
 
     dragend(e) {
+        // Дополнительный сброс на случай быстрого клика
+        this._clearLongPressTimer();
+
         const card = this.getCard(e.target.id());
         if (!card) return false;
 

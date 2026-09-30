@@ -3,6 +3,7 @@ import GameBuilder from "../../core/builders/GameBuilder";
 import {cardsManager, emitter, layersManager, moduleManager} from "../../core";
 import resourcesModule from "../../modules/resources";
 import manifest from "./manifest.json";
+// import config from "../puertorico/config/resources.config";
 
 class GrailScene extends MainScene {
     constructor(preloadScreen) {
@@ -16,6 +17,8 @@ class GrailScene extends MainScene {
     initialization() {
         const builder = new GameBuilder(cardsManager);
         builder.build(manifest);
+
+        this.moduleManager.registerModule("resources", resourcesModule, manifest.resources);
     }
 }
 

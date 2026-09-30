@@ -8,7 +8,8 @@ class UIManager {
     }
 
     createSideImages(el, src) {
-        loadImageDuosideElement(el, config.s3BaseUrl(src.front));
+        // loadImageDuosideElement(el, config.s3BaseUrl(src.front));
+        loadImageDuosideElement(el, src.front);
     }
 
     dragstart(el) {

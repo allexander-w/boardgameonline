@@ -21,6 +21,10 @@ class ActionsModule {
         this.uiManager.renderGroupUI(count);
     }
 
+    selectStack(total, limit) {
+        this.uiManager.renderStackUI(total, limit);
+    }
+
 }
 
 export default ActionsModule;

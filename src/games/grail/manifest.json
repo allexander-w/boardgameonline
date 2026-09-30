@@ -2,6 +2,79 @@
   "id": "grail",
   "name": "Оскверненный грааль",
   "groups": [
+
+    {
+      "type": "duoside",
+      "id": "persons",
+      "count": 4,
+      "front": "/grail/persons/{n}/front.webp",
+      "back": "/grail/persons/{n}/bg.webp",
+      "model": "/grail/models/persons/{n}.3mf",
+      "modelRotation": { "3": [0, 30, 40] },
+      "position": { "x": 750, "y": 2500 },
+      "size": { "w": 383, "h": 297 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "tables",
+      "count": 4,
+      "front": "/grail/tablets/{n}.webp",
+      "back": "/grail/tablets/{n}.webp",
+      "position": { "x": 0, "y": 2500 },
+      "size": { "w": 699, "h": 458 },
+      "zones": [
+        {
+          "id": "person_slot",
+          "x": 84,
+          "y": 0,
+          "w": 390,
+          "h": 300,
+          "accepts": { "kinds": ["persons"] }
+        },
+
+        {
+          "id": "marker_slot",
+          "x": 20,
+          "y": 25,
+          "w": 40,
+          "h": 40,
+          "accepts": { "kinds": ["resource"] },
+          "layout": { "cols": 2, "rows": 6, "gap": { "x": 579, "y": 33 } }
+        },
+
+        {
+          "id": "counter_slot",
+          "x": 98,
+          "y": 350,
+          "w": 70,
+          "h": 90,
+          "accepts": { "kinds": ["counter"] },
+          "layout": { "cols": 5, "rows": 1, "gap": 5 }
+        },
+
+        {
+          "id": "hp_slot",
+          "x": 498,
+          "y": 20,
+          "w": 35,
+          "h": 35,
+          "accepts": { "kinds": ["resource"] },
+          "layout": { "cols": 3, "rows": 10, "gap": 1.5 }
+        },
+
+        {
+          "id": "skills_slot",
+          "x": -175,
+          "y": 8,
+          "h": 128,
+          "w": 197,
+          "accepts": { "kinds": ["skills"] },
+          "layout": { "cols": 2, "rows": 3, "gap": { "x": 660, "y": 30 } }
+        }
+      ]
+    },
+
     {
       "type": "duoside",
       "id": "map",
@@ -304,37 +377,72 @@
       "back": "/grail/small/skills/bg.webp",
       "position": { "x": 356, "y": 1975 },
       "size": { "w": 128, "h": 197 }
-    },
-
+    }
+  ],
+  "counters": [
     {
-      "type": "duoside",
-      "id": "persons",
-      "count": 4,
-      "front": "/grail/persons/{n}/front.webp",
-      "back": "/grail/persons/{n}/bg.webp",
-      "position": { "x": 750, "y": 2500 },
-      "size": { "w": 383, "h": 297 }
-    },
-
-    {
-      "type": "duoside",
-      "id": "tables",
-      "count": 4,
-      "front": "/grail/tablets/{n}.webp",
-      "back": "/grail/tablets/{n}.webp",
-      "position": { "x": 0, "y": 2500 },
-      "size": { "w": 699, "h": 458 },
+      "id": "counter",
+      "bg": "/counter.jpeg",
+      "count": 5,
+      "position": { "x": 100, "y": 200 },
+      "size": { "w": 86, "h": 92 },
+      "value": 1,
       "zones": [
         {
-          "id": "person_slot",
-          "x": 84,
-          "y": 0,
-          "w": 390,
-          "h": 300,
-          "accepts": { "kind": ["persons"] }
+          "id": "resource_slot",
+          "x": 26,
+          "y": 18,
+          "w": 35,
+          "h": 35
         }
-      ]
-    }
+      ],
+      "options": {
+        "textLayout": {
+          "y": 67,
+          "fontSize": 14,
+          "fill": "#ffffff"
+        },
+        "buttonsLayout": {
+          "dec": { "x": 8, "y": 60, "w": 20, "h": 20 },
+          "inc": { "x": 56, "y": 60, "w": 20, "h": 20 }
+        }
+      }
+    },
 
+    {
+      "id": "mengir",
+      "bg": "/grail/mengir/1.jpeg",
+      "count": 3,
+      "position": { "x": 1200, "y": 200 },
+      "size": { "w": 99, "h": 106 },
+      "value": 8,
+      "model": "/grail/models/menhir/{n}.3mf",
+      "modelRotation": { "2": [180, 180, 0] },
+
+      "options": {
+        "textLayout": {
+          "y": 77,
+          "fontSize": 14,
+          "fill": "#ffffff"
+        },
+        "buttonsLayout": {
+          "dec": { "x": 8, "y": 70, "w": 20, "h": 20 },
+          "inc": { "x": 66, "y": 70, "w": 20, "h": 20 }
+        }
+      }
+    }
+  ],
+  "resources": [
+    { "name": "marker_red", "width": 35, "height": 35 },
+    { "name": "marker_blue", "width": 35, "height": 35 }
+  ],
+  "dice": [
+    {
+      "x": 0,
+      "y": -500,
+      "id": "dice6",
+      "front": "/dice/dice-sprite.png",
+      "sides": 6
+    }
   ]
 }

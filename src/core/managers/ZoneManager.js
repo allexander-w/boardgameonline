@@ -53,8 +53,44 @@ class ZoneManager {
         return this.cardsManager.getCard(id)?.element;
     }
 
+    // Возвращает плоский список зон (автоматически разворачивает зоны с layout: { cols, rows })
+    _getZones(owner) {
+        const rawZones = owner?.getAttr("zones") || [];
+        const expanded = [];
+
+        for (const zone of rawZones) {
+            if (!zone.layout?.rows) {
+                expanded.push(zone);
+                continue;
+            }
+
+            const { cols = 1, rows = 1, gap = 0 } = zone.layout;
+
+            // Парсим gap: если передали число — дублируем в X и Y, если объект — берем x и y отдельно
+            const gapX = typeof gap === "object" ? (gap.x ?? 0) : gap;
+            const gapY = typeof gap === "object" ? (gap.y ?? 0) : gap;
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const index = r * cols + c + 1;
+                    expanded.push({
+                        id: `${zone.id}_${index}`,
+                        x: zone.x + c * (zone.w + gapX),
+                        y: zone.y + r * (zone.h + gapY),
+                        w: zone.w,
+                        h: zone.h,
+                        accepts: zone.accepts,
+                        max: 1
+                    });
+                }
+            }
+        }
+
+        return expanded;
+    }
+
     _zone(owner, zoneId) {
-        return (owner.getAttr("zones") || []).find(z => z.id === zoneId);
+        return this._getZones(owner).find(z => z.id === zoneId);
     }
 
     // точка слоя -> система владельца (начало в центре карты, без поворота)
@@ -78,15 +114,9 @@ class ZoneManager {
     }
 
     _slotLocal(owner, zone, index, cw, ch) {
-        let x, y;
-        if (zone.layout) {
-            const { cols = 1, gap = 0 } = zone.layout;
-            x = zone.x + gap + cw / 2 + (index % cols) * (cw + gap);
-            y = zone.y + gap + ch / 2 + Math.floor(index / cols) * (ch + gap);
-        } else {
-            x = zone.x + zone.w / 2;
-            y = zone.y + zone.h / 2;
-        }
+        // x и y уже учитывают сдвиг сетки
+        const x = zone.x + zone.w / 2;
+        const y = zone.y + zone.h / 2;
         return { x: x - owner.width() / 2, y: y - owner.height() / 2 };
     }
 
@@ -140,7 +170,8 @@ class ZoneManager {
 
             const local = this._toLocal(owner, p);
 
-            for (const zone of owner.getAttr("zones")) {
+            // ИСПОЛЬЗУЕМ СГЕНЕРИРОВАННЫЕ ЗОНЫ
+            for (const zone of this._getZones(owner)) {
                 if (!this._accepts(zone, el)) continue;
 
                 const taken = this._occupiedSlots(ownerId, zone.id, el.id());
@@ -150,7 +181,7 @@ class ZoneManager {
                 const c = this._zoneCenterLocal(owner, zone);
                 if (Math.abs(local.x - c.x) > zone.w / 2 || Math.abs(local.y - c.y) > zone.h / 2) continue;
 
-                // ближайший свободный слот
+                // Ближайший свободный слот (для развернутых зон capacity всегда = 1)
                 let slot = -1;
                 let slotDist = Infinity;
                 for (let i = 0; i < capacity; i++) {

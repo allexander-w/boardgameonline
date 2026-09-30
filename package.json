@@ -15,6 +15,7 @@
   "dependencies": {
     "konva": "^9.3.18",
     "mitt": "^3.0.1",
+    "three": "^0.186.1",
     "websocket": "^1.0.35"
   }
 }
