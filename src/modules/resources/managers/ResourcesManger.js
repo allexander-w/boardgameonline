@@ -24,7 +24,7 @@ class ResourcesManger {
     }
 
     isResourcesSelected() {
-        return this.resources.some(el => el.selected?.length);
+        return this.resources.some(el => el.selected > 0);
     }
 
     search(value) {

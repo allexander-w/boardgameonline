@@ -16,9 +16,6 @@ class CardsHandler {
         this.boardLayer.on("pointermove", this.cardsManager.onPointerMove.bind(this.cardsManager));
         this.boardLayer.on("pointerup pointerrelease", this.cardsManager.onPointerUp.bind(this.cardsManager));
 
-        // Колесико над выбранной стопкой меняет количество берущихся карт
-        this.layersManager.stage.on("wheel", this.cardsManager.onWheel.bind(this.cardsManager));
-
         // 3. Сетевые события (Emitter)
         this.emitter.on("api.drag.start", this.cardsManager.remoteDragstart.bind(this.cardsManager));
         this.emitter.on("api.drag.move", this.cardsManager.remoteDragmove.bind(this.cardsManager));

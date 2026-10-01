@@ -30,7 +30,7 @@ class MainScene {
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
         this.moduleManager.registerModule("users", usersModule);
-        this.moduleManager.registerModule("modelViewer", modelViewerModule);
+        // this.moduleManager.registerModule("modelViewer", modelViewerModule);
     }
 
     customLayersInitialization(layers) {

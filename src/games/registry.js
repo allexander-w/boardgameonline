@@ -1,5 +1,5 @@
 export default [
-    { id: "solitair", name: "Пасьянс" },
+    { id: "grail", name: "Грааль" },
     { id: "puertorico", name: "Пуэрто-Рико" },
     { id: "viticulture", name: "Виноделие" },
     { id: "thiswarofmine", name: "This War of Mine" },
@@ -12,5 +12,4 @@ export default [
     { id: "iki", name: "Iki" },
     { id: "sevenwonders", name: "7 Чудес" },
     { id: "scythe", name: "Серп" },
-    { id: "grail", name: "Грааль" },
 ];

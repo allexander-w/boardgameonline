@@ -134,7 +134,11 @@ class ZoneManager {
 
     _occupiedSlots(ownerId, zoneId, exceptId) {
         const slots = new Set();
-        for (const [id, d] of this.docks) {
+        for (const [id, d] of [...this.docks]) {
+            if (!this._el(id)) {          // карты больше нет в менеджере
+                this.docks.delete(id);
+                continue;
+            }
             if (id !== exceptId && d.ownerId === ownerId && d.zoneId === zoneId) slots.add(d.slot);
         }
         return slots;
@@ -154,6 +158,22 @@ class ZoneManager {
 
     isDocked(cardId) {
         return this.docks.has(cardId);
+    }
+
+    removeCard(cardId, { silent = true } = {}) {
+        if (this.docks.has(cardId)) this.undock(cardId, { silent });
+
+        if (this.owners.has(cardId)) {
+            for (const [id, d] of [...this.docks]) {
+                if (d.ownerId === cardId) this.undock(id, { silent });
+            }
+            this.owners.delete(cardId);
+        }
+
+        if (this.active?.card.element.id() === cardId) {
+            this.active = null;
+            this.clearHighlight();
+        }
     }
 
     findTarget(card) {

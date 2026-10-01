@@ -1,0 +1,142 @@
+{
+  "id": "flashpoint",
+  "name": "Flash Point: Fire Rescue",
+  "field": {
+    "id": "field",
+    "front": "/flashpoint/field.png",
+    "bg": null,
+    "x": 0,
+    "y": 0,
+    "width": 2308,
+    "height": 1632
+  },
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "persons",
+      "count": 18,
+      "front": "/flashpoint/persons/{n}.png",
+      "back": "/flashpoint/persons/bg.png",
+      "position": { "x": 2346, "y": 0 },
+      "size": { "w": 95, "h": 95 }
+    },
+    {
+      "type": "duoside",
+      "id": "burnout",
+      "count": 24,
+      "front": "/flashpoint/burnout/burn.png",
+      "back": null,
+      "position": { "x": 2545, "y": 0 },
+      "size": { "w": 60, "h": 60 }
+    },
+    {
+      "type": "duoside",
+      "id": "run",
+      "count": 21,
+      "front": "/flashpoint/run/run.png",
+      "back": null,
+      "position": { "x": 2709, "y": 0 },
+      "size": { "w": 60, "h": 60 }
+    },
+    {
+      "type": "duoside",
+      "id": "warn",
+      "count": 6,
+      "front": "/flashpoint/warn/warn.png",
+      "back": null,
+      "position": { "x": 2346, "y": 175 },
+      "size": { "w": 75, "h": 75 }
+    },
+    {
+      "type": "duoside",
+      "id": "medicine",
+      "count": 3,
+      "front": "/flashpoint/medicine/medicine.png",
+      "back": null,
+      "position": { "x": 2525, "y": 175 },
+      "size": { "w": 75, "h": 75 }
+    },
+    {
+      "type": "duoside",
+      "id": "machines",
+      "count": 2,
+      "front": "/flashpoint/machines/{n}.png",
+      "back": "/flashpoint/machines/bg.png",
+      "position": { "x": 2346, "y": 330 },
+      "size": { "w": 253, "h": 151 }
+    },
+    {
+      "type": "duoside",
+      "id": "hero_chip",
+      "count": 4,
+      "front": "/flashpoint/hero_chip/{n}.png",
+      "back": "same",
+      "position": { "x": 2703, "y": 330 },
+      "size": { "w": 90, "h": 90 }
+    },
+    {
+      "type": "duoside",
+      "id": "hero",
+      "count": 8,
+      "front": "/flashpoint/hero/{n}.png",
+      "back": "/flashpoint/hero/bg.png",
+      "position": { "x": 1446, "y": 540 },
+      "size": { "w": 303, "h": 452 }
+    },
+    {
+      "type": "duoside",
+      "id": "color",
+      "count": 4,
+      "front": "/flashpoint/color/{n}.png",
+      "back": "same",
+      "position": { "x": 2753, "y": 540 },
+      "size": { "w": 303, "h": 221 }
+    },
+    {
+      "type": "duoside",
+      "id": "fault",
+      "count": 24,
+      "front": "/flashpoint/fault/fault.png",
+      "back": "same",
+      "position": { "x": 2704, "y": 175 },
+      "size": { "w": 40, "h": 40 },
+      "options": {
+        "cornerRadius": 0
+      }
+    },
+    {
+      "type": "duoside",
+      "id": "fire",
+      "count": 33,
+      "front": "/flashpoint/fire/1.png",
+      "back": "/flashpoint/fire/bg.png",
+      "position": { "x": 2346, "y": 1072 },
+      "size": { "w": 140, "h": 140 }
+    },
+    {
+      "type": "duoside",
+      "id": "doors",
+      "count": 33,
+      "front": "/flashpoint/doors/1.png",
+      "back": "/flashpoint/doors/bg.png",
+      "position": { "x": 2590, "y": 1072 },
+      "size": { "w": 75, "h": 75 }
+    }
+  ],
+  "dice": [
+    {
+      "id": "dice_d8",
+      "x": 2090,
+      "y": 140,
+      "front": "/dice/d8.png",
+      "sides": 8
+    },
+    {
+      "id": "dice_d6",
+      "x": 2090,
+      "y": 140,
+      "front": "/dice/dice-sprite.png",
+      "sides": 6
+    }
+  ]
+}

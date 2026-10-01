@@ -7,8 +7,6 @@ class UIManager {
     }
 
     renderCards(cards, kit) {
-        console.log(cards, kit);
-
         const pane = document.querySelector(".bottom-pane__wrapper");
         const stacks = document.querySelector(".stack-panel");
 

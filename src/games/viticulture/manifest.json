@@ -1,0 +1,207 @@
+{
+  "id": "viticulture",
+  "name": "Виноделие",
+  "field": {
+    "id": "field",
+    "front": "/viticulture/field.jpg",
+    "bg": null,
+    "x": 1380,
+    "y": 1020,
+    "width": 3012,
+    "height": 2422,
+    "opacity": 0.8
+  },
+  "groups": [
+    {
+      "type": "state",
+      "id": "field_board",
+      "count": 4,
+      "front": "/viticulture/fields/{n}.png",
+      "position": { "x": -1320, "y": 3000 },
+      "step": { "x": 1890, "y": 0 },
+      "size": { "w": 1123, "h": 794 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "plot_0",
+      "count": 4,
+      "front": "/viticulture/plot/1/1.png",
+      "back": "/viticulture/plot/1/bg.png",
+      "position": { "x": 3300, "y": 175 },
+      "size": { "w": 253, "h": 349 }
+    },
+    {
+      "type": "duoside",
+      "id": "plot_1",
+      "count": 4,
+      "front": "/viticulture/plot/2/1.png",
+      "back": "/viticulture/plot/2/bg.png",
+      "position": { "x": 3600, "y": 175 },
+      "size": { "w": 253, "h": 349 }
+    },
+    {
+      "type": "duoside",
+      "id": "plot_2",
+      "count": 4,
+      "front": "/viticulture/plot/3/1.png",
+      "back": "/viticulture/plot/3/bg.png",
+      "position": { "x": 3900, "y": 175 },
+      "size": { "w": 253, "h": 349 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "chips_set_0",
+      "count": 18,
+      "front": "/viticulture/chip/1/{sub}/{item}.png",
+      "back": "same",
+      "position": { "x": -1800, "y": 3500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+    {
+      "type": "duoside",
+      "id": "chips_set_1",
+      "count": 18,
+      "front": "/viticulture/chip/2/{sub}/{item}.png",
+      "back": "same",
+      "position": { "x": 100, "y": 3500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+    {
+      "type": "duoside",
+      "id": "chips_set_2",
+      "count": 18,
+      "front": "/viticulture/chip/3/{sub}/{item}.png",
+      "back": "same",
+      "position": { "x": 2000, "y": 3500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+    {
+      "type": "duoside",
+      "id": "chips_set_3",
+      "count": 18,
+      "front": "/viticulture/chip/4/{sub}/{item}.png",
+      "back": "same",
+      "position": { "x": 3900, "y": 3500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+    {
+      "type": "duoside",
+      "id": "chips_set_4",
+      "count": 18,
+      "front": "/viticulture/chip/5/{sub}/{item}.png",
+      "back": "same",
+      "position": { "x": 5800, "y": 3500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "custom_chip_104",
+      "count": 1,
+      "front": "/viticulture/chip/104.png",
+      "back": "same",
+      "position": { "x": -200, "y": 1500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+    {
+      "type": "duoside",
+      "id": "custom_chip_103",
+      "count": 1,
+      "front": "/viticulture/chip/103.png",
+      "back": "same",
+      "position": { "x": -200, "y": 1500 },
+      "size": { "w": 90, "h": 90 },
+      "options": { "cornerRadius": 5 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "vine",
+      "count": 42,
+      "front": "/viticulture/vine/{n}.png",
+      "back": "/viticulture/vine/bg.png",
+      "position": { "x": 145, "y": 150 },
+      "size": { "w": 245, "h": 401 }
+    },
+    {
+      "type": "duoside",
+      "id": "summer",
+      "count": 38,
+      "front": "/viticulture/summer/{n}.png",
+      "back": "/viticulture/summer/bg.png",
+      "position": { "x": 855, "y": 150 },
+      "size": { "w": 245, "h": 401 }
+    },
+    {
+      "type": "duoside",
+      "id": "sponsore",
+      "count": 36,
+      "front": "/viticulture/sponsore/{n}.png",
+      "back": "/viticulture/sponsore/bg.png",
+      "position": { "x": 1560, "y": 150 },
+      "size": { "w": 245, "h": 401 }
+    },
+    {
+      "type": "duoside",
+      "id": "winter",
+      "count": 38,
+      "front": "/viticulture/winter/{n}.png",
+      "back": "/viticulture/winter/bg.png",
+      "position": { "x": 2260, "y": 150 },
+      "size": { "w": 245, "h": 401 }
+    },
+    {
+      "type": "duoside",
+      "id": "mom",
+      "count": 18,
+      "front": "/viticulture/mom/{n}.png",
+      "back": "/viticulture/mom/bg.png",
+      "position": { "x": 800, "y": -400 },
+      "size": { "w": 478, "h": 355 }
+    },
+    {
+      "type": "duoside",
+      "id": "dad",
+      "count": 18,
+      "front": "/viticulture/dad/{n}.png",
+      "back": "/viticulture/dad/bg.png",
+      "position": { "x": 1700, "y": -400 },
+      "size": { "w": 478, "h": 355 }
+    }
+  ],
+  "resources": [
+    {
+      "name": "1",
+      "width": "60",
+      "height": "60"
+    },
+    {
+      "name": "2",
+      "width": "70",
+      "height": "70"
+    },
+    {
+      "name": "5",
+      "width": "90",
+      "height": "90"
+    },
+    {
+      "name": "red",
+      "width": "56",
+      "height": "56"
+    },
+    {
+      "name": "yellow",
+      "width": "56",
+      "height": "56"
+    }
+  ]
+}

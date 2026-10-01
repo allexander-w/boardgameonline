@@ -1,0 +1,220 @@
+{
+  "id": "paleo",
+  "name": "Палео",
+  "fields": [
+    {
+      "id": "field_board",
+      "count": 3,
+      "front": "/paleo/fields/{n}.png",
+      "bg": null,
+      "position": { "x": -400, "y": 3720 },
+      "step": { "x": 1890, "y": 0 },
+      "size": { "w": 1679, "h": 1455 }
+    },
+    {
+      "id": "field_4",
+      "front": "/paleo/fields/5.png",
+      "bg": null,
+      "position": { "x": -400, "y": 1720 },
+      "size": { "w": 1394, "h": 1820 }
+    },
+    {
+      "id": "field_5",
+      "front": "/paleo/fields/4.png",
+      "bg": null,
+      "position": { "x": 1394, "y": 2020 },
+      "size": { "w": 882, "h": 1200 }
+    }
+  ],
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "creation_1",
+      "count": 5,
+      "front": "/paleo/creations/1.png",
+      "back": "same",
+      "position": { "x": -1000, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_2",
+      "count": 5,
+      "front": "/paleo/creations/2.png",
+      "back": "same",
+      "position": { "x": -750, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_3",
+      "count": 5,
+      "front": "/paleo/creations/3.png",
+      "back": "same",
+      "position": { "x": -500, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_4",
+      "count": 5,
+      "front": "/paleo/creations/4.png",
+      "back": "same",
+      "position": { "x": -250, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_5",
+      "count": 5,
+      "front": "/paleo/creations/5.png",
+      "back": "same",
+      "position": { "x": 0, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_6",
+      "count": 5,
+      "front": "/paleo/creations/6.png",
+      "back": "same",
+      "position": { "x": 250, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_7",
+      "count": 5,
+      "front": "/paleo/creations/7.png",
+      "back": "same",
+      "position": { "x": 500, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_8",
+      "count": 5,
+      "front": "/paleo/creations/8.png",
+      "back": "same",
+      "position": { "x": 750, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_9",
+      "count": 5,
+      "front": "/paleo/creations/9.png",
+      "back": "same",
+      "position": { "x": 1000, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_10",
+      "count": 5,
+      "front": "/paleo/creations/10.png",
+      "back": "same",
+      "position": { "x": 1250, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_11",
+      "count": 5,
+      "front": "/paleo/creations/11.png",
+      "back": "same",
+      "position": { "x": 1500, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_12",
+      "count": 5,
+      "front": "/paleo/creations/12.png",
+      "back": "same",
+      "position": { "x": 1750, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+    {
+      "type": "duoside",
+      "id": "creation_13",
+      "count": 5,
+      "front": "/paleo/creations/13.png",
+      "back": "same",
+      "position": { "x": 2000, "y": 2850 },
+      "size": { "w": 200, "h": 200 }
+    },
+
+    {
+      "type": "duoside",
+      "id": "deck_1",
+      "count": 32,
+      "front": "/paleo/1/01 ({n}).jpg",
+      "back": "/paleo/1/01 ({n})-2.jpg",
+      "position": { "x": -824.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_2",
+      "count": 20,
+      "front": "/paleo/2/02 ({n}).jpg",
+      "back": "/paleo/2/02 ({n})-2.jpg",
+      "position": { "x": -394.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_3",
+      "count": 16,
+      "front": "/paleo/3/03 ({n}).jpg",
+      "back": "/paleo/3/03 ({n})-2.jpg",
+      "position": { "x": 35.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_4",
+      "count": 8,
+      "front": "/paleo/4/04 ({n}).jpg",
+      "back": "/paleo/4/04 ({n})-2.jpg",
+      "position": { "x": 465.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_5",
+      "count": 22,
+      "front": "/paleo/5/05 ({n}).jpg",
+      "back": "/paleo/5/05 ({n})-2.jpg",
+      "position": { "x": 895.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_A",
+      "count": 9,
+      "front": "/paleo/А/А ({n}).jpg",
+      "back": "/paleo/А/А ({n})-2.jpg",
+      "position": { "x": 1325.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    },
+    {
+      "type": "duoside",
+      "id": "deck_B",
+      "count": 11,
+      "front": "/paleo/Б/Б ({n}).jpg",
+      "back": "/paleo/Б/Б ({n})-2.jpg",
+      "position": { "x": 1755.5, "y": 267 },
+      "size": { "w": 331, "h": 514 }
+    }
+  ],
+  "dice": [
+    {
+      "id": "dice1",
+      "x": 0,
+      "y": 0,
+      "front": "/paleo/dice/1.png"
+    }
+  ]
+}

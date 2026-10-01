@@ -8,21 +8,25 @@ class TabsModule {
     }
 
     render(id) {
+        if (!this.tabs[id]) return;
+
+        this.emitter.emit("modules.tabs.prerender", id);
+
         this.uiManager.setActiveChild(id);
-        const content = this.tabs[id]() || '';
-        this.uiManager.renderContent(content);
+        this.uiManager.renderContent(this.tabs[id]() || '');
+        this.selected = id;
+
+        this.emitter.emit("modules.tabs.rendered", id);
     }
 
     select(e) {
-        const parent = e.target.closest('.tab-btn');
+        const btn = e.target.closest('.tab-btn');
+        if (!btn) return;
 
-        if ( this.selected === parent.dataset.id ) return false;
-        this.emitter.emit("modules.tabs.prerender", parent.dataset.id);
+        const id = btn.dataset.id;
+        if (this.selected === id) return;
 
-        this.render(parent.dataset.id);
-
-        this.emitter.emit("modules.tabs.rendered", parent.dataset.id);
-        this.selected = parent.dataset.id;
+        this.render(id);
     }
 
     registerTab(id, name, renderer) {

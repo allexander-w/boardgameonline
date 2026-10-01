@@ -46,28 +46,22 @@ class ResourcesHandler {
     }
 
     registerListeners() {
-        if ( this.isRegistered ) return false;
+        this.removeListeners();
 
-        const resourcesTemplate = this.uiManager.getWrapper();
-        const input = resourcesTemplate.previousElementSibling.children[0];
+        const grid = this.uiManager.getWrapper();
+        if (!grid) return;
 
-        input.addEventListener("keyup", this.bindedSearchHandler);
-        resourcesTemplate.addEventListener("click", this.bindedSelectHandler);
+        this.input = grid.previousElementSibling.children[0];
+        this.grid = grid;
 
-        this.isRegistered = true;
+        this.input.addEventListener("keyup", this.bindedSearchHandler);
+        this.grid.addEventListener("click", this.bindedSelectHandler);
     }
 
     removeListeners() {
-        const resourcesTemplate = this.uiManager.getWrapper();
-
-        if ( resourcesTemplate ) {
-            const input = resourcesTemplate.previousElementSibling.children[0];
-
-            input.removeEventListener("keyup", this.bindedSearchHandler);
-            resourcesTemplate.removeEventListener("click", this.bindedSelectHandler);
-        }
-
-        this.isRegistered = false;
+        this.input?.removeEventListener("keyup", this.bindedSearchHandler);
+        this.grid?.removeEventListener("click", this.bindedSelectHandler);
+        this.input = this.grid = null;
     }
 }
 

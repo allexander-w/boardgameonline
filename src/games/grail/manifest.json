@@ -395,8 +395,8 @@
     {
       "id": "counter",
       "bg": "/grail/counters/counter.webp",
-      "count": 5,
-      "position": { "x": 100, "y": 200 },
+      "count": 25,
+      "position": { "x": 0, "y": 2180 },
       "size": { "w": 86, "h": 92 },
       "value": 1,
       "zones": [
@@ -405,7 +405,8 @@
           "x": 26,
           "y": 18,
           "w": 35,
-          "h": 35
+          "h": 35,
+          "accepts": { "kinds": ["resource"] }
         }
       ],
       "options": {
@@ -425,7 +426,7 @@
       "id": "mengir",
       "bg": "/grail/counters/merngir.webp",
       "count": 3,
-      "position": { "x": 1200, "y": 200 },
+      "position": { "x": 150, "y": 2180 },
       "size": { "w": 99, "h": 106 },
       "value": 8,
       "model": "/grail/models/menhir/{n}.3mf",

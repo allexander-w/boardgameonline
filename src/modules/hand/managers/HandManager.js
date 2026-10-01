@@ -246,50 +246,35 @@ class HandManager {
     }
 
     put() {
-        function partition(array, predicate) {
-            const pass = [];
-            const fail = [];
+        const activeStack = this.kitManager.getActiveKitStack();
+        const passed = this.hands.filter(el => activeStack.has(el.id()));
+        if (!passed.length) return false;
 
-            array.forEach(item =>
-                predicate(item) ? pass.push(item) : fail.push(item)
-            );
-
-            return [pass, fail];
-        }
-
+        const failed = this.hands.filter(el => !activeStack.has(el.id()));
         const pos = this.boardLayer.getRelativePointerPosition();
         const config = [];
 
         this.layersManager.clearCacheAllGroups();
 
-
-        const activeStack = this.kitManager.getActiveKitStack();
-        const [passed, failed] = partition(this.hands, el => activeStack.has(el.id()));
-
-        passed.forEach((el, index) => {
+        passed.forEach((el) => {
             el.x(pos.x);
             el.y(pos.y);
 
             const card = this.cardsManager.getCard(el.id());
-            if ( card && card.cardManager && card.cardManager.flipBack ) card.cardManager.flipBack();
+            card?.cardManager?.flipBack?.();
 
             el.moveToTop();
             el.show();
 
             this.kitManager.removeFromStack(el.id());
             config.push({ id: el.id(), zIndex: el.zIndex(), pos });
-        })
+        });
 
         this.layersManager.cacheAllGroups();
+        this.hands = failed;
 
-        this.hands = failed || [];
-
-        const actionsManager = moduleManager.getModule("actions");
-        actionsManager.selectCouple(0);
-
-        senderManager.send("modules.hand.put", { cards: config});
-
-
+        moduleManager.getModule("actions").selectCouple(0);
+        senderManager.send("modules.hand.put", { cards: config });
         this.UIManager.renderCards(this._getRenderCards(), this.kitManager.handKit);
     }
 

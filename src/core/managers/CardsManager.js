@@ -312,6 +312,7 @@ class CardsManager {
     }
 
     removeCard(id) {
+        this.zoneManager.removeCard(id);
         this.cards.delete(id);
     }
 

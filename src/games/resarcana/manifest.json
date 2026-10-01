@@ -1,0 +1,90 @@
+{
+  "id": "resarcana",
+  "name": "Res Arcana",
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "artefact",
+      "count": 36,
+      "front": "/resarcana/artefacts/{n}.png",
+      "back": "/resarcana/artefacts/bg.png",
+      "position": { "x": 0, "y": 0 },
+      "size": { "w": 741, "h": 1050 }
+    },
+    {
+      "type": "duoside",
+      "id": "mag",
+      "count": 10,
+      "front": "/resarcana/mags/{n}.png",
+      "back": "/resarcana/mags/bg.png",
+      "position": { "x": 900, "y": 0 },
+      "size": { "w": 741, "h": 1050 }
+    },
+    {
+      "type": "duoside",
+      "id": "monument",
+      "count": 10,
+      "front": "/resarcana/monuments/{n}.png",
+      "back": "/resarcana/monuments/bg.png",
+      "position": { "x": 1800, "y": 0 },
+      "size": { "w": 741, "h": 1050 }
+    },
+    {
+      "type": "duoside",
+      "id": "magicthing",
+      "count": 8,
+      "front": "/resarcana/magicthings/{n}.png",
+      "back": "/resarcana/magicthings/bg.png",
+      "position": { "x": 0, "y": 1100 },
+      "size": { "w": 492, "h": 752 }
+    },
+    {
+      "type": "duoside",
+      "id": "gamechip",
+      "count": 1,
+      "front": "/resarcana/gamechip/1.png",
+      "back": "/resarcana/gamechip/bg.png",
+      "position": { "x": 1000, "y": -1300 },
+      "size": { "w": 880, "h": 880 },
+      "options": {
+        "cornerRadius": 5
+      }
+    },
+    {
+      "type": "duoside",
+      "id": "powercard",
+      "count": 5,
+      "front": "/resarcana/powercard/{odd}.png",
+      "back": "/resarcana/powercard/{even}.png",
+      "position": { "x": 3000, "y": 0 },
+      "size": { "w": 918, "h": 1322 }
+    }
+  ],
+  "resources": [
+    {
+      "name": "1",
+      "width": "110",
+      "height": "120"
+    },
+    {
+      "name": "2",
+      "width": "110",
+      "height": "120"
+    },
+    {
+      "name": "3",
+      "width": "110",
+      "height": "120"
+    },
+    {
+      "name": "4",
+      "width": "110",
+      "height": "120"
+    },
+    {
+      "name": "5",
+      "width": "110",
+      "height": "120"
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+{
+  "id": "burgund",
+  "name": "Замки Бургундии",
+  "field": {
+    "id": "field",
+    "front": "/burgund/field.jpg",
+    "bg": null,
+    "x": 1756,
+    "y": 1500,
+    "width": 3752,
+    "height": 2831
+  },
+  "groups": [
+    {
+      "type": "duoside",
+      "id": "yellow",
+      "count": 20,
+      "front": "/burgund/yellow/{n}.png",
+      "back": "/burgund/yellow/bg.png",
+      "position": { "x": -300, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "black",
+      "count": 40,
+      "front": "/burgund/black/{n}.png",
+      "back": "/burgund/black/bg.png",
+      "position": { "x": 0, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "darkgreen",
+      "count": 14,
+      "front": "/burgund/darkgreen/1.png",
+      "back": "/burgund/darkgreen/bg.png",
+      "position": { "x": 300, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "darkyellow",
+      "count": 40,
+      "front": "/burgund/darkyellow/{n}.png",
+      "back": "/burgund/darkyellow/bg.png",
+      "position": { "x": 600, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "gray",
+      "count": 10,
+      "front": "/burgund/gray/1.png",
+      "back": "/burgund/gray/bg.png",
+      "position": { "x": 900, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "green",
+      "count": 20,
+      "front": "/burgund/green/{n}.png",
+      "back": "/burgund/green/bg.png",
+      "position": { "x": 1200, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "ship",
+      "count": 20,
+      "front": "/burgund/ship/1.png",
+      "back": "/burgund/ship/bg.png",
+      "position": { "x": 1500, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "products",
+      "count": 42,
+      "front": "/burgund/products/{n}.png",
+      "back": "/burgund/products/bg.png",
+      "position": { "x": 1800, "y": 0 },
+      "size": { "w": 243, "h": 243 }
+    },
+    {
+      "type": "duoside",
+      "id": "bonusmin",
+      "count": 6,
+      "front": "/burgund/bonusmin/{n}.png",
+      "back": "/burgund/bonusmin/bg.png",
+      "position": { "x": 2100, "y": 0 },
+      "size": { "w": 188, "h": 188 }
+    },
+    {
+      "type": "duoside",
+      "id": "bonusmax",
+      "count": 6,
+      "front": "/burgund/bonusmax/{n}.png",
+      "back": "/burgund/bonusmax/bg.png",
+      "position": { "x": 2400, "y": 0 },
+      "size": { "w": 230, "h": 230 }
+    },
+    {
+      "type": "duoside",
+      "id": "bonus",
+      "count": 4,
+      "front": "/burgund/bonus/{n}.png",
+      "back": "/burgund/bonus/bg.png",
+      "position": { "x": 2700, "y": 0 },
+      "size": { "w": 275, "h": 315 }
+    },
+    {
+      "type": "duoside",
+      "id": "pane",
+      "count": 12,
+      "front": "/burgund/pane/{n}.png",
+      "back": "/burgund/pane/bg.png",
+      "position": { "x": 1400, "y": 4000 },
+      "size": { "w": 2880, "h": 2037 },
+      "options": {
+        "ban": true
+      }
+    }
+  ],
+  "dice": [
+    {
+      "id": "dice1",
+      "x": 0,
+      "y": -300,
+      "front": "/dice/d6-pink.png",
+      "sides": 6
+    },
+    {
+      "id": "dice2",
+      "x": 0,
+      "y": -300,
+      "front": "/dice/d6-pink.png",
+      "sides": 6
+    },
+    {
+      "id": "dice3",
+      "x": 300,
+      "y": -300,
+      "front": "/dice/d6-gold.png",
+      "sides": 6
+    },
+    {
+      "id": "dice4",
+      "x": 300,
+      "y": -300,
+      "front": "/dice/d6-gold.png",
+      "sides": 6
+    },
+    {
+      "id": "dice5",
+      "x": 600,
+      "y": -300,
+      "front": "/dice/dice-sprite.png",
+      "sides": 6
+    }
+  ],
+  "resources": [
+    { "name": "1", "width": 108, "height": 91 },
+    { "name": "2", "width": 108, "height": 91 },
+    { "name": "3", "width": 108, "height": 91 },
+    { "name": "4", "width": 108, "height": 91 },
+    { "name": "change", "width": 229, "height": 229 },
+    { "name": "ser", "width": 208, "height": 208 }
+  ]
+}

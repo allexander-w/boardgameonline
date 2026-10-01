@@ -23,8 +23,6 @@ class MouseController {
 
     handleZoom(e) {
         e.evt.preventDefault();
-        if ( e.evt.stackWheelHandled ) return;
-
         this.camera.moved();
 
         const scaleBy = 1.1;
