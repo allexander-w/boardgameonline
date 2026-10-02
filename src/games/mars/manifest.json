@@ -18,7 +18,7 @@
       "front": "/mars/cards_o/{n}.webp",
       "back": "/mars/cards_o/bg.webp",
       "position": { "x": 0, "y": 0 },
-      "size": { "w": 248, "h": 350 },
+      "size": { "w": 248, "h": 350 }
     },
     {
       "type": "duoside",
