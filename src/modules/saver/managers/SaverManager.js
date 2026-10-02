@@ -1,6 +1,6 @@
 import config from "../../../config";
-import { cardsManager, moduleManager } from "../../../core";
-import ResourceCard from "../../../entities/resource/ResourceCard";
+import { cardsManager, moduleManager, syncHandler } from "../../../core";
+import { applySave } from "../../../core/initialize/applySave";
 
 class SaverManager {
     constructor(uiManager, layersManager) {
@@ -8,55 +8,51 @@ class SaverManager {
         this.layersManager = layersManager;
     }
 
-    save() {
-        const save = {
-            timestamp: new Date(),
-            project: config.scene,
-            elements: [],
-            resources: []
-        }
-
-        for ( const [key, card] of cardsManager.cards.entries() ) {
-            const config = card.forSave;
-            if ( config.resource ) save.resources.push(config);
-            else save.elements.push(config);
-        }
-
-        localStorage.setItem("save", JSON.stringify(save));
+    _notify(text, color) {
         const notificationsModule = moduleManager.getModule("notifications");
-        notificationsModule.notify("Игра успешно сохранена!", { color: "green" });
+        notificationsModule.notify(text, { color });
+    }
+
+    save() {
+        // const save = {
+        //     timestamp: new Date(),
+        //     project: config.scene,
+        //     elements: [],
+        //     resources: []
+        // }
+        //
+        // for ( const [key, card] of cardsManager.cards.entries() ) {
+        //     const data = card.forSave;
+        //     if ( data.resource ) save.resources.push(data);
+        //     else save.elements.push(data);
+        // }
+        //
+        // localStorage.setItem("save", JSON.stringify(save));
+        // this._notify("Игра успешно сохранена!", "green");
+
+        syncHandler.checkpoint();
+        this._notify("Игра сохранена на сервере!", "green");
     }
 
     load() {
         const savedGame = localStorage.getItem("save");
         if ( !savedGame ) {
-            const notificationsModule = moduleManager.getModule("notifications");
-            notificationsModule.notify("Не удалось загрузить сохранение!", { color: "red" });
+            this._notify("Не удалось загрузить сохранение!", "red");
             return false;
         }
 
         const save = JSON.parse(savedGame);
 
         if ( save.project !== config.scene ) {
-            const notificationsModule = moduleManager.getModule("notifications");
-            notificationsModule.notify("Не удалось загрузить сохранение!", { color: "red" });
+            this._notify("Не удалось загрузить сохранение!", "red");
             return false;
         }
 
-        for ( const el of save.resources ) {
-            if ( cardsManager.cards.has(el.id) ) return false;
-            const options =  { draggable: true, x: el.x, y: el.y, width: el.width, height: el.height, opacity: 1, id: el.id };
-            const resourceCard = new ResourceCard({ front: el.src }, options);
-            cardsManager.createCard(resourceCard);
-        }
+        // Единая точка загрузки: создаёт/обновляет карты и ресурсы,
+        // затем восстанавливает привязки зон (zoneManager.restoreAll)
+        applySave(save);
 
-        for ( const el of save.elements ) {
-            const card = cardsManager.getCard(el.id);
-            card.forLoad(el);
-        }
-
-        const notificationsModule = moduleManager.getModule("notifications");
-        notificationsModule.notify("Сохранение успешно загружено!", { color: "green" });
+        this._notify("Сохранение успешно загружено!", "green");
     }
 
     render() {

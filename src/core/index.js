@@ -46,8 +46,11 @@ handlerManager.registerHandle(new SystemHandler(emitter, senderManager, usersMan
 handlerManager.registerHandle(new RegisterHandler(emitter, senderManager, usersManager, cursorsManager, moduleManager));
 handlerManager.registerHandle(new CursorHandler(emitter, usersManager, cursorsManager));
 handlerManager.registerHandle(new CardsHandler(emitter, cardsManager, layersManager));
-handlerManager.registerHandle(new SyncHandler(usersManager, cardsManager, layersManager, senderManager, emitter));
+// handlerManager.registerHandle(new SyncHandler(usersManager, cardsManager, layersManager, senderManager, emitter));
 
+
+const syncHandler = new SyncHandler(usersManager, cardsManager, layersManager, senderManager, emitter);
+handlerManager.registerHandle(syncHandler);
 
 export {
     emitter,
@@ -60,5 +63,6 @@ export {
     cursorsManager,
     cardsManager,
     gameManager,
+    syncHandler,
     zoneManager,
 }

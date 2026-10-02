@@ -393,6 +393,32 @@ class ZoneManager {
         this.dock(cardId, dock.ownerId, dock.zoneId, dock.slot, { rot: dock.rot, silent: true, place: false });
     }
 
+    /**
+     * Полное восстановление привязок из сохранения (элементы И ресурсы).
+     * Вызывать ПОСЛЕ того, как все карты созданы и загружены их x/y/rotation/zIndex.
+     *   1) сбрасываем текущие привязки всех карт из сохранения (иначе «залипают» старые),
+     *   2) восстанавливаем сохранённые без расстановки,
+     *   3) один раз расставляем вложенные карты по владельцам и поднимаем их над владельцем.
+     */
+    restoreAll(entries) {
+        for (const e of entries) {
+            if (this.docks.has(e.id)) this._release(e.id);
+        }
+
+        for (const e of entries) {
+            if (e.dock) this.restore(e.id, e.dock);
+        }
+
+        this.followAll();
+        this.restackAll();
+    }
+
+    restackAll() {
+        for (const ownerId of this.owners) {
+            if (!this.docks.has(ownerId)) this.restack(ownerId);
+        }
+    }
+
     remoteDock(data) {
         this.dock(data.id, data.ownerId, data.zoneId, data.slot, { rot: data.rot, silent: true });
     }

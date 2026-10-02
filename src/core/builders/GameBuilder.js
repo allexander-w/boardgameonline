@@ -3,7 +3,7 @@ import DuosideCard from "../../entities/duoside/DuosideCard";
 import DiceCard from "../../entities/dice/DiceCard";
 import StateCard from "../../games/thiswarofmine/entities/state/StateCard";
 import CounterCard from "../../entities/counter/CounterCard";
-import { emitter } from "../index";
+import { emitter, gameManager } from "../index";
 
 class GameBuilder {
     constructor(cardsManager) {
@@ -11,6 +11,7 @@ class GameBuilder {
     }
 
     build(manifest) {
+        gameManager.setCameraViews(manifest.camera?.views);
         if ( manifest.field ) this.buildField(manifest.field);
 
         // Обратный проход по массиву групп

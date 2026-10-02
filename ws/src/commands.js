@@ -2,6 +2,8 @@ const PLAYER_COMMANDS = new Set([
     "api.register.joined",
     "api.register.sync",
     "api.cursors.move",
+    "api.cursors.ping",
+    
     "api.drag.start",
     "api.drag.move",
     "api.drag.end",

@@ -6,10 +6,10 @@ export const SaveButtonTemplate = `
                 <i class="ph ph-floppy-disk"></i>
                 <span>Сохранить</span>
             </button>
-            <button class="menu-btn-lg" data-event="load">
-                <i class="ph ph-upload-simple"></i>
-                <span>Загрузить</span>
-            </button>
+<!--            <button class="menu-btn-lg" data-event="load">-->
+<!--                <i class="ph ph-upload-simple"></i>-->
+<!--                <span>Загрузить</span>-->
+<!--            </button>-->
             <button class="menu-btn-lg">
                 <i class="ph ph-arrows-out"></i>
                 <span>Полный экран</span>

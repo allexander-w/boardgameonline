@@ -60,7 +60,7 @@ class ResourcesManger {
                 const resourceCard = new ResourceCard({ front: src }, options);
                 cardsManager.createCard(resourceCard);
 
-                configuration.push({ src, pos, width: card.width, height: card.height, id, name: card.name });
+                configuration.push({ src, pos, width: card.width, height: card.height, id, name: card.name, kind: options.kind });
             }
 
             card.selected = undefined;
@@ -74,8 +74,7 @@ class ResourcesManger {
         for ( const element of data.cards ) {
             const src = element.src;
             const id = element.id;
-            const options = { draggable: true, x: element.pos.x, y: element.pos.y, width: parseInt(element.width), height: parseInt(element.height), opacity: 1, id };
-
+            const options = { draggable: true, x: element.pos.x, y: element.pos.y, width: parseInt(element.width), height: parseInt(element.height), opacity: 1, id, kind: element.kind || "resource" };
             const resourceCard = new ResourceCard({ front: src }, options);
             cardsManager.createCard(resourceCard);
         }

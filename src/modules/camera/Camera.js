@@ -1,6 +1,7 @@
 import InteractionSnapshot from "./InteractionSnapshot";
 import LodController from "./LodController";
-import {cardsManager} from "../../core";
+import {cardsManager, gameManager} from "../../core";
+import CameraPresets from "./CameraPresets";
 
 class Camera {
     constructor(layersManager, KeyboardController, MouseController, MobileJoystick) {
@@ -27,6 +28,7 @@ class Camera {
         }
 
         this.initializeCamera();
+        this.presets = new CameraPresets(this, gameManager.cameraViews);
 
         this.lod.update();
 
@@ -80,6 +82,28 @@ class Camera {
             x: window.innerWidth / 2 - centerX * scale,
             y: window.innerHeight / 2 - centerY * scale,
         });
+    }
+
+    getView() {
+        const center = this.stage.getAbsoluteTransform().copy().invert()
+            .point({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
+
+        return { x: center.x, y: center.y, zoom: this.stage.scaleX() / this.baseScale };
+    }
+
+    setView({ x, y, zoom }) {
+        this.moved();
+
+        const scale = this.clampScale(zoom * this.baseScale);
+        this.stage.scale({ x: scale, y: scale });
+        this.stage.position({ x: 0, y: 0 });
+
+        const p = this.stage.getAbsoluteTransform().point({ x, y });
+        this.stage.position({
+            x: window.innerWidth / 2 - p.x,
+            y: window.innerHeight / 2 - p.y,
+        });
+        this.stage.batchDraw();
     }
 
     zoom(factor, pointer) {

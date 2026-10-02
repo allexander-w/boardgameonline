@@ -10,6 +10,8 @@ import modelViewerModule from "../modules/model-viewer";
 import Konva from "konva";
 import {ws} from "../core";
 import createPattern from "../utils/patterns/grid";
+import minimapModule from "../modules/minimap";
+import pingModule from "../modules/ping";
 
 class MainScene {
     constructor(layerManager, layers, preloader, moduleManager, cardsManager) {
@@ -30,6 +32,7 @@ class MainScene {
         this.moduleManager.registerModule("actions", actionsModule);
         this.moduleManager.registerModule("hands", handsModule);
         this.moduleManager.registerModule("users", usersModule);
+        this.moduleManager.registerModule("ping", pingModule);
         // this.moduleManager.registerModule("modelViewer", modelViewerModule);
     }
 
@@ -43,6 +46,7 @@ class MainScene {
 
     initialized(msg) {
         this.moduleManager.registerModule("camera", cameraModule);
+        this.moduleManager.registerModule("minimap", minimapModule);
         this.moduleManager.registerModule("saver", saverModule);
 
         this.layerManager.cacheAllGroups();

@@ -1,6 +1,7 @@
 class GameManager {
     constructor() {
         this.game = null;
+        this.cameraViews = [];
     }
 
     set(game) {
@@ -17,6 +18,10 @@ class GameManager {
 
     getName() {
         return this.game?.name;
+    }
+
+    setCameraViews(views) {
+        this.cameraViews = views || [];
     }
 }
 

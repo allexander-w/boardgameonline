@@ -467,5 +467,11 @@
       "front": "/dice/avalon.png",
       "sides": 6
     }
-  ]
+  ],
+  "camera": {
+    "views": [
+      { "id": "board", "name": "Планшет", "x": -1300, "y": 2600, "zoom": 3 },
+      { "id": "map", "name": "Карта", "x": -1500, "y": 1500, "zoom": 4 }
+    ]
+  }
 }

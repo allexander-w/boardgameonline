@@ -1,6 +1,4 @@
-import config from "../../config";
-import {cardsManager, zoneManager} from "../index";
-import ResourceCard from "../../entities/resource/ResourceCard";
+import { applySave } from "../initialize/applySave";
 
 class SyncHandler {
     constructor(usersManager, cardsManger, layersManager, sender, emitter) {
@@ -13,7 +11,7 @@ class SyncHandler {
         this.emitter.on("api.register.joined", this.getConfig.bind(this));
         this.emitter.on("api.register.sync", this.loadConfig.bind(this));
 
-        // this.startAutosave();
+        this.startAutosave();
     }
 
     buildSave() {
@@ -44,36 +42,14 @@ class SyncHandler {
     startAutosave() {
         setInterval(() => {
             if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return;
-            // this.checkpoint();
+            this.checkpoint();
         }, 20000);
 
         window.addEventListener("pagehide", () => this.checkpoint());
     }
 
     loadConfig(data) {
-        const save = data;
-        this.layersManager.clearCacheAllGroups();
-
-        for ( const el of save.resources ) {
-            if ( cardsManager.cards.has(el.id) ) continue;
-            const options =  { draggable: true, x: el.x, y: el.y, width: el.width, height: el.height, opacity: 1, id: el.id };
-            const resourceCard = new ResourceCard({ front: el.src }, options);
-            cardsManager.createCard(resourceCard);
-        }
-
-        for ( const el of save.elements ) {
-            const card = cardsManager.getCard(el.id);
-            card.forLoad(el);
-        }
-
-        zoneManager.followAll();
-
-        for ( const id of save.hands || [] ) {
-            const card = cardsManager.getCard(id);
-            if ( card ) card.element.hide();
-        }
-
-        this.layersManager.cacheAllGroups();
+        applySave(data, { hands: data.hands || [] });
     }
 }
 
