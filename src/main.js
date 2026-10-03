@@ -25,48 +25,80 @@ const beginScreen = BeginScreen.init();
 
 function lockToGame(gameId) {
     const game = gamesRegistry.find(game => game.id === gameId);
+    if ( !game ) return unlockGame();
     gameManager.set(game);
 
     beginScreen.lockGame(game.name);
     beginScreen.setBackground(config.s3BaseUrl("/" + gameId + "/bg.png"));
 }
 
-function unlockGame() {
-    beginScreen.renderGames(gamesRegistry, gameManager.getId(), (id) => {
-        const game = gamesRegistry.find(game => game.id === id);
-        gameManager.set(game);
+function pickGame(game) {
+    gameManager.set(game);
+    beginScreen.setBackground(config.s3BaseUrl("/" + game.id + "/bg.png"));
+}
 
-        beginScreen.setBackground(config.s3BaseUrl("/" + game.id + "/bg.png"));
+function unlockGame() {
+    const current = gamesRegistry.find(game => game.id === gameManager.getId()) || gamesRegistry[0];
+    pickGame(current);
+
+    beginScreen.renderGames(gamesRegistry, current.id, (id) => {
+        pickGame(gamesRegistry.find(game => game.id === id));
+    });
+}
+
+const isAdmin = new URLSearchParams(window.location.search).get("admin") === "kbucc3seq";
+let pendingRoomCheck = Promise.resolve();
+
+function applyRoom(id, game) {
+    roomId = id || generateRoomId();
+    setRoomId(roomId);
+    updateRoomCode();
+
+    if ( game ) lockToGame(game);
+    else unlockGame();
+}
+
+function showRoomPicker() {
+    roomId = null;
+    unlockGame();
+
+    if ( isAdmin ) {
+        fetchRoomList(config.ws).then(rooms => {
+            beginScreen.renderRooms(rooms, (id) => {
+                const picked = id && rooms.find(r => r.id === id);
+                applyRoom(id, picked?.game);
+            });
+        });
+        return;
+    }
+
+    beginScreen.renderRoomInput((id) => {
+        if ( !id ) {
+            pendingRoomCheck = Promise.resolve();
+            applyRoom(null, null);
+            return;
+        }
+
+        pendingRoomCheck = fetchRoom(config.ws, id).then(room => applyRoom(id, room?.game));
     });
 }
 
 if ( roomId ) {
     fetchRoom(config.ws, roomId).then(room => {
-        if ( room && room.game ) lockToGame(room.game);
+        if ( !room ) showRoomPicker();
+        else if ( room.game ) lockToGame(room.game);
         else unlockGame();
     });
 } else {
-    unlockGame();
-
-    fetchRoomList(config.ws).then(rooms => {
-        beginScreen.renderRooms(rooms, (id) => {
-            roomId = id || generateRoomId();
-            setRoomId(roomId);
-            updateRoomCode();
-
-            const picked = id && rooms.find(r => r.id === id);
-            if ( picked?.game ) lockToGame(picked.game);
-            else unlockGame();
-        });
-    });
+    showRoomPicker();
 }
-
 
 const gameModules = import.meta.glob("./games/**/index.js", {
     eager: false
 });
 
 beginScreen.emitter.on("sign", async (name) => {
+    await pendingRoomCheck;
     beginScreen.off();
 
     if ( !roomId ) {

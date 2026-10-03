@@ -70,6 +70,19 @@ class BeginScreen {
         });
     }
 
+    renderRoomInput(onChange) {
+        if ( !this.roomsList ) return;
+        this.roomsList.classList.add("active");
+
+        this.roomsList.innerHTML = `<input class="room-input" autocomplete="off" maxlength="64" placeholder="ID комнаты (пусто — новая)" type="text">`;
+        const inputEl = this.roomsList.querySelector(".room-input");
+        onChange(null);
+
+        inputEl.addEventListener("change", () => {
+            onChange(inputEl.value.trim() || null);
+        });
+    }
+
     sign(e) {
         e.preventDefault();
         if ( !this.input.value?.length ) return false;
