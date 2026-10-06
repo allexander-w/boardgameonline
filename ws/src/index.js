@@ -119,6 +119,8 @@ ws.on("request", req => {
         const actingUser = room.getUser(connection.userId);
         if ( !actingUser ) return;
 
+        if ( data.action === "api.register.joined" ) actingUser.ready = true;
+
         if ( !isAllowed(data.action, actingUser.role) ) {
             actingUser.send("api.room.rejected", { action: data.action });
             return;
@@ -140,12 +142,14 @@ ws.on("request", req => {
         }
 
         if ( data.action === "api.register.sync" ) {
+            if ( !actingUser.ready || actingUser.id !== room.syncUser ) return;
             room.checkpoint(data.payload);
             room.broadcast(data.action, { ...data.payload, user: actingUser.id, hands: room.getHandIds() }, actingUser.id);
             return;
         }
 
         if ( data.action === "api.room.checkpoint" ) {
+            if ( !actingUser.ready || actingUser.id !== room.syncUser ) return;
             room.checkpoint(data.payload);
             return;
         }

@@ -23,6 +23,10 @@ class CounterCard extends InterfaceCard {
         return this.counterManager.element;
     }
 
+    get cardManager() {
+        return this.counterManager;
+    }
+
     dragstart() {
         this.uiManager.dragstart(this.element);
     }

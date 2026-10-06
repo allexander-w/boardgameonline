@@ -36,14 +36,15 @@ class SyncHandler {
     }
 
     checkpoint() {
+        const { user, syncPoint } = this.usersManager;
+        if ( !this.sender.adapter.ready || !user.id || user.id !== syncPoint ) return;
         this.sender.send("api.room.checkpoint", this.buildSave());
     }
 
     startAutosave() {
         setInterval(() => {
-            if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return;
             this.checkpoint();
-        }, 20000);
+        }, 30000);
 
         window.addEventListener("pagehide", () => this.checkpoint());
     }

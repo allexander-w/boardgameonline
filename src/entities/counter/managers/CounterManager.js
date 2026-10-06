@@ -1,4 +1,4 @@
-import { layersManager } from "../../../core";
+import { layersManager, senderManager } from "../../../core";
 
 class CounterManager {
     constructor(src, options, uiManager) {
@@ -20,16 +20,29 @@ class CounterManager {
         layersManager.cacheAllGroups();
     }
 
+    changeValue(value) {
+        this.setValue(value);
+        senderManager.send("api.cards.action", {
+            method: "remoteSetValue",
+            id: this.element.id(),
+            payload: { value },
+        });
+    }
+
+    remoteSetValue({ value }) {
+        this.uiManager.updateText(this.element, value);
+    }
+
     increment() {
-        this.setValue(this.getValue() + 1);
+        this.changeValue(this.getValue() + 1);
     }
 
     decrement() {
-        this.setValue(this.getValue() - 1);
+        this.changeValue(this.getValue() - 1);
     }
 
     reset() {
-        this.setValue(0);
+        this.changeValue(0);
     }
 
     toBottom() {
