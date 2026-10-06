@@ -8,10 +8,28 @@ class SyncHandler {
         this.sender = sender;
         this.emitter = emitter;
 
+        this.initialSyncHandled = false;
+
         this.emitter.on("api.register.joined", this.getConfig.bind(this));
         this.emitter.on("api.register.sync", this.loadConfig.bind(this));
+        this.emitter.on("api.register.join", this.onJoined.bind(this));
 
         this.startAutosave();
+    }
+
+    onJoined() {
+        this.initialSyncHandled = true;
+    }
+
+
+    canSync() {
+        const { user, syncPoint } = this.usersManager;
+
+        return this.initialSyncHandled
+            && this.sender.adapter.ready
+            && !!user.id
+            && user.id === syncPoint
+            && this.cardsManager.cards.size > 0;
     }
 
     buildSave() {
@@ -21,8 +39,18 @@ class SyncHandler {
             resources: []
         }
 
-        for ( const [key, card] of this.cardsManager.cards.entries() ) {
-            const config = card.forSave;
+        for ( const card of this.cardsManager.cards.values() ) {
+            let config;
+
+            try {
+                config = card.forSave;
+            } catch (e) {
+                console.error("[sync] не удалось сохранить карту", card?.element?.id?.(), e);
+                continue;
+            }
+
+            if ( !config ) continue;
+
             if ( config.resource ) save.resources.push(config);
             else save.elements.push(config);
         }
@@ -31,14 +59,17 @@ class SyncHandler {
     }
 
     getConfig() {
-        if ( this.usersManager.user.id !== this.usersManager.syncPoint ) return false;
+        if ( !this.canSync() ) return false;
         this.sender.send("api.register.sync", this.buildSave());
     }
 
     checkpoint() {
-        const { user, syncPoint } = this.usersManager;
-        if ( !this.sender.adapter.ready || !user.id || user.id !== syncPoint ) return;
-        this.sender.send("api.room.checkpoint", this.buildSave());
+        if ( !this.canSync() ) return false;
+
+        const save = this.buildSave();
+        if ( !save.elements.length && !save.resources.length ) return false;
+
+        return this.sender.send("api.room.checkpoint", save);
     }
 
     startAutosave() {
@@ -46,7 +77,7 @@ class SyncHandler {
             this.checkpoint();
         }, 30000);
 
-        window.addEventListener("pagehide", () => this.checkpoint());
+        this.emitter.on("system.websockets.unloading", () => this.checkpoint());
     }
 
     loadConfig(data) {

@@ -13,8 +13,17 @@ export function applySave(save, { hands = [] } = {}) {
     layersManager.clearCacheAllGroups();
 
     // 1. Обычные элементы (их forLoad больше НЕ трогает ZoneManager)
+    const missing = [];
     for (const el of elements) {
-        cardsManager.getCard(el.id)?.forLoad(el);
+        const card = cardsManager.getCard(el.id);
+        if (card) card.forLoad(el);
+        else missing.push(el.id);
+    }
+
+    /* Карточки, которых нет на доске, молча терялись, а затем пропадали
+       из следующего автосейва — теперь хотя бы видно в консоли. */
+    if (missing.length) {
+        console.warn(`[save] ${missing.length} элемент(ов) из сохранения не найдено на доске:`, missing.slice(0, 10));
     }
 
     // 2. Ресурсы: существующие обновляем, а не пропускаем

@@ -1,37 +1,75 @@
-import config from "../../../config";
-import { cardsManager, moduleManager, syncHandler } from "../../../core";
+import { cardsManager, moduleManager, syncHandler, emitter, gameManager } from "../../../core";
 import { applySave } from "../../../core/initialize/applySave";
 
 class SaverManager {
     constructor(uiManager, layersManager) {
         this.uiManager = uiManager;
         this.layersManager = layersManager;
+
+        this.pendingSave = false;
+        this.pendingSaveTimer = null;
+
+        emitter.on("api.room.checkpoint.saved", this.onCheckpointSaved.bind(this));
+        emitter.on("api.room.checkpoint.rejected", this.onCheckpointRejected.bind(this));
     }
 
     _notify(text, color) {
         const notificationsModule = moduleManager.getModule("notifications");
-        notificationsModule.notify(text, { color });
+        notificationsModule?.notify(text, { color });
+    }
+
+    _finishPendingSave() {
+        this.pendingSave = false;
+        clearTimeout(this.pendingSaveTimer);
+        this.pendingSaveTimer = null;
+    }
+
+    onCheckpointSaved() {
+        if ( !this.pendingSave ) return;
+
+        this._finishPendingSave();
+        this._notify("Игра сохранена на сервере!", "green");
+    }
+
+    onCheckpointRejected(data) {
+        if ( !this.pendingSave ) return;
+
+        this._finishPendingSave();
+        this._notify(
+            data?.reason === "not-sync-user"
+                ? "Сохранить игру может только хост комнаты"
+                : "Сервер отклонил сохранение: снимок доски пустой или повреждён",
+            "red"
+        );
     }
 
     save() {
-        // const save = {
-        //     timestamp: new Date(),
-        //     project: config.scene,
-        //     elements: [],
-        //     resources: []
-        // }
-        //
-        // for ( const [key, card] of cardsManager.cards.entries() ) {
-        //     const data = card.forSave;
-        //     if ( data.resource ) save.resources.push(data);
-        //     else save.elements.push(data);
-        // }
-        //
-        // localStorage.setItem("save", JSON.stringify(save));
-        // this._notify("Игра успешно сохранена!", "green");
+        if ( this.pendingSave ) return false;
 
-        syncHandler.checkpoint();
-        this._notify("Игра сохранена на сервере!", "green");
+        if ( !syncHandler.canSync() ) {
+            this._notify("Не удалось сохранить: нет соединения, вы не хост или доска ещё не готова", "red");
+            return false;
+        }
+
+        this.pendingSave = true;
+
+        if ( !syncHandler.checkpoint() ) {
+            this._finishPendingSave();
+            this._notify("Не удалось сохранить: снимок доски пустой", "red");
+            return false;
+        }
+
+        this._notify("Сохранение...", "blue");
+
+        /* Страховка: если ответ сервера потеряется, не оставляем кнопку «залипшей». */
+        this.pendingSaveTimer = setTimeout(() => {
+            if ( !this.pendingSave ) return;
+
+            this._finishPendingSave();
+            this._notify("Сервер не подтвердил сохранение", "red");
+        }, 5000);
+
+        return true;
     }
 
     load() {
@@ -41,18 +79,25 @@ class SaverManager {
             return false;
         }
 
-        const save = JSON.parse(savedGame);
+        let save;
 
-        if ( save.project !== config.scene ) {
+        try {
+            save = JSON.parse(savedGame);
+        } catch (e) {
+            console.error("[saver] повреждённое локальное сохранение", e);
             this._notify("Не удалось загрузить сохранение!", "red");
             return false;
         }
 
-        // Единая точка загрузки: создаёт/обновляет карты и ресурсы,
-        // затем восстанавливает привязки зон (zoneManager.restoreAll)
+        if ( save.project !== gameManager.getId() ) {
+            this._notify("Не удалось загрузить сохранение!", "red");
+            return false;
+        }
+
         applySave(save);
 
         this._notify("Сохранение успешно загружено!", "green");
+        return true;
     }
 
     render() {

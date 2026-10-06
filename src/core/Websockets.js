@@ -5,6 +5,7 @@ class Websockets {
     constructor(emitter) {
         this.socket = null;
         this.emitter = emitter;
+        this.unloading = false;
 
         this.handleUnload = this.handleUnload.bind(this);
     }
@@ -14,6 +15,7 @@ class Websockets {
     }
 
     connect() {
+        this.unloading = false;
         this.socket = new WebSocket(config.ws);
 
         this.socket.onopen = () => {
@@ -40,6 +42,10 @@ class Websockets {
     }
 
     handleUnload() {
+        if ( this.unloading ) return;
+        this.unloading = true;
+
+        this.emitter.emit("system.websockets.unloading");
         this.disconnect(1000, "Page unloaded");
     }
 

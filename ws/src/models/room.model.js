@@ -12,10 +12,21 @@ class Room {
     }
 
     checkpoint(payload) {
+        const elements = payload?.elements;
+        const resources = payload?.resources;
+
+        if ( !Array.isArray(elements) || !Array.isArray(resources) ) return false;
+        if ( !elements.length && !resources.length && this.hasState() ) return false;
+
+        const incomingIds = new Set(elements.map(el => el.id));
+        const kept = this.state.elements.filter(el => !incomingIds.has(el.id));
+
         this.state = {
-            elements: payload.elements || [],
-            resources: payload.resources || [],
+            elements: [...kept, ...elements],
+            resources,
         };
+
+        return true;
     }
 
     hasState() {

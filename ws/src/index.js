@@ -8,6 +8,11 @@ const { isAllowed } = require("./commands");
 
 const roomStore = new RoomStore();
 
+let userSequence = 0;
+function createUserId() {
+    return `${Date.now().toString(36)}-${(++userSequence).toString(36)}`;
+}
+
 setInterval(() => {
     for ( const room of roomStore.rooms.values() ) {
         database.saveRoom(room.id, room.name, room.game, room.getPersistableState());
@@ -18,7 +23,7 @@ function handleConnected(connection, data) {
     const roomId = String(data.payload?.room || "default");
     const room = roomStore.getOrCreate(roomId, data.payload?.game);
 
-    const user = new User(Date.now(), connection);
+    const user = new User(createUserId(), connection);
     user.setName(data.payload?.name || "");
     user.setAvatar(data.payload?.avatar || "");
 
@@ -101,81 +106,109 @@ function buildReleasePayload(room, ownerName, releasedCards) {
     };
 }
 
+async function handleMessage(connection, msg) {
+    const propertyName = msg.type + "Data";
+    const data = unserialize(msg[propertyName]);
+    if ( !data || !data.action ) return;
+
+    if ( data.action === "api.register.connected" ) {
+        return handleConnected(connection, data);
+    }
+
+    const room = roomStore.get(connection.roomId);
+    if ( !room ) return;
+
+    const actingUser = room.getUser(connection.userId);
+    if ( !actingUser ) return;
+
+    if ( data.action === "api.register.joined" ) actingUser.ready = true;
+
+    if ( !isAllowed(data.action, actingUser.role) ) {
+        actingUser.send("api.room.rejected", { action: data.action });
+        return;
+    }
+
+    if ( data.action === "api.room.kick" ) {
+        return handleKick(room, actingUser, data);
+    }
+
+    if ( data.action === "api.room.transferHost" ) {
+        return handleTransferHost(room, data);
+    }
+
+    if ( HAND_ACTIONS.has(data.action) ) {
+        trackHandOwnership(room, actingUser, data);
+        room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
+        room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
+        return;
+    }
+
+    if ( data.action === "api.register.sync" ) {
+        if ( !actingUser.ready || actingUser.id !== room.syncUser ) return;
+
+        if ( !room.checkpoint(data.payload) ) {
+            console.warn(`[ws] sync комнаты ${room.id} отклонён: пустой или битый снимок`);
+            return;
+        }
+
+        room.broadcast(data.action, { ...room.getSyncPayload(), user: actingUser.id }, actingUser.id);
+        return;
+    }
+
+
+    if ( data.action === "api.room.checkpoint" ) {
+        if ( !actingUser.ready || actingUser.id !== room.syncUser ) {
+            actingUser.send("api.room.checkpoint.rejected", { reason: "not-sync-user" });
+            return;
+        }
+
+        if ( !room.checkpoint(data.payload) ) {
+            actingUser.send("api.room.checkpoint.rejected", { reason: "invalid-payload" });
+            return;
+        }
+
+        actingUser.send("api.room.checkpoint.saved", { timestamp: Date.now() });
+        return;
+    }
+
+    room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
+}
+
 ws.on("request", req => {
     const connection = req.accept("", req.origin);
 
     connection.on("message", async msg => {
-        const propertyName = msg.type + "Data";
-        const data = unserialize(msg[propertyName]);
-        if ( !data || !data.action ) return;
-
-        if ( data.action === "api.register.connected" ) {
-            return handleConnected(connection, data);
+        /* Одно битое сообщение не должно ронять процесс через unhandled rejection. */
+        try {
+            await handleMessage(connection, msg);
+        } catch (e) {
+            console.error("[ws] ошибка обработки сообщения:", e);
         }
-
-        const room = roomStore.get(connection.roomId);
-        if ( !room ) return;
-
-        const actingUser = room.getUser(connection.userId);
-        if ( !actingUser ) return;
-
-        if ( data.action === "api.register.joined" ) actingUser.ready = true;
-
-        if ( !isAllowed(data.action, actingUser.role) ) {
-            actingUser.send("api.room.rejected", { action: data.action });
-            return;
-        }
-
-        if ( data.action === "api.room.kick" ) {
-            return handleKick(room, actingUser, data);
-        }
-
-        if ( data.action === "api.room.transferHost" ) {
-            return handleTransferHost(room, data);
-        }
-
-        if ( HAND_ACTIONS.has(data.action) ) {
-            trackHandOwnership(room, actingUser, data);
-            room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
-            room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
-            return;
-        }
-
-        if ( data.action === "api.register.sync" ) {
-            if ( !actingUser.ready || actingUser.id !== room.syncUser ) return;
-            room.checkpoint(data.payload);
-            room.broadcast(data.action, { ...data.payload, user: actingUser.id, hands: room.getHandIds() }, actingUser.id);
-            return;
-        }
-
-        if ( data.action === "api.room.checkpoint" ) {
-            if ( !actingUser.ready || actingUser.id !== room.syncUser ) return;
-            room.checkpoint(data.payload);
-            return;
-        }
-
-        room.broadcast(data.action, { ...data.payload, user: actingUser.id }, actingUser.id);
     });
 
     connection.on("close", async () => {
-        const room = roomStore.get(connection.roomId);
-        if ( !room ) return;
+        try {
+            const room = roomStore.get(connection.roomId);
+            if ( !room ) return;
 
-        const disconnectedUser = room.getUser(connection.userId);
-        if ( !disconnectedUser ) return;
+            const disconnectedUser = room.getUser(connection.userId);
+            if ( !disconnectedUser ) return;
 
-        const releasedCards = room.releaseUserHands(disconnectedUser.id);
+            const releasedCards = room.releaseUserHands(disconnectedUser.id);
 
-        room.removeUser(disconnectedUser.id);
-        room.broadcast("api.register.disconnect", disconnectedUser);
+            room.removeUser(disconnectedUser.id);
+            room.broadcast("api.register.disconnect", disconnectedUser);
 
-        if ( releasedCards.length ) {
-            room.broadcast("modules.hand.released", buildReleasePayload(room, disconnectedUser.name, releasedCards));
-            room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
-        }
+            if ( releasedCards.length ) {
+                room.broadcast("modules.hand.released", buildReleasePayload(room, disconnectedUser.name, releasedCards));
+                room.broadcast("api.room.handCounts", { counts: room.getHandCounts() });
+            }
 
-        if ( room.isEmpty ) {
-            roomStore.persistAndEvict(room);
+            if ( room.isEmpty ) {
+                roomStore.persistAndEvict(room);
+            }
+        } catch (e) {
+            console.error("[ws] ошибка обработки отключения:", e);
         }
     });
 });
